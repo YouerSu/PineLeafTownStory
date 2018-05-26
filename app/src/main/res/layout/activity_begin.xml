@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.administrator.storeboss.Begin"
+    android:orientation="vertical"
+    android:gravity="center"
+    >
+
+    <TextView
+        android:id="@+id/t1"
+        android:textSize="18dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="欢迎来到松叶镇物语"
+        />
+
+    <TextView
+        android:id="@+id/t2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="6dp"
+        android:text="这是一款经营类游戏"
+        android:textSize="18dp" />
+
+    <Button
+        android:textSize="23dp"
+        android:id="@+id/begin"
+        android:onClick="begin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始游戏"
+        android:layout_marginBottom="6dp"/>
+
+    <Button
+        android:textSize="23dp"
+        android:id="@+id/exit"
+        android:onClick="exit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="退出游戏"
+        android:layout_marginBottom="6dp"/>
+
+    <Button
+        android:textSize="23dp"
+        android:id="@+id/help"
+        android:onClick="help"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="游戏帮助" />
+
+</LinearLayout>

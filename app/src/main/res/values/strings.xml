@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">松叶镇物语</string>
+    <string name="shop">超市</string>
+    <string name="restaurant">饭馆</string>
+    <string name="hotel">旅店</string>
+    <string name="loan">贷款</string>
+    <string name="Inquire">查询</string>
+    <string name="sell">出售</string>
+    <string name="error">异常</string>
+    <string name="relax">休息</string>
+    <string name="goods">goods</string>
+    <string name="purchase">扩张</string>
+    <string name="stock">仓库</string>
+    <string name="shopInfo">商店信息</string>
+    <string name="activity">活动</string>
+    <string name="employee">员工</string>
+    <string name="buy">进货</string>
+    <string name="fate">一切都是命运之石的选择</string>
+    <string name="mining">挖矿</string>
+</resources>
