@@ -4,5 +4,5 @@
     <string-array name="goods">
         <item>@string/goods</item>
     </string-array>
-    
+
 </resources>

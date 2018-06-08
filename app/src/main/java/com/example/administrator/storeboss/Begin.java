@@ -12,7 +12,7 @@ public class Begin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_begin);}
 
-    public void begin(View view) {
+    public void begin(View view){
         Intent it = new Intent();
         it.setClass(this, Game.class);
         startActivity(it);

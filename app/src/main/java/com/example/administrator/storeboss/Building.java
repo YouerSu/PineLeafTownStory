@@ -1,5 +1,6 @@
 package com.example.administrator.storeboss;
 
+
 public class Building {
     public int loyalty;
     public String name;
@@ -18,6 +19,8 @@ public class Building {
         this.capacity = capacity;
         this.customer = customer;
     }
+
+
 
     public int getCustomer() {
         return customer;

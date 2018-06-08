@@ -1,5 +1,9 @@
 package com.example.administrator.storeboss;
 
+import com.example.administrator.utils.GameTime;
+
+import java.util.List;
+
 public class WareHouse {
 
     String name;
@@ -8,25 +12,48 @@ public class WareHouse {
     int sellPrice;
     int popular;
     int total;
+    int whenPopular;
 
-    public WareHouse(String name, int volume, int oPrice, int sellPrice, int popular, int total) {
+    public WareHouse(String name, int volume, int oPrice, int sellPrice, int popular, int total,int whenPopular) {
         this.name = name;
         this.volume = volume;
         this.oPrice = oPrice;
         this.sellPrice = sellPrice;
         this.popular = popular;
         this.total = total;
+        this.whenPopular = whenPopular;
     }
 
+    public WareHouse(int volume, int oPrice,int popular,int whenPopular) {
+        this.volume = volume;
+        this.oPrice = oPrice;
+        this.popular = popular;
+        this.whenPopular = whenPopular;
+    }
     public int getTotal() {
         return total;
     }
 
     public void setTotal(int total,int who) {
         this.total += total;
-        if (total<=0){
-            Game.allWare.get(who).remove(this);
+        if (this.total<=0){
+            GameTime.allWare.get(who).remove(this);
         }
+    }
+
+    public static int getAllVolume(List<WareHouse> allVolume){
+        int i = 0;
+        for (WareHouse totalVolume:allVolume)
+            i+=totalVolume.getTotalVolume();
+        return i;
+    }
+
+    public int getTotalVolume(){
+        return total*volume;
+    }
+
+    public int getWhenPopular() {
+        return whenPopular;
     }
 
     public String getname() {
@@ -68,4 +95,6 @@ public class WareHouse {
     public void setPopular(int popular) {
         this.popular = popular;
     }
+
+
 }

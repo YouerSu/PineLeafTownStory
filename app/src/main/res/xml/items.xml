@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items>
+
+    <item volume="2" price="6" popular="10" whenpopular="2">杨梅</item>
+    <item volume="2" price="3" popular="15" whenpopular="2">松叶牌可乐</item>
+    <item volume="3" price="8" popular="15" whenpopular="2">松叶牌酸奶</item>
+    <item volume="1" price="1" popular="5" whenpopular="2">矿泉水</item>
+    <item volume="5" price="25" popular="5" whenpopular="2">雨伞</item>
+    <item volume="2" price="5" popular="10" whenpopular="2">苹果</item>
+    <item volume="1" price="3" popular="10" whenpopular="2">晓辰牌冰棍</item>
+
+</items>

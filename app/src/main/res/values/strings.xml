@@ -11,10 +11,15 @@
     <string name="goods">goods</string>
     <string name="purchase">扩张</string>
     <string name="stock">仓库</string>
-    <string name="shopInfo">商店信息</string>
+    <string name="shopInfo">建筑信息</string>
     <string name="activity">活动</string>
     <string name="employee">员工</string>
     <string name="buy">进货</string>
-    <string name="fate">一切都是命运之石的选择</string>
+    <string name="fate">一切都是破石头门的选择</string>
     <string name="mining">挖矿</string>
+    <string name="rSpecial">研制</string>
+    <string name="sSpecial">专卖</string>
+    <string name="hSpecial">设施</string>
+    <string name="room">房间</string>
+    <string name="equipment">装潢</string>
 </resources>

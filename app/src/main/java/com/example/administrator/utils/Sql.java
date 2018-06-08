@@ -18,8 +18,8 @@ public class Sql extends SQLiteOpenHelper{
         db.execSQL("insert into "+Info.Tp+"("+Info.id+","+Info.Tn+","+Info.Tm+","+Info.Tprestige+","+Info.lastminute+","+Info.lasthour+","+Info.lastday+","+Info.lastmonth+","+Info.lastyear+","+Info.loan+","+Info.loanTime+","+Info.nowPager+") values(1,'啦啦啦,我是没有名字的傻瓜',0,0,10,10,7,3,1,0,0,1)");
         db.execSQL("create table if not exists "+Info.Ts+0+"("+Info.id+" integer primary key autoincrement,"+Info.Tn+" text,"+Info.Tclever+" integer,"+Info.sl+" integer,"+Info.loy+" integer,"+Info.salary+" integer not null,"+Info.capacity+" integer,"+Info.customer+" integer)");
         db.execSQL("insert into "+Info.Ts+0+"("+Info.Tn+","+Info.Tclever+","+Info.sl+","+Info.loy+","+Info.salary+","+Info.capacity+","+Info.customer+") values('建筑',100,20,2,0,550,0)");
-        db.execSQL("create table if not exists "+Info.wareHouse+0+"("+Info.id+" integer primary key autoincrement,"+Info.Tn+" text,"+Info.Tv+","+Info.sellPrice+" integer,"+Info.total+" integer)");
-        db.execSQL("insert into "+Info.wareHouse+0+"("+Info.Tn+","+Info.Tv+","+Info.sellPrice+","+Info.total+") values('adaa',100,20,10)");
+        db.execSQL("create table if not exists "+Info.wareHouse+0+"("+Info.id+" integer primary key autoincrement,"+Info.Tn+" text,"+Info.sellPrice+" integer,"+Info.total+" integer)");
+        db.execSQL("insert into "+Info.wareHouse+0+"("+Info.Tn+","+Info.sellPrice+","+Info.total+") values('杨梅',10,50)");
     }
 
     @Override

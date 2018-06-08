@@ -19,11 +19,11 @@
         android:layout_height="match_parent">
 
         <Button
+            android:onClick="shop"
             android:layout_weight="1"
             android:padding="20dp"
             android:text="@string/buy"
             android:textSize="25dp"
-            android:onClick="shop"
             android:id="@+id/buy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -31,10 +31,10 @@
         <Button
             android:layout_weight="1"
             android:padding="20dp"
-            android:text="@string/employee"
+            android:text="@string/sSpecial"
             android:textSize="25dp"
             android:onClick="shop"
-            android:id="@+id/employee"
+            android:id="@+id/special"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
