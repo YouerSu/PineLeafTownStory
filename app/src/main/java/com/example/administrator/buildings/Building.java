@@ -23,6 +23,11 @@ public class Building/*<A extends Employee,B extends Item>*/{
         this.facilitiesLevel = facilitiesLevel;
         this.capacity = capacity;
         this.customer = customer;
+        createNewBuilding();
+    }
+
+    private void createNewBuilding() {
+
     }
 
     public String getName() {
@@ -46,13 +51,15 @@ public class Building/*<A extends Employee,B extends Item>*/{
     }
 
     public void saveDate(){
-        GameTime.operatingSql(new String[]{
-        "if exists (select * from "+Info.BUILDING+" where "+Info.NAME+"="+name+") begin update "+Info.BUILDING+" set "+Info.SECURITY+" = "+securityLevel+" "+Info.FACILITIES+" = "+facilitiesLevel+" "+Info.capacity+" = "+capacity+" "+Info.customer+" = "+customer+" where "+Info.NAME+" = "+name+" end else begin insert into "+Info.BUILDING+"("+Info.id+","+Info.name+","+Info.SECURITY+","+Info.FACILITIES+","+Info.capacity+","+Info.customer+") value("+this.getClass()+","+name+","+securityLevel+","+facilitiesLevel+","+capacity+","+customer+") end"
-        });
-
+        clearSql(name+"Employee");
+        clearSql(name+"Item");
+        for (Employee employee:employees)
+            employee.saveDate(name+"Employee");
+        for (Item item:items)
+            item.saveDate(name+"Item");
     }
 
-    public static void deleteSql(String tableName){
+    public static void clearSql(String tableName){
         GameTime.info.getWritableDatabase().execSQL("DELETE FROM " + tableName);
     }
 }

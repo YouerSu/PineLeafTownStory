@@ -10,7 +10,6 @@ import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,14 +20,14 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.administrator.buildings.Item;
 import com.example.administrator.utils.GameTime;
+import com.example.administrator.utils.Player;
 
 import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ShowBuy extends Activity {
@@ -94,7 +93,7 @@ public class ShowBuy extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int which, long l) {
                 Log.i("yep", "buyItem: witch"+which);
                 final Map<String,Object> items = listItem.get(which);
-                if (howMany*(int)items.get("oPrice")<= GameTime.money&&howMany!=0&&GameTime.cAndE.get(now).get(0).getCapacity()>=WareHouse.getAllVolume(GameTime.allWare.get(now))+howMany*(int)items.get("volume")){
+                if (howMany*(int)items.get("oPrice")<= Player.money&&howMany!=0&&GameTime.cAndE.get(now).get(0).getCapacity()>= Item.getAllVolume(GameTime.allWare.get(now))+howMany*(int)items.get("volume")){
                     final AlertDialog alertDialog = new AlertDialog.Builder(ShowBuy.this).setCancelable(false).create();
                     alertDialog.show();
                     alertDialog.setContentView(R.layout.textin);
@@ -111,9 +110,9 @@ public class ShowBuy extends Activity {
                         @Override
                         public void onClick(View view) {
                             Log.i("yep", "onClick: "+howMany*(int)items.get("oPrice"));
-                            GameTime.money-=howMany*(int)items.get("oPrice");
-                            Log.i("yep", "onClick: "+ GameTime.money);
-                            GameTime.allWare.get(now).add(new WareHouse(String.valueOf(items.get("name")),(int)items.get("volume"),(int)items.get("oPrice"),Integer.valueOf(editText.getText().toString()),(int)items.get("popular"),howMany,(int)items.get("whenPopular")));
+                            Player.money-=howMany*(int)items.get("oPrice");
+                            Log.i("yep", "onClick: "+ Player.money);
+                            GameTime.allWare.get(now).add(new Item(String.valueOf(items.get("name")),(int)items.get("volume"),(int)items.get("oPrice"),Integer.valueOf(editText.getText().toString()),(int)items.get("popular"),howMany,(int)items.get("whenPopular")));
                             howMany=0;
                             alertDialog.dismiss();
                             setText();
@@ -122,8 +121,8 @@ public class ShowBuy extends Activity {
                     });
                 }else {
                     StringBuffer s = new StringBuffer();
-                    if (GameTime.cAndE.get(now).get(0).getCapacity()<=WareHouse.getAllVolume(GameTime.allWare.get(now))+howMany*(int)items.get("volume")) s.append("\n你已经没有足够的空间容下这么多物品了");
-                    if (howMany*(int)items.get("oPrice")>= GameTime.money) s.append("\n你没有足够的金钱");
+                    if (GameTime.cAndE.get(now).get(0).getCapacity()<= Item.getAllVolume(GameTime.allWare.get(now))+howMany*(int)items.get("volume")) s.append("\n你已经没有足够的空间容下这么多物品了");
+                    if (howMany*(int)items.get("oPrice")>= Player.money) s.append("\n你没有足够的金钱");
                     if (howMany<=0)s.append("\n你没有选择需要的数量");
                     showText(s);}
             }

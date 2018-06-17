@@ -18,6 +18,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.example.administrator.buildings.Building;
+import com.example.administrator.buildings.Item;
 import com.example.administrator.utils.GameTime;
 
 import java.util.ArrayList;
@@ -37,12 +39,29 @@ public class ShowStock extends AppCompatActivity {
         who = bundle.getInt("who");
         now = bundle.getInt("now");
         List<Map<String,Object>> listItem = new ArrayList<>();
+        //不知道该怎么写,只好写了两边QWQ
+        if (who==4){
+            for (int i =0;i<GameTime.cAndE.get(now).size();i++){
+            Map<String,Object> item = new HashMap<>();
+            Building thisBuilding = GameTime.cAndE.get(now).get(i);
+            String name = thisBuilding.getstrangeName();
+            String strong = "安保:"+thisBuilding.getStrongLevel();
+            String price = "工资:"+thisBuilding.getSalary();
+            String gravitational = "引力:"+thisBuilding.getClever();
+            item.put("name",name);
+            item.put("volume",strong);
+            item.put("sellPrice",price);
+            item.put("total",gravitational);
+            listItem.add(item);
+        }
+        }
+        else{
         for (int i = 0; i< GameTime.allWare.get(now).size(); i++){
             Map<String,Object> item = new HashMap<>();
-            WareHouse thisWare = GameTime.allWare.get(now).get(i);
+            Item thisWare = GameTime.allWare.get(now).get(i);
             String name = thisWare.getname();
-            int volume = thisWare.getVolume();
-            int price = thisWare.getSellPrice();
+            String volume = "体积:"+thisWare.getVolume();
+            String price = "价格"+thisWare.getSellPrice();
             String total = "总量:"+thisWare.getTotal();
             item.put("name",name);
             item.put("volume",volume);
@@ -50,13 +69,14 @@ public class ShowStock extends AppCompatActivity {
             item.put("total",total);
             listItem.add(item);
         //int volume, int oPrice,int popular,int whenPopular
-        }
+        }}
         SimpleAdapter sa = new SimpleAdapter(this,listItem,R.layout.item_list,new String[]{"name","volume","sellPrice","total"},new int[]{R.id.name,R.id.volume,R.id.cost,R.id.total});
         ListView list = findViewById(R.id.stockList);
         list.setAdapter(sa);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                    if (who==4) return;
                     final AlertDialog alertDialog = new AlertDialog.Builder(ShowStock.this).create();
                     alertDialog.show();
                     alertDialog.setContentView(R.layout.textin);
@@ -64,7 +84,7 @@ public class ShowStock extends AppCompatActivity {
                     window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
                     window.setGravity(Gravity.CENTER);
                     final EditText editText = window.findViewById(R.id.tname);
-                    SpannableString ss = new SpannableString("重新输入销售价格");
+                    SpannableString ss = new SpannableString("重新输入价格");
                     AbsoluteSizeSpan ass = new AbsoluteSizeSpan(15,true);
                     ss.setSpan(ass,0,ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     editText.setHint(ss);
@@ -82,11 +102,19 @@ public class ShowStock extends AppCompatActivity {
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view,final int i, long l) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ShowStock.this).setTitle("销毁物品:"+ GameTime.allWare.get(now).get(i).getname()).setMessage("确定将它从你的仓库移除吗?");
+                String s ;
+                if (now==4)
+                    s="辞去员工:";
+                else
+                    s="销毁物品:";
+                AlertDialog.Builder builder = new AlertDialog.Builder(ShowStock.this).setTitle(s+ GameTime.allWare.get(now).get(i).getname()).setMessage("确定将它从你的仓库移除吗?");
                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int b) {
-                        GameTime.allWare.get(now).remove(i);
+                        if (who==4)
+                            GameTime.cAndE.get(now).remove(i);
+                        else
+                            GameTime.allWare.get(now).remove(i);
                     }
                 })
                 .create()
@@ -95,7 +123,12 @@ public class ShowStock extends AppCompatActivity {
             }
         });
         TextView textView = findViewById(R.id.showVolume);
-        textView.setText("容量: "+WareHouse.getAllVolume(GameTime.allWare.get(now))+"/"+GameTime.cAndE.get(now).get(0).getCapacity());
+        textView.setText("容量: "+ Item.getAllVolume(GameTime.allWare.get(now))+"/"+GameTime.cAndE.get(now).get(0).getCapacity());
+    }
+
+    private void setText(String s,int id) {
+        TextView textView = findViewById(id);
+        textView.setText(s);
     }
 
 

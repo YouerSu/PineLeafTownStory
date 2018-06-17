@@ -27,7 +27,7 @@ public abstract class Employee{
 
     public abstract void disasterEvent();
 
-    public void saveDate(){
+    public void saveDate(String name){
 
     }
 
@@ -51,16 +51,12 @@ public abstract class Employee{
         return risePotential;
     }
 
-    public static List<HashMap<String, String>> UIPageAdapter(List<Employee> rawDate) {
-        List<HashMap<String,String>> info = new ArrayList<>();
-        for (int count = 0;count<rawDate.size();count++){
-            HashMap<String,String> date = new HashMap<>();
-            date.put("name",rawDate.get(count).name);
-            date.put("l1","薪酬:"+rawDate.get(count).salary);
-            date.put("l2","能力:"+rawDate.get(count).ability);
-            date.put("l3","好感:"+rawDate.get(count).loyalty);
-            info.add(date);
-        }
-        return info;
+    public HashMap<String, String> UIPageAdapter() {
+        HashMap<String,String> date = new HashMap<>();
+        date.put("name",name);
+        date.put("l1","薪酬:"+salary);
+        date.put("l2","能力:"+ability);
+        date.put("l3","好感:"+loyalty);
+        return date;
     }
 }

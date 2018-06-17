@@ -1,12 +1,12 @@
 package com.example.administrator.buildings;
 
-public class EndProduct extends Item{
+public class SellItem extends Item{
 
     private int sellPrice;
     private int popular;
 
-    public EndProduct(String name, int volume, int originalPrice, int total, String xml, int sellPrice, int popular) {
-        super(name, volume, originalPrice, total, xml);
+    public SellItem(String name, int volume, int originalPrice, int total, int sellPrice, int popular) {
+        super(name, volume, originalPrice,total);
         this.sellPrice = sellPrice;
         this.popular = popular;
     }
@@ -22,7 +22,7 @@ public class EndProduct extends Item{
     }
 
     @Override
-    public void saveDate() {
+    public void saveDate(String tableName) {
 
     }
 

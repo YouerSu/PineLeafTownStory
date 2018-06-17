@@ -10,14 +10,11 @@ public class ShowInfo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_info);
+
+
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        android.os.Process.killProcess(android.os.Process.myPid());
-        System.exit(0);
-        return super.onKeyDown(keyCode, event);
-    }
+
 
     @Override
     protected void onStop() {
