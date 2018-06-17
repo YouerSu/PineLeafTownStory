@@ -1,26 +1,32 @@
 package com.example.administrator.utils;
 
-import com.example.administrator.storeboss.Building;
-import com.example.administrator.storeboss.WareHouse;
+import android.database.sqlite.SQLiteDatabase;
+
+import com.example.administrator.buildings.Building;
+import com.example.administrator.buildings.Item;
+import com.example.administrator.storeboss.Game;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 
+import static com.example.administrator.utils.Info.capacity;
+
 public class GameTime extends TimerTask {
     //数据
     public static int totalOfBuilding = 0;
-    public static int money = 0;
-    public static int prestige;
-    public static String name;
-    public static List<List<Building>> cAndE = new ArrayList<>();
-    public static List<List<WareHouse>> allWare = new ArrayList<>();
+    public static List<Building> cAndE = new ArrayList<>();
+    public static String season = "春季日";
+    public static Sql info;
+    //如果有其他表示坐标方法就改类型(只要不是SQL存不了的就行),
+    public static Player<Integer> coordinate;
 
     //各类时间事件
-    private int hour;
-    private int minute;
-    private int day;
-    private int month;
-    private int year;
+    public int hour;
+    public int minute;
+    public int day;
+    public int month;
+    public int year;
 
     public GameTime(int minute,int hour,int day,int month,int year) {
         this.minute = minute;
@@ -30,12 +36,24 @@ public class GameTime extends TimerTask {
         this.year = year;
     }
 
+    //用于执行Sql语句;
+    public static void operatingSql(String statements[]) {
+        SQLiteDatabase db = info.getWritableDatabase();
+        db.beginTransaction();
+        for (int count = 0;count<statements.length;count++)
+        db.execSQL(statements[count]);
+        db.setTransactionSuccessful();
+        db.endTransaction();
+        db.close();
+    }
+
+
     @Override
     public void run() {
         //NPC的行为
-        int cout = -1;
-    for (List<Building>building: cAndE){
-        cout++;
+        int count = -1;
+    for (Building building: cAndE){
+        count++;
         lalala:
         do {
         switch ((int) (Math.random() * 9)) {
@@ -56,38 +74,38 @@ public class GameTime extends TimerTask {
                 building.get(0).setCustomer(-1);
                 if (building.get(0).getSalary()>0)
                 building.get(0).setCapacity(+3);}
-                if (GameTime.prestige>250)
+                if (Player.prestige>250)
                 continue ;
                 break;
             //购买
             case 3:
                 int a =0;
                 do{
-                if (building.get(0).getCustomer()<=0|| allWare.get(cout).size()<=0) continue lalala;
+                if (building.get(0).getCustomer()<=0|| allWare.get(count).size()<=0) continue lalala;
                 a++;
-                int b = (int)(Math.random()* allWare.get(cout).size());
-                WareHouse ware = allWare.get(cout).get(b);
+                int b = (int)(Math.random()* allWare.get(count).size());
+                Item ware = allWare.get(count).get(b);
                 if (building.get(0).getSalary()==0){
-                if (ware.getoPrice()*2>ware.getSellPrice()-ware.getPopular()){
-                money +=ware.getSellPrice();
-                allWare.get(cout).get(b).setTotal(-1,cout); } }
+                if (ware.getOriginalPrice()*2>ware.getSellPrice()-ware.getPopular()){
+                Player.money +=ware.getSellPrice();
+                allWare.get(count).get(b).setTotal(-1,count); } }
                 else{
-                money +=ware.getSellPrice();
+                Player.money +=ware.getSellPrice();
                 building.get(0).setCustomer(-3);}
-                }while (a<(Math.random()* prestige)/4);
-                if (prestige>200)
+                }while (a<(Math.random()* Player.prestige)/4);
+                if (Player.prestige>200)
                 continue;
                 break;
             //称赞
             case 4:
-                if (prestige<200){
-                prestige++;}
+                if (Player.prestige<200){
+                Player.prestige++;}
                 else continue;
                 break;
             //不满
             case 5:
-                if (prestige>0)
-                prestige--;
+                if (Player.prestige>0)
+                Player.prestige--;
                 continue;
             //进店
             default:
@@ -99,7 +117,44 @@ public class GameTime extends TimerTask {
                 building.get(0).setCustomer(1);
                 if (building.get(0).getSalary()>0&&building.get(0).getCapacity()>3)
                 building.get(0).setCapacity(-3);
-                } } }while (false); } }
+                } } }while (false); }
+                setTime(this);
+    }
+
+    public void setTime(GameTime timeDate){
+        timeDate.setMinute(timeDate.getMinute()+2);
+        if (timeDate.getMinute() >= 60) {
+            timeDate.setMinute(0);
+            timeDate.setHour(timeDate.getHour()+1);
+            if (timeDate.getHour() >= 24) {
+                timeDate.setHour(7);
+                timeDate.setDay(timeDate.getDay()+1);
+                if (timeDate.getDay() > 25) {
+                    timeDate.setDay(1);
+                    investment();
+                    timeDate.setMonth(timeDate.getMonth()+1);
+                    if (timeDate.getMonth()> 4) {
+                        switch (timeDate.getMonth()) {
+                            case 1:
+                                season = "春季日";
+                                break;
+                            case 2:
+                                season = "夏季日";
+                                break;
+                            case 3:
+                                season = "秋季日";
+                                break;
+                            case 4:
+                                season = "冬季日";
+                        }
+                        timeDate.setMonth(1);
+                        timeDate.setYear(timeDate.getYear()+1);
+                    }
+                }
+            }
+        }
+        Game.setTimeView();
+    }
 
     public static boolean theft() {
     //偷窃
@@ -109,7 +164,7 @@ public class GameTime extends TimerTask {
             a++;
             for (Building allThings : building) {
                 i += allThings.getStrongLevel();}
-                if ((int) (Math.random() * i) < 5)
+                if ((int) (Math.random() * i) < 5&&allWare.get(a).size()>0)
                     allWare.get(a).get((int)(Math.random()* allWare.get(a).size())).setTotal(-1,a);
                 return true;
         }
@@ -125,64 +180,43 @@ public class GameTime extends TimerTask {
     }
 
     public int getHour() {
-        return ++hour;
-    }
-
-    public int getMinute() {
-        minute+=10;
-        return minute;
-    }
-
-    public int getDay() {
-        return ++day;
-    }
-
-    public int getMonth() {
-        return ++month;
-    }
-
-    public int getYear() {
-        return ++year;
+        return hour;
     }
 
     public void setHour(int hour) {
         this.hour = hour;
     }
 
+    public int getMinute() {
+        return minute;
+    }
+
     public void setMinute(int minute) {
         this.minute = minute;
+    }
+
+    public int getDay() {
+        return day;
     }
 
     public void setDay(int day) {
         this.day = day;
     }
 
+    public int getMonth() {
+        return month;
+    }
+
     public void setMonth(int month) {
         this.month = month;
     }
 
-    public void setYear() {
-        this.year++;
-    }
-
-    public int getmonth() {
-        return month;
-    }
-
-    public int getyear() {
+    public int getYear() {
         return year;
     }
 
-    public int gethour() {
-        return hour;
-    }
-
-    public int getday() {
-        return day;
-    }
-
-    public int getminute() {
-        return minute;
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public static void setCustomer() {
