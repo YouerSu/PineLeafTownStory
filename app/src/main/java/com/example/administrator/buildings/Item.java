@@ -19,7 +19,7 @@ public abstract class Item implements UIAdapter{
         this.total = total;
     }
 
-    public abstract void AffectedByTheCurrentSituation();
+    public abstract void affectedByTheCurrentSituation();
 
     public abstract void purchase();
 

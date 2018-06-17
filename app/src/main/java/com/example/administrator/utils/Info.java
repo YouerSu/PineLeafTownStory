@@ -30,4 +30,6 @@ public final class Info {
     public static final String loan = "loan";
     public static final String loanTime = "loanTime";
     public static final String coordinate = "coordinate";
+    public static final String ABILITY = "ability";
+    public static final String RISEPOTENTIAL = "risePotential";
 }

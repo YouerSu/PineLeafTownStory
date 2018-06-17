@@ -1,12 +1,13 @@
 package com.example.administrator.buildings;
 
 
-import com.example.administrator.utils.GameTime;
-import com.example.administrator.utils.UIAdapter;
 
-import java.util.ArrayList;
+import com.example.administrator.utils.GameTime;
+import com.example.administrator.utils.Info;
+
 import java.util.HashMap;
-import java.util.List;
+
+enum Career {StoresEmployee}
 
 public abstract class Employee{
     private String name;
@@ -14,21 +15,25 @@ public abstract class Employee{
     private int loyalty;
     private int ability;
     private int risePotential;
+    private Career career;
 
-    public Employee(String name, int salary, int loyalty, int ability, int risePotential) {
+    protected Employee(String name, int salary, int loyalty, int ability, int risePotential,Career career) {
         this.name = name;
         this.salary = salary;
         this.loyalty = loyalty;
         this.ability = ability;
         this.risePotential = risePotential;
+        this.career = career;
     }
 
     public abstract void profitableEvent();
 
     public abstract void disasterEvent();
 
-    public void saveDate(String name){
-
+    public void saveDate(String tableName){
+        GameTime.operatingSql(new String[]{
+        "insert into "+tableName+"("+Info.id+","+Info.NAME+","+Info.salary+","+Info.LOYALTY+","+Info.ABILITY+","+Info.RISEPOTENTIAL+") values("+ career.ordinal()+","+name+","+salary+","+loyalty+","+ability+","+risePotential+")",
+        });
     }
 
     public String getName() {

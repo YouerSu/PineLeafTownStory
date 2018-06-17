@@ -23,11 +23,16 @@ public class Building/*<A extends Employee,B extends Item>*/{
         this.facilitiesLevel = facilitiesLevel;
         this.capacity = capacity;
         this.customer = customer;
-        createNewBuilding();
     }
 
     private void createNewBuilding() {
-
+        GameTime.operatingSql(new String[]{
+        "insert into "+Info.BUILDING+"("+Info.NAME+","+Info.SECURITY+","+Info.FACILITIES+","+Info.capacity+","+Info.customer+") values("+name+","+securityLevel+","+facilitiesLevel+","+capacity+","+customer+")",
+        "create table if not exists "+name+"Employee"+"("+Info.id +" integer,"+Info.NAME +" text," +Info.salary+" integer,"+Info.LOYALTY +" integer,"+Info.ABILITY+" integer,"+Info.RISEPOTENTIAL+" integer)",
+        "create table if not exists "+name+"Item"+"("+Info.name +" integer,"+Info.total+" integer,"+Info.sellPrice+" integer)",
+        "DELETE FROM "+name+"Employee",
+        "DELETE FROM "+name+"Item"
+        });
     }
 
     public String getName() {
@@ -51,8 +56,7 @@ public class Building/*<A extends Employee,B extends Item>*/{
     }
 
     public void saveDate(){
-        clearSql(name+"Employee");
-        clearSql(name+"Item");
+        createNewBuilding();
         for (Employee employee:employees)
             employee.saveDate(name+"Employee");
         for (Item item:items)

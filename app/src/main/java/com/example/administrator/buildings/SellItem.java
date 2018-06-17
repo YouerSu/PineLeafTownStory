@@ -1,5 +1,8 @@
 package com.example.administrator.buildings;
 
+import com.example.administrator.utils.GameTime;
+import com.example.administrator.utils.Info;
+
 public class SellItem extends Item{
 
     private int sellPrice;
@@ -12,7 +15,7 @@ public class SellItem extends Item{
     }
 
     @Override
-    public void AffectedByTheCurrentSituation() {
+    public void affectedByTheCurrentSituation() {
 
     }
 
@@ -23,7 +26,10 @@ public class SellItem extends Item{
 
     @Override
     public void saveDate(String tableName) {
-
+        super.saveDate(tableName);
+        GameTime.operatingSql(new String[]{
+                "insert into "+tableName+" ("+ Info.sellPrice+") values ("+sellPrice+")"
+        });
     }
 
 
