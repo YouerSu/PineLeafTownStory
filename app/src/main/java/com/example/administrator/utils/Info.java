@@ -32,4 +32,6 @@ public final class Info {
     public static final String coordinate = "coordinate";
     public static final String ABILITY = "ability";
     public static final String RISEPOTENTIAL = "risePotential";
+    public static final String DIFFERENT_WORLD = "differentWorld";
+    public static final String PLACE_NAME = "松叶镇";
 }

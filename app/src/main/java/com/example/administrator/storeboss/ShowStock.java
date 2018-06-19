@@ -41,9 +41,9 @@ public class ShowStock extends AppCompatActivity {
         List<Map<String,Object>> listItem = new ArrayList<>();
         //不知道该怎么写,只好写了两边QWQ
         if (who==4){
-            for (int i =0;i<GameTime.cAndE.get(now).size();i++){
+            for (int i = 0; i<GameTime.buildings.get(now).size(); i++){
             Map<String,Object> item = new HashMap<>();
-            Building thisBuilding = GameTime.cAndE.get(now).get(i);
+            Building thisBuilding = GameTime.buildings.get(now).get(i);
             String name = thisBuilding.getstrangeName();
             String strong = "安保:"+thisBuilding.getStrongLevel();
             String price = "工资:"+thisBuilding.getSalary();
@@ -112,7 +112,7 @@ public class ShowStock extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int b) {
                         if (who==4)
-                            GameTime.cAndE.get(now).remove(i);
+                            GameTime.buildings.get(now).remove(i);
                         else
                             GameTime.allWare.get(now).remove(i);
                     }
@@ -123,7 +123,7 @@ public class ShowStock extends AppCompatActivity {
             }
         });
         TextView textView = findViewById(R.id.showVolume);
-        textView.setText("容量: "+ Item.getAllVolume(GameTime.allWare.get(now))+"/"+GameTime.cAndE.get(now).get(0).getCapacity());
+        textView.setText("容量: "+ Item.getAllVolume(GameTime.allWare.get(now))+"/"+GameTime.buildings.get(now).get(0).getCapacity());
     }
 
     private void setText(String s,int id) {

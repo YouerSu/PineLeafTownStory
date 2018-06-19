@@ -1,7 +1,7 @@
 package com.example.administrator.utils;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-
 import com.example.administrator.buildings.Building;
 import com.example.administrator.buildings.Item;
 import com.example.administrator.storeboss.Game;
@@ -10,30 +10,57 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 
-import static com.example.administrator.utils.Info.capacity;
-
-public class GameTime extends TimerTask {
+public class GameTime<T> extends TimerTask {
     //数据
     public static int totalOfBuilding = 0;
-    public static List<Building> cAndE = new ArrayList<>();
+    public static List<Building> buildings = new ArrayList<>();
     public static String season = "春季日";
     public static Sql info;
-    //如果有其他表示坐标方法就改类型(只要不是SQL存不了的就行),
-    public static Player<Integer> coordinate;
-
+    public static Player playerDate;
+    public static GameTime timeDate;
     //各类时间事件
-    public int hour;
-    public int minute;
-    public int day;
-    public int month;
-    public int year;
+    private int minute;
+    private int hour;
+    private int day;
+    private int month;
+    private int year;
+    //如果有其他表示坐标方法就改类型(只要不是SQL存不了的就行),
+    private T coordinate;
 
-    public GameTime(int minute,int hour,int day,int month,int year) {
+    public GameTime(int minute, int hour, int day, int month, int year) {
         this.minute = minute;
         this.hour = hour;
         this.day = day;
         this.month = month;
         this.year = year;
+    }
+
+    public static void saveAllDate(GameTime timeDate){
+        operatingSql(new String[]{"DELETE FROM "+Info.BUILDING});
+        for (Building building:buildings)
+        building.saveDate();
+        Player.saveDate();
+        timeDate.saveDate();
+    }
+
+    public static Cursor getCursor(String tableName) {
+        return info.getWritableDatabase().rawQuery("select * from "+tableName,null);
+    }
+
+    public void saveDate(){
+        operatingSql(new String[]{
+        "update "+Info.DIFFERENT_WORLD+" set "+Info.MINUTE+" = "+getMinute()+" "+Info.HOUR+" = "+getHour()+ " "+Info.DAY+" = "+getDay()+" "+Info.MONTH+" = "+getMonth()+ " "+Info.YEAR+" = "+getYear()+" "+Info.coordinate+" = "+coordinate+" where "+Info.MINUTE+/*异世界并不十分稳定(漏洞)*/" = "+minute
+        });
+    }
+
+    public static boolean getTimeDate(String placeName) {
+        SQLiteDatabase data = GameTime.info.getWritableDatabase();
+        Cursor iDate = data.query(Info.DIFFERENT_WORLD, null, Info.NAME + "=?", new String[]{placeName}, null, null, null);
+        timeDate = new GameTime<Integer>(iDate.getInt(iDate.getColumnIndex(Info.MINUTE)), iDate.getInt(iDate.getColumnIndex(Info.HOUR)), iDate.getInt(iDate.getColumnIndex(Info.DAY)), iDate.getInt(iDate.getColumnIndex(Info.MONTH)), iDate.getInt(iDate.getColumnIndex(Info.YEAR)));
+        timeDate.setCoordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
+        data.setTransactionSuccessful();
+        data.endTransaction();
+        return true;
     }
 
     //用于执行Sql语句;
@@ -52,7 +79,7 @@ public class GameTime extends TimerTask {
     public void run() {
         //NPC的行为
         int count = -1;
-    for (Building building: cAndE){
+    for (Building building: buildings){
         count++;
         lalala:
         do {
@@ -159,7 +186,7 @@ public class GameTime extends TimerTask {
     public static boolean theft() {
     //偷窃
         int a = 0;
-        for (List<Building>building: cAndE) {
+        for (List<Building>building: buildings) {
             int i = 0;
             a++;
             for (Building allThings : building) {
@@ -220,8 +247,15 @@ public class GameTime extends TimerTask {
     }
 
     public static void setCustomer() {
-        for (List<Building>building: cAndE){
-            building.get(0).setcustomer();
-        }
+        for (Building building:buildings)
+            building.setCustomer(0);
+    }
+
+    public T getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(T coordinate) {
+        this.coordinate = coordinate;
     }
 }

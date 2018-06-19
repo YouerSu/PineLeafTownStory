@@ -93,7 +93,7 @@ public class ShowBuy extends Activity {
             public void onItemClick(AdapterView<?> adapterView, View view, int which, long l) {
                 Log.i("yep", "buyItem: witch"+which);
                 final Map<String,Object> items = listItem.get(which);
-                if (howMany*(int)items.get("oPrice")<= Player.money&&howMany!=0&&GameTime.cAndE.get(now).get(0).getCapacity()>= Item.getAllVolume(GameTime.allWare.get(now))+howMany*(int)items.get("volume")){
+                if (howMany*(int)items.get("oPrice")<= Player.money&&howMany!=0&&GameTime.buildings.get(now).get(0).getCapacity()>= Item.getAllVolume(GameTime.allWare.get(now))+howMany*(int)items.get("volume")){
                     final AlertDialog alertDialog = new AlertDialog.Builder(ShowBuy.this).setCancelable(false).create();
                     alertDialog.show();
                     alertDialog.setContentView(R.layout.textin);
@@ -121,7 +121,7 @@ public class ShowBuy extends Activity {
                     });
                 }else {
                     StringBuffer s = new StringBuffer();
-                    if (GameTime.cAndE.get(now).get(0).getCapacity()<= Item.getAllVolume(GameTime.allWare.get(now))+howMany*(int)items.get("volume")) s.append("\n你已经没有足够的空间容下这么多物品了");
+                    if (GameTime.buildings.get(now).get(0).getCapacity()<= Item.getAllVolume(GameTime.allWare.get(now))+howMany*(int)items.get("volume")) s.append("\n你已经没有足够的空间容下这么多物品了");
                     if (howMany*(int)items.get("oPrice")>= Player.money) s.append("\n你没有足够的金钱");
                     if (howMany<=0)s.append("\n你没有选择需要的数量");
                     showText(s);}

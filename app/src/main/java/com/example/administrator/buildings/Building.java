@@ -1,6 +1,7 @@
 package com.example.administrator.buildings;
 
 
+
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.Info;
 
@@ -25,11 +26,17 @@ public class Building/*<A extends Employee,B extends Item>*/{
         this.customer = customer;
     }
 
+    //在GameTime类读取Building数据
+    public void getDate(){
+        employees = Employee.getDate(name+"Employee");
+        items = Item.getDate(name+"Item");
+    }
+
     private void createNewBuilding() {
         GameTime.operatingSql(new String[]{
         "insert into "+Info.BUILDING+"("+Info.NAME+","+Info.SECURITY+","+Info.FACILITIES+","+Info.capacity+","+Info.customer+") values("+name+","+securityLevel+","+facilitiesLevel+","+capacity+","+customer+")",
         "create table if not exists "+name+"Employee"+"("+Info.id +" integer,"+Info.NAME +" text," +Info.salary+" integer,"+Info.LOYALTY +" integer,"+Info.ABILITY+" integer,"+Info.RISEPOTENTIAL+" integer)",
-        "create table if not exists "+name+"Item"+"("+Info.name +" integer,"+Info.total+" integer,"+Info.sellPrice+" integer)",
+        "create table if not exists "+name+"Item"+"("+Info.id +" integer,"+Info.NAME +" text,"+Info.total+" integer,"+Info.sellPrice+" integer)",
         "DELETE FROM "+name+"Employee",
         "DELETE FROM "+name+"Item"
         });
@@ -61,6 +68,12 @@ public class Building/*<A extends Employee,B extends Item>*/{
             employee.saveDate(name+"Employee");
         for (Item item:items)
             item.saveDate(name+"Item");
+    }
+
+
+
+    public void setCustomer(int customer) {
+        this.customer = customer;
     }
 
     public static void clearSql(String tableName){

@@ -1,12 +1,12 @@
 package com.example.administrator.buildings;
 
-import java.util.HashMap;
-import java.util.List;
 
 public class StoresEmployee extends Employee {
 
+    protected static final int storesEmployee = 0;
+
     public StoresEmployee(String name, int salary, int loyalty, int ability, int risePotential) {
-        super(name, salary, loyalty, ability, risePotential, Career.StoresEmployee);
+        super(name, salary, loyalty, ability, risePotential,storesEmployee);
     }
 
     @Override

@@ -1,11 +1,8 @@
 package com.example.administrator.storeboss;
 
-import org.xmlpull.v1.XmlPullParserException;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.res.XmlResourceParser;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -23,18 +20,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.administrator.buildings.Building;
-import com.example.administrator.buildings.Item;
 import com.example.administrator.utils.Db;
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.MyPagerAdapter;
 import com.example.administrator.utils.Player;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 
@@ -66,37 +57,6 @@ public class Game extends AppCompatActivity {
 
     private void dayByDay() {
         //昼夜交替,显示一天的收获
-    }
-
-    public static void saveAllDate() {
-        //将所有数据存入数据库
-        SQLiteDatabase db = GameTime.info.getWritableDatabase();
-        db.beginTransaction();
-        ContentValues values = Player.savePlayerDate(db);
-        for (int count = 0; count < GameTime.totalOfBuilding; count++) {
-           Building.clearSql(Info.BUILDING);
-           Building.clearSql(Info.wareHouse+count);
-            for (int m = 0; m < GameTime.cAndE.get(count).size(); m++) {
-                values.clear();
-                values.put(Info.CLEVER, GameTime.cAndE.get(count).get(m).getClever());
-                values.put(Info.STRONG_LEVEL, GameTime.cAndE.get(count).get(m).getStrongLevel());
-                values.put(Info.capacity,GameTime.cAndE.get(count).get(m).getCapacity());
-                values.put(Info.LOYALTY, GameTime.cAndE.get(count).get(m).getLoyalty());
-                values.put(Info.salary, GameTime.cAndE.get(count).get(m).getSalary());
-                values.put(Info.customer, GameTime.cAndE.get(count).get(m).getCustomer());
-                db.insert(Info.STAFF_AND_SHOP + count,null ,values);
-            }
-                for (int m = 0; m < GameTime.allWare.get(count).size(); m++) {
-                values.clear();
-                values.put(Info.NAME, GameTime.allWare.get(count).get(m).getname());
-                values.put(Info.sellPrice, GameTime.allWare.get(count).get(m).getSellPrice());
-                values.put(Info.total, GameTime.allWare.get(count).get(m).getTotal());
-                db.insert(Info.wareHouse + count,null ,values);
-            }}
-        db.setTransactionSuccessful();
-        db.endTransaction();
-        db.close();
-
     }
 
     @Override
@@ -135,15 +95,8 @@ public class Game extends AppCompatActivity {
 
     public void getPlayerDate() {
 //获取玩家信息
-        SQLiteDatabase data = GameTime.info.getWritableDatabase();
-        Cursor iDate;
-        iDate = data.query(Info.PLAYER, null, Info.id + "=?", new String[]{"1"}, null, null, null);
-        if (iDate == null) return;
-            Player.name = iDate.getString(iDate.getColumnIndex(Info.NAME));
-            Player.money = iDate.getInt(iDate.getColumnIndex(Info.MONEY));
-            Player.prestige = iDate.getInt(iDate.getColumnIndex(Info.PRESTIGE));
-            pager.setCurrentItem(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
-            Player.timeDate = new GameTime(iDate.getInt(iDate.getColumnIndex(Info.MINUTE)), iDate.getInt(iDate.getColumnIndex(Info.HOUR)), iDate.getInt(iDate.getColumnIndex(Info.DAY)), iDate.getInt(iDate.getColumnIndex(Info.MONTH)), iDate.getInt(iDate.getColumnIndex(Info.YEAR)));
+
+
         if (!Player.name.equals("啦啦啦,我是没有名字的傻瓜")) return;
             showDialog("嘿,啥子信心` ", "aa");
             showDialog("测试测试", "bb");
@@ -198,86 +151,7 @@ public class Game extends AppCompatActivity {
         playerView.setText("云团:" + Player.money + "      声望:" + Player.prestige);
     }
 
-    public void getBuildingDate(){
-//        获取建筑信息
-        HashMap<String,Item> item = new HashMap<>();
-        XmlResourceParser xrp = getResources().getXml(R.xml.items);
-        try {
-            while (xrp.getEventType()!=XmlResourceParser.END_DOCUMENT){
-            if (xrp.getEventType() == XmlResourceParser.START_TAG){
-                String tagName = xrp.getName();
-                if (tagName.equals("item")){
-                    int volume = Integer.parseInt(xrp.getAttributeValue(2));
-                    int price = Integer.parseInt(xrp.getAttributeValue(1));
-                    int popular = Integer.parseInt(xrp.getAttributeValue(0));
-                    int whenPopular = Integer.parseInt(xrp.getAttributeValue(3));
-                    item.put(xrp.nextText(),new Item(volume,price,popular,whenPopular));
-                    //int volume, int oPrice,int popular,int whenPopular
-                }
-            }
-            xrp.next();
-            }
 
-
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        SQLiteDatabase data = GameTime.info.getWritableDatabase();
-        Cursor iDate = data.query(Info.STAFF_AND_SHOP + GameTime.totalOfBuilding, null, Info.salary + ">?", new String[]{"-1"}, null, null, null);
-        try {
-            //用异常来跳出循环
-            while (true) {
-                iDate = data.query(Info.STAFF_AND_SHOP + GameTime.totalOfBuilding, null, Info.salary + ">?", new String[]{"-1"}, null, null, null);
-                List<Building> individual = new ArrayList<>();
-                while (iDate.moveToNext()) {
-                    String name = iDate.getString(iDate.getColumnIndex(Info.NAME));
-                    int strongLevel = iDate.getInt(iDate.getColumnIndex(Info.STRONG_LEVEL));
-                    int clever = iDate.getInt(iDate.getColumnIndex(Info.CLEVER));
-                    int salary = iDate.getInt(iDate.getColumnIndex(Info.salary));
-                    int loyalty = iDate.getInt(iDate.getColumnIndex(Info.LOYALTY));
-                    int capacity = iDate.getInt(iDate.getColumnIndex(Info.capacity));
-                    int customer = iDate.getInt(iDate.getColumnIndex(Info.customer));
-                    individual.add(new Building(loyalty, name, strongLevel, clever, salary, capacity,customer));
-                    if (capacity>0){
-                    titleList.add(name);
-                    if (capacity > 500) {
-                        View view = View.inflate(this, R.layout.shop, null);
-                        pagerList.add(view);
-                    }
-
-                    if (capacity < 500 && salary > 0) {
-                        View view = View.inflate(this, R.layout.hotel, null);
-                        pagerList.add(view);
-                    }
-
-                    if (capacity < 500 && salary == 0) {
-                        View view = View.inflate(this, R.layout.restaurant, null);
-                        pagerList.add(view);
-                    }}
-
-                }
-                GameTime.cAndE.add(individual);
-                iDate = data.query(Info.wareHouse + GameTime.totalOfBuilding, null, null, null, null, null, null);
-                List<Item> items = new ArrayList<>();
-                while (iDate.moveToNext()) {
-                    String name = iDate.getString(iDate.getColumnIndex(Info.NAME));
-                    int sellPrice = iDate.getInt(iDate.getColumnIndex(Info.sellPrice));
-                    int total = iDate.getInt(iDate.getColumnIndex(Info.total));
-                    items.add(new Item(name, item.get(name).getVolume(),item.get(name).getOriginalPrice(), sellPrice, item.get(name).getPopular(),total,item.get(name).getWhenPopular()));
-                }
-                GameTime.allWare.add(items);
-                GameTime.totalOfBuilding++;
-
-            }
-        } catch (Exception a) {
-        }
-        data.close();
-        iDate.close();
-
-    }
 
     public void setText() {
         //加载适配器
@@ -391,11 +265,11 @@ public class Game extends AppCompatActivity {
                 intent.setClass(this,ShowActivity.class);
                 break;
             case R.id.expansion:
-                if (Player.money>= GameTime.cAndE.get(pager.getCurrentItem()).get(0).getCapacity()*2){
-                    GameTime.cAndE.get(pager.getCurrentItem()).get(0).setCapacity(GameTime.cAndE.get(pager.getCurrentItem()).get(0).getCapacity()/2);
+                if (Player.money>= GameTime.buildings.get(pager.getCurrentItem()).get(0).getCapacity()*2){
+                    GameTime.buildings.get(pager.getCurrentItem()).get(0).setCapacity(GameTime.buildings.get(pager.getCurrentItem()).get(0).getCapacity()/2);
                     SQLiteDatabase db = GameTime.info.getWritableDatabase();
                     ContentValues values = new ContentValues();
-                    values.put(Info.capacity, GameTime.cAndE.get(pager.getCurrentItem()).get(0).getCapacity());
+                    values.put(Info.capacity, GameTime.buildings.get(pager.getCurrentItem()).get(0).getCapacity());
                     db.update(Info.STAFF_AND_SHOP + pager.getCurrentItem(), values, Info.id + "=?", new String[]{String.valueOf(0)});
                     db.close();}
                 else Toast.makeText(this,"你没有足够的金钱",Toast.LENGTH_SHORT).show();

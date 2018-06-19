@@ -1,31 +1,23 @@
 package com.example.administrator.utils;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class Player<T>{
+public class Player{
 
     public static int money;
     public static int prestige;
     public static String name;
     public static int left;
     public static int deadline;
-    public static GameTime timeDate;
-    //将来扩展多重空间坐标用
-    private T coordinate;
+    //将来扩展异空间用
 
-    public Player(T coordinate) {
-        this.coordinate = coordinate;
-    }
 
-    public void savePlayerDate() {
+    public static void saveDate() {
         GameTime.operatingSql(new String[]
         {
-        "update "+Info.PLAYER+" set "+Info.MONEY+" = "+money+" "+Info.PRESTIGE+" = "+prestige+
-        " "+Info.MINUTE+" = "+timeDate.getMinute()+" "+Info.HOUR+" = "+timeDate.getHour()+
-        " "+Info.DAY+" = "+timeDate.getDay()+" "+Info.MONTH+" = "+timeDate.getMonth()+
-        " "+Info.YEAR+" = "+timeDate.getYear()+" "+Info.coordinate+" = "+coordinate+
-        " where " +Info.NAME+" = "+name
+        "update "+Info.PLAYER+" set "+Info.MONEY+" = "+money+" "+Info.PRESTIGE+" = "+prestige+" where "+Info.NAME+" = "+name
         });
 /*      SQLiteDatabase db = info.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -40,12 +32,18 @@ public class Player<T>{
 
     }
 
-    public T getCoordinate() {
-        return coordinate;
-    }
 
-    public void setCoordinate(T coordinate) {
-        this.coordinate = coordinate;
+    public static int getPlayerDate() {
+        Cursor iDate;
+        iDate = GameTime.info.getWritableDatabase().rawQuery("select * from "+Info.PLAYER,null);
+        if (iDate == null) return -1;
+        name = iDate.getString(iDate.getColumnIndex(Info.NAME));
+        money = iDate.getInt(iDate.getColumnIndex(Info.MONEY));
+        prestige = iDate.getInt(iDate.getColumnIndex(Info.PRESTIGE));
+        left = iDate.getInt(iDate.getColumnIndex(Info.loan));
+        deadline = iDate.getInt(iDate.getColumnIndex(Info.loanTime));
+        if (name.equals("啦啦啦,我是没有名字的傻瓜")) return 1;
+        return 0;
     }
 }
 

@@ -2,12 +2,15 @@ package com.example.administrator.buildings;
 
 
 
+import android.database.Cursor;
+
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.Info;
-
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
-enum Career {StoresEmployee}
+
 
 public abstract class Employee{
     private String name;
@@ -15,9 +18,9 @@ public abstract class Employee{
     private int loyalty;
     private int ability;
     private int risePotential;
-    private Career career;
+    private int career;
 
-    protected Employee(String name, int salary, int loyalty, int ability, int risePotential,Career career) {
+    protected Employee(String name, int salary, int loyalty, int ability, int risePotential,int career) {
         this.name = name;
         this.salary = salary;
         this.loyalty = loyalty;
@@ -32,7 +35,7 @@ public abstract class Employee{
 
     public void saveDate(String tableName){
         GameTime.operatingSql(new String[]{
-        "insert into "+tableName+"("+Info.id+","+Info.NAME+","+Info.salary+","+Info.LOYALTY+","+Info.ABILITY+","+Info.RISEPOTENTIAL+") values("+ career.ordinal()+","+name+","+salary+","+loyalty+","+ability+","+risePotential+")",
+        "insert into "+tableName+"("+Info.id+","+Info.NAME+","+Info.salary+","+Info.LOYALTY+","+Info.ABILITY+","+Info.RISEPOTENTIAL+") values("+ career+","+name+","+salary+","+loyalty+","+ability+","+risePotential+")",
         });
     }
 
@@ -63,5 +66,21 @@ public abstract class Employee{
         date.put("l2","能力:"+ability);
         date.put("l3","好感:"+loyalty);
         return date;
+    }
+
+    public static List<Employee> getDate(String tableName) {
+        List<Employee> list = new ArrayList<>();
+        Cursor iDate = GameTime.getCursor(tableName);
+        while (iDate.moveToNext()){
+            Employee employee = null;
+            switch (iDate.getInt(iDate.getColumnIndex(Info.id))){
+                case StoresEmployee.storesEmployee:
+                    employee = new StoresEmployee(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.salary)),iDate.getInt(iDate.getColumnIndex(Info.LOYALTY)),iDate.getInt(iDate.getColumnIndex(Info.ABILITY)),iDate.getInt(iDate.getColumnIndex(Info.RISEPOTENTIAL)));
+                    break;
+            }
+            list.add(employee);
+        }
+        iDate.close();
+        return list;
     }
 }
