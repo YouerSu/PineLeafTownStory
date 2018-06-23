@@ -17,7 +17,6 @@ public class GameTime<T> extends TimerTask {
     public static String season = "春季日";
     public static Sql info;
     public static Player playerDate;
-    public static GameTime timeDate;
     //各类时间事件
     private int minute;
     private int hour;
@@ -28,12 +27,7 @@ public class GameTime<T> extends TimerTask {
     private T coordinate;
     private GameUI gameUI;
 
-    public <A extends GameUI>GameTime(int minute, int hour, int day, int month, int year,A gameUI) {
-        this.minute = minute;
-        this.hour = hour;
-        this.day = day;
-        this.month = month;
-        this.year = year;
+    public <A extends GameUI>GameTime(A gameUI) {
         this.gameUI = gameUI;
     }
 
@@ -67,11 +61,15 @@ public class GameTime<T> extends TimerTask {
         });
     }
 
-    public static boolean getTimeDate(String placeName) {
+    public boolean getTimeDate(String placeName) {
         SQLiteDatabase data = GameTime.info.getWritableDatabase();
         Cursor iDate = data.query(Info.DIFFERENT_WORLD, null, Info.NAME + "=?", new String[]{placeName}, null, null, null);
-        timeDate = new GameTime<Integer>(iDate.getInt(iDate.getColumnIndex(Info.MINUTE)), iDate.getInt(iDate.getColumnIndex(Info.HOUR)), iDate.getInt(iDate.getColumnIndex(Info.DAY)), iDate.getInt(iDate.getColumnIndex(Info.MONTH)), iDate.getInt(iDate.getColumnIndex(Info.YEAR)));
-        timeDate.setCoordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
+        setMinute(iDate.getInt(iDate.getColumnIndex(Info.MINUTE)));
+        setHour(iDate.getInt(iDate.getColumnIndex(Info.HOUR)));
+        setDay(iDate.getInt(iDate.getColumnIndex(Info.DAY)));
+        setMonth(iDate.getInt(iDate.getColumnIndex(Info.MONTH)));
+        setYear(iDate.getInt(iDate.getColumnIndex(Info.YEAR)));
+        setCoordinate((T) iDate.getString(iDate.getColumnIndex(Info.coordinate)));
         data.setTransactionSuccessful();
         data.endTransaction();
         return true;

@@ -1,9 +1,7 @@
 package com.example.administrator.storeboss;
 
 import android.app.AlertDialog;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,12 +25,13 @@ import com.example.administrator.utils.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.MyPagerAdapter;
 import com.example.administrator.utils.OwnName;
-import com.example.administrator.utils.Player;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
 public class Game extends AppCompatActivity implements GameUI{
+    public static GameTime timeDate;
     private static ViewPager pager;
     private static List<View> pagerList = new ArrayList<>();
     private static List<String> titleList = new ArrayList<>();
@@ -43,6 +42,8 @@ public class Game extends AppCompatActivity implements GameUI{
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        timeDate = new GameTime(this);
+        timeDate.getTimeDate(Info.PLACE_NAME);
         setContentView(R.layout.activity_game);
         GameTime.info = Db.setInfo(this);
         getDefaultBuilding();
@@ -51,7 +52,7 @@ public class Game extends AppCompatActivity implements GameUI{
         timeView = findViewById(R.id.clock);
         playerView = findViewById(R.id.player);
         Timer timer = new Timer();
-        timer.schedule(GameTime.timeDate, 3000L, 2000L);
+        timer.schedule(timeDate, 3000L, 2000L);
     }
 
     public void setBuiling(){
@@ -272,7 +273,7 @@ public class Game extends AppCompatActivity implements GameUI{
 
     @Override
     public void refreshUI() {
-    timeView.setText("第" + GameTime.timeDate.getYear() + "年     " + GameTime.season + "第" + GameTime.timeDate.getDay() + "天    " + GameTime.timeDate.getHour() + ":" + String.format("%02d", GameTime.timeDate.getMinute()));
+    timeView.setText("第" + timeDate.getYear() + "年     " + GameTime.season + "第" + timeDate.getDay() + "天    " + timeDate.getHour() + ":" + String.format("%02d", timeDate.getMinute()));
     playerView.setText("云团:" + GameTime.playerDate.getMoney() + "      声望:" + GameTime.playerDate.getPrestige());
     }
 }
