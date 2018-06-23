@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+//创建新的类型来这登记一下 XD
 enum Article {Undeveloped,SellItem}
 
 public abstract class Item implements ShowAdapter {

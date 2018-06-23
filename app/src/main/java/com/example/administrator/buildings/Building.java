@@ -31,7 +31,7 @@ public class Building implements OwnName{
         items = Item.getDate(name + "Item");
     }
 
-    private void createNewBuilding() {
+    public void createNewBuilding() {
         GameTime.operatingSql(new String[]{
                 "insert into " + Info.BUILDING + "(" + Info.NAME + "," + Info.SECURITY + "," + Info.FACILITIES + "," + Info.capacity + "," + Info.customer + ") values(" + name + "," + securityLevel + "," + facilitiesLevel + "," + capacity + "," + customer + ")",
                 "create table if not exists " + name + "Employee" + "(" + Info.id + " text," + Info.NAME + " text," + Info.salary + " integer," + Info.LOYALTY + " integer," + Info.ABILITY + " integer," + Info.RISEPOTENTIAL + " integer)",
@@ -86,5 +86,9 @@ public class Building implements OwnName{
     public void work(Item item) {
         //找合适的人工作
         for (int i = 0; i < employees.size()||!employees.get(i).work(item);i++) ;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 }

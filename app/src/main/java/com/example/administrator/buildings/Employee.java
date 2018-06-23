@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
+//创建新的类型来这登记一下 XD
 enum Career{StoresEmployee}
 
 public abstract class Employee implements OwnName{
