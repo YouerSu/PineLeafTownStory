@@ -55,8 +55,15 @@ public class Game extends AppCompatActivity implements GameUI{
         timer.schedule(timeDate, 3000L, 2000L);
     }
 
+    @Override
+    public boolean trueOrFalseDialogue(String message) {
+        AlertDialog alertDialog = getDialog(R.layout.crystal);
+        alertDialog.setTitle(message);
+        return false;
+    }
+
     public void setBuiling(){
-        for (Building building:GameTime.buildings){
+        for (Building building:timeDate.buildings){
         showBuilding(building.getName(),R.layout.building);
         }
     }
@@ -86,11 +93,13 @@ public class Game extends AppCompatActivity implements GameUI{
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         window.setGravity(Gravity.BOTTOM);
         TextView next;
-        if (message.substring(0,message.indexOf(":")).equals(GameTime.playerDate.getName())) {//玩家对话框
+        if (message.substring(0,message.indexOf(":")).equals(GameTime.playerDate.getName())) {
+            //玩家对话框
             next = window.findViewById(R.id.pmessage);
             ImageView npc = window.findViewById(R.id.player);
             npc.setImageResource(R.drawable.ic_launcher_background);
-        } else {//NPC对话框
+        } else {
+            //NPC对话框
             next = window.findViewById(R.id.message);
             ImageView npc = window.findViewById(R.id.NPC);
             switch (message.substring(0,message.indexOf(":"))) {
@@ -119,19 +128,24 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        saveDate();
+        super.onDestroy();
+    }
+
+    private static void saveDate(){
+        timeDate.saveDate();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if ((System.currentTimeMillis() - mExitTime) > 1500) {
-
                 Toast.makeText(this, "你...确定要离去吗?", Toast.LENGTH_SHORT).show();
                 mExitTime = System.currentTimeMillis();
             } else {
                 finish();
+                saveDate();
             }
             return true;
         }
@@ -165,14 +179,7 @@ public class Game extends AppCompatActivity implements GameUI{
         return alertDialog;
     }
 
-    public static void setTimeView(){
 
-        setPlayerText();
-    }
-
-    public static void setPlayerText() {
-        playerView.setText("");
-    }
 
 
 
@@ -195,8 +202,8 @@ public class Game extends AppCompatActivity implements GameUI{
 
     private void createBuilding() {
 
-        if (GameTime.playerDate.getMoney()>= 20000) {
-            GameTime.playerDate.setMoney(GameTime.playerDate.getMoney()-20000);
+        if (GameTime.playerDate.getMoney()>= Info.BUILDING_PRICE) {
+            GameTime.playerDate.setMoney(GameTime.playerDate.getMoney()-Info.BUILDING_PRICE);
             new Building("建筑",1,1,1,1).createNewBuilding();
             dialogueBox("ada:等你下次回来我就帮你修好");
         } else
@@ -236,8 +243,8 @@ public class Game extends AppCompatActivity implements GameUI{
                 intent.setClass(this,ShowActivity.class);
                 break;
             case R.id.expansion:
-                if (GameTime.playerDate.getMoney()>= GameTime.buildings.get(pager.getCurrentItem()).getCapacity()*2){
-                    GameTime.buildings.get(pager.getCurrentItem()).setCapacity(GameTime.buildings.get(pager.getCurrentItem()).getCapacity()+GameTime.buildings.get(pager.getCurrentItem()).getCapacity()/3);
+                if (GameTime.playerDate.getMoney()>= timeDate.buildings.get(pager.getCurrentItem()).getCapacity()*2){
+                    timeDate.buildings.get(pager.getCurrentItem()).setCapacity(timeDate.buildings.get(pager.getCurrentItem()).getCapacity()+timeDate.buildings.get(pager.getCurrentItem()).getCapacity()/3);
                     }
                 else Toast.makeText(this,"你没有足够的金钱",Toast.LENGTH_SHORT).show();
                 return;
@@ -273,7 +280,21 @@ public class Game extends AppCompatActivity implements GameUI{
 
     @Override
     public void refreshUI() {
-    timeView.setText("第" + timeDate.getYear() + "年     " + GameTime.season + "第" + timeDate.getDay() + "天    " + timeDate.getHour() + ":" + String.format("%02d", timeDate.getMinute()));
+        String season = null;
+        switch (timeDate.getMonth()) {
+            case 1:
+                season = "春季日";
+                break;
+            case 2:
+                season = "夏季日";
+                break;
+            case 3:
+                season = "秋季日";
+                break;
+            case 4:
+                season = "冬季日";
+        }
+    timeView.setText("第" + timeDate.getYear() + "年     " + season + "第" + timeDate.getDay() + "天    " + timeDate.getHour() + ":" + String.format("%02d", timeDate.getMinute()));
     playerView.setText("云团:" + GameTime.playerDate.getMoney() + "      声望:" + GameTime.playerDate.getPrestige());
     }
 }

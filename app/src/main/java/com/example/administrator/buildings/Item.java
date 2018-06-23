@@ -1,7 +1,10 @@
 package com.example.administrator.buildings;
 
 import android.database.Cursor;
+
+import com.example.administrator.utils.ClickListener;
 import com.example.administrator.utils.GameTime;
+import com.example.administrator.utils.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.ShowAdapter;
 import org.dom4j.Document;
@@ -17,7 +20,7 @@ import java.util.List;
 //创建新的类型来这登记一下 XD
 enum Article {Undeveloped,SellItem}
 
-public abstract class Item implements ShowAdapter {
+public abstract class Item implements ShowAdapter,ClickListener {
     String name;
     int volume;
     int originalPrice;
@@ -50,6 +53,13 @@ public abstract class Item implements ShowAdapter {
     public abstract void saveDate(String tableName);
 
     public abstract void setType(HashMap<String,Item> articles);
+
+    @Override
+    public void clickListener(GameUI gameUI){
+        if (gameUI.trueOrFalseDialogue("将"+name+"从你的仓库移除")){
+            gameUI.dialogueBox("移除成功");
+        }
+    }
 
     public void saveSuperDate(String tableName){
     //渣渣设计,速度极慢

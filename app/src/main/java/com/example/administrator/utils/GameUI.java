@@ -12,6 +12,6 @@ public interface GameUI {
 
     void dialogueBox(String message);
 
-
+    boolean trueOrFalseDialogue(String message);
 
 }

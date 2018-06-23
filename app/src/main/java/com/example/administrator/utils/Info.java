@@ -34,4 +34,5 @@ public final class Info {
     public static final String RISEPOTENTIAL = "risePotential";
     public static final String DIFFERENT_WORLD = "differentWorld";
     public static final String PLACE_NAME = "松叶镇";
+    public static final int BUILDING_PRICE = 20000;
 }
