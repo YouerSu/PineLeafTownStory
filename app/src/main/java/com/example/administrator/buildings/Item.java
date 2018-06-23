@@ -3,33 +3,36 @@ package com.example.administrator.buildings;
 import android.database.Cursor;
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.Info;
-import com.example.administrator.utils.UIAdapter;
-
+import com.example.administrator.utils.ShowAdapter;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+enum Article {Undeveloped,SellItem}
 
-public abstract class Item implements UIAdapter{
+public abstract class Item implements ShowAdapter {
     String name;
     int volume;
     int originalPrice;
     int total;
-    int article;
+    Article article;
 
-    public Item(String name, int volume, int originalPrice, int total, int article) {
+    public Item(String name, int volume, int originalPrice, int total, Article article) {
         this.name = name;
         this.volume = volume;
         this.originalPrice = originalPrice;
         this.total = total;
         this.article = article;
+    }
+
+    public static Article[] getArticle() {
+        return Article.values();
     }
 
     public Item(){}
@@ -43,13 +46,16 @@ public abstract class Item implements UIAdapter{
 
     public abstract void setType(Cursor cursor);
 
+    public abstract void saveDate(String tableName);
+
     public abstract void setType(HashMap<String,Item> articles);
 
-    public void saveDate(String tableName){
+    public void saveSuperDate(String tableName){
     //渣渣设计,速度极慢
       GameTime.operatingSql(new String[]{
-      "insert into "+tableName+" ("+Info.id+","+Info.NAME+","+Info.total+") values ("+article+","+name+","+total+")"
+      "insert into "+tableName+" ("+Info.id+","+Info.NAME+","+Info.total+") values ("+article.name()+","+name+","+total+")"
         });
+      saveDate(tableName);
     }
 
     public String getName() {
@@ -91,15 +97,15 @@ public abstract class Item implements UIAdapter{
         HashMap<String,Item> items = new HashMap<>();
         SAXReader reader = new SAXReader();
         try {
-            Document doc = reader.read(new File(/***/url));
+            Document doc = reader.read(new File(url));
             Element root =  doc.getRootElement();
             for (Iterator<Element> it = root.elementIterator("item"); it.hasNext();) {
                 Element item = it.next();
                 Item article = null;
                 /**每次有新类型...我没想到更好的办法..*/
-                switch (Integer.valueOf(item.elementText("type"))){
-                    case -1:continue;
-                    case SellItem.sellItem: article = new SellItem();   break;
+                switch (Article.valueOf(item.elementText("type"))){
+                    case Undeveloped: continue;
+                    case SellItem: article = new SellItem();   break;
 
                 }
                 article.setName(item.elementText("name"));
@@ -120,16 +126,16 @@ public abstract class Item implements UIAdapter{
         while (iDate.moveToNext()){
             HashMap<String,Item> articles = null;
             Item article = null;
-            switch (iDate.getInt(iDate.getColumnIndex(Info.id))){
-                /**同上...感觉这两方法一模一样...*/
-                case  SellItem.sellItem:
+            switch (Article.valueOf(iDate.getString(iDate.getColumnIndex(Info.id)))){
+                /**同上...感觉这两方法一模一样...感觉游戏出来要卡死...*/
+                case  SellItem:
                     articles = getAllItems("res\\xml\\sell_items.xml");
                     article = new SellItem();
                     break;
             }
         article.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
         article.setTotal(iDate.getInt(iDate.getColumnIndex(Info.total)));
-        article.setVolume(iDate.getInt(iDate.getColumnIndex(Info.total)));
+        article.setVolume(articles.get(article.getName()).getVolume());
         article.setType(iDate);
         article.setType(articles);
         }

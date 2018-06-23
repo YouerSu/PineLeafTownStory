@@ -13,10 +13,9 @@ public class SellItem extends Item{
 
     private int sellPrice;
     private int popular;
-    protected static final int sellItem = 0;
 
     public SellItem(String name, int volume, int originalPrice, int total, int sellPrice, int popular) {
-        super(name, volume, originalPrice, total, sellItem);
+        super(name, volume, originalPrice, total, Article.SellItem);
         this.sellPrice = sellPrice;
         this.popular = popular;
     }
@@ -52,7 +51,6 @@ public class SellItem extends Item{
 
     @Override
     public void saveDate(String tableName) {
-        super.saveDate(tableName);
         GameTime.operatingSql(new String[]{
                 "insert into "+tableName+" ("+ Info.sellPrice+") values("+sellPrice+")"
         });

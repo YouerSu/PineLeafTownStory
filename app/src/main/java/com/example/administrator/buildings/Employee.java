@@ -1,26 +1,26 @@
 package com.example.administrator.buildings;
 
-
-
 import android.database.Cursor;
-
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.Info;
+import com.example.administrator.utils.OwnName;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
+enum Career{StoresEmployee}
 
-public abstract class Employee{
+public abstract class Employee implements OwnName{
     private String name;
     private int salary;
     private int loyalty;
     private int ability;
     private int risePotential;
-    private int career;
+    private Career career;
 
-    protected Employee(String name, int salary, int loyalty, int ability, int risePotential,int career) {
+    protected Employee(String name, int salary, int loyalty, int ability, int risePotential,Career career) {
         this.name = name;
         this.salary = salary;
         this.loyalty = loyalty;
@@ -29,14 +29,21 @@ public abstract class Employee{
         this.career = career;
     }
 
-    public abstract void profitableEvent();
+    public abstract boolean work(Item item);
 
     public abstract void disasterEvent();
 
-    public void saveDate(String tableName){
+    public abstract void saveDate(String tableName);
+
+    public void wages(){
+        GameTime.playerDate.setMoney(GameTime.playerDate.getMoney()-getSalary());
+    }
+
+    public void saveSuperDate(String tableName){
         GameTime.operatingSql(new String[]{
-        "insert into "+tableName+"("+Info.id+","+Info.NAME+","+Info.salary+","+Info.LOYALTY+","+Info.ABILITY+","+Info.RISEPOTENTIAL+") values("+ career+","+name+","+salary+","+loyalty+","+ability+","+risePotential+")",
+        "insert into "+tableName+"("+Info.id+","+Info.NAME+","+Info.salary+","+Info.LOYALTY+","+Info.ABILITY+","+Info.RISEPOTENTIAL+") values("+ career.name()+","+name+","+salary+","+loyalty+","+ability+","+risePotential+")",
         });
+        saveDate(tableName);
     }
 
     public String getName() {
@@ -73,8 +80,8 @@ public abstract class Employee{
         Cursor iDate = GameTime.getCursor(tableName);
         while (iDate.moveToNext()){
             Employee employee = null;
-            switch (iDate.getInt(iDate.getColumnIndex(Info.id))){
-                case StoresEmployee.storesEmployee:
+            switch (Career.valueOf(iDate.getString(iDate.getColumnIndex(Info.id)))){
+                case StoresEmployee:
                     employee = new StoresEmployee(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.salary)),iDate.getInt(iDate.getColumnIndex(Info.LOYALTY)),iDate.getInt(iDate.getColumnIndex(Info.ABILITY)),iDate.getInt(iDate.getColumnIndex(Info.RISEPOTENTIAL)));
                     break;
             }

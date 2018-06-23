@@ -17,19 +17,21 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.example.administrator.buildings.Building;
 import com.example.administrator.utils.Db;
 import com.example.administrator.utils.GameTime;
+import com.example.administrator.utils.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.MyPagerAdapter;
+import com.example.administrator.utils.OwnName;
 import com.example.administrator.utils.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 
-public class Game extends AppCompatActivity {
+public class Game extends AppCompatActivity implements GameUI{
     private static ViewPager pager;
     private static List<View> pagerList = new ArrayList<>();
     private static List<String> titleList = new ArrayList<>();
@@ -50,13 +52,36 @@ public class Game extends AppCompatActivity {
         timeView = findViewById(R.id.clock);
         playerView = findViewById(R.id.player);
         Timer timer = new Timer();
-        timer.schedule(Player.timeDate, 3000L, 2000L);
+        timer.schedule(GameTime.timeDate, 3000L, 2000L);
     }
 
+    public static void setBuiling(){
+        for (Building building:GameTime.buildings){
+            setBuilding(building.getName(),R.layout.building);
+        }
+    }
 
-
-    private void dayByDay() {
+    public void dayHarvest() {
         //昼夜交替,显示一天的收获
+
+    }
+
+    @Override
+    public void reName(final OwnName item) {
+        AlertDialog alertDialog = getInputDialog("请输入新名称");
+        Window window = alertDialog.getWindow();
+        final EditText editText = window.findViewById(R.id.tname);
+        window.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                item.setName(editText.getText().toString());
+            }
+        });
+    }
+
+    @Override
+    public void dialogueBox(String message) {
+
     }
 
     @Override
@@ -87,7 +112,7 @@ public class Game extends AppCompatActivity {
         setBuilding("洞窟",R.layout.cave);
     }
 
-    private void setBuilding(String s,int a){
+    private static void setBuilding(String s,int a){
         titleList.add(s);
         View view = View.inflate(this, a, null);
         pagerList.add(view);
@@ -98,8 +123,8 @@ public class Game extends AppCompatActivity {
 
 
         if (!Player.name.equals("啦啦啦,我是没有名字的傻瓜")) return;
-            showDialog("嘿,啥子信心` ", "aa");
-            showDialog("测试测试", "bb");
+            getDialog("嘿,啥子信心` ", "aa");
+            getDialog("测试测试", "bb");
             showTextDialog("我为你准备了一家商店,你准备叫他什么?", 2);
             showTextDialog("你还记得,你的名字吗?",1);
             iDate.close();
@@ -108,47 +133,26 @@ public class Game extends AppCompatActivity {
 
     }
 
-    private void showTextDialog(final String s, final int i) {
-        final AlertDialog alertDialog = new AlertDialog.Builder(this).setCancelable(false).create();
-        alertDialog.show();
-        alertDialog.setContentView(R.layout.textin);
+    private AlertDialog getInputDialog(String text) {
+        AlertDialog alertDialog = getDialog(R.layout.textin);
         Window window = alertDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         window.setGravity(Gravity.CENTER);
         final EditText editText = window.findViewById(R.id.tname);
-        SpannableString ss = new SpannableString(s);
+        SpannableString ss = new SpannableString(text);
         AbsoluteSizeSpan ass = new AbsoluteSizeSpan(15,true);
         ss.setSpan(ass,0,ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         editText.setHint(ss);
-        window.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String string = editText.getText().toString();
-                SQLiteDatabase db = GameTime.info.getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put(Info.NAME,string);
-                if (i==1){
-                db.update(Info.PLAYER, values, Info.id + "=?", new String[]{"1"});
-                Player.name = string;
-                }else if (i==2){
-                    int a = GameTime.totalOfBuilding - 1;
-                db.update(Info.BUILDING + a,values,Info.NAME +"=?",new String[]{"建筑"});
-                }
-
-                db.close();
-                alertDialog.dismiss();
-            }
-        });
-
+        return alertDialog;
     }
 
     public static void setTimeView(){
-        timeView.setText("第" + Player.timeDate.getYear() + "年     " + GameTime.season + "第" + Player.timeDate.getDay() + "天    " + Player.timeDate.getHour() + ":" + String.format("%02d", Player.timeDate.getMinute()));
+
         setPlayerText();
     }
 
     public static void setPlayerText() {
-        playerView.setText("云团:" + Player.money + "      声望:" + Player.prestige);
+        playerView.setText("");
     }
 
 
@@ -160,44 +164,45 @@ public class Game extends AppCompatActivity {
         pager.setAdapter(adapter);
     }
 
-    private void showDialog(String message, String Character) {
+    private AlertDialog getDialog(int layout) {
+        //创建Dialog
         final AlertDialog alertDialog = new AlertDialog.Builder(this).setCancelable(false).create();
         alertDialog.show();
-        alertDialog.setContentView(R.layout.crystal);
-        Window window = alertDialog.getWindow();
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setGravity(Gravity.BOTTOM);
-        TextView next;
-        if (Character.equals(Player.name)) {//玩家对话框
-            next = window.findViewById(R.id.pmessage);
-            ImageView npc = window.findViewById(R.id.player);
-            npc.setImageResource(R.drawable.ic_launcher_background);
-        } else {//NPC对话框
-            next = window.findViewById(R.id.message);
-            ImageView npc = window.findViewById(R.id.NPC);
-            switch (Character) {
-                case "banker":
-                    npc.setImageResource(R.mipmap.banker);
-                    break;
-                case "dd":
-                    npc.setImageResource(R.drawable.ic_launcher_background);
-                    break;
-                case "ss":
-                    npc.setImageResource(R.drawable.ic_launcher_background);
-                    break;
-                default:
-                    npc.setImageResource(R.drawable.ic_launcher_background);
-            }
-        }
-
-        next.setText(message);
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.dismiss();
-            }
-        });
-
+        alertDialog.setContentView(layout);
+//        Window window = alertDialog.getWindow();
+//        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+//        window.setGravity(Gravity.BOTTOM);
+//        TextView next;
+//        if (Character.equals(Player.name)) {//玩家对话框
+//            next = window.findViewById(R.id.pmessage);
+//            ImageView npc = window.findViewById(R.id.player);
+//            npc.setImageResource(R.drawable.ic_launcher_background);
+//        } else {//NPC对话框
+//            next = window.findViewById(R.id.message);
+//            ImageView npc = window.findViewById(R.id.NPC);
+//            switch (Character) {
+//                case "banker":
+//                    npc.setImageResource(R.mipmap.banker);
+//                    break;
+//                case "dd":
+//                    npc.setImageResource(R.drawable.ic_launcher_background);
+//                    break;
+//                case "ss":
+//                    npc.setImageResource(R.drawable.ic_launcher_background);
+//                    break;
+//                default:
+//                    npc.setImageResource(R.drawable.ic_launcher_background);
+//            }
+//        }
+//
+//        next.setText(message);
+//        next.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                alertDialog.dismiss();
+//            }
+//        });
+        return alertDialog;
     }
 
     public void build(View view) {
@@ -227,7 +232,7 @@ public class Game extends AppCompatActivity {
             db.execSQL("create table if not exists "+Info.wareHouse+ GameTime.totalOfBuilding+"("+Info.id+" integer primary key autoincrement,"+Info.NAME +" text,"+Info.VOLUME +","+Info.sellPrice+" integer,"+Info.total+" integer)");
             GameTime.totalOfBuilding++;
             db.close();
-            showDialog("等你下次回来我就帮你修好", "aaa");
+            getDialog("等你下次回来我就帮你修好", "aaa");
         } else
             Toast.makeText(this, "你没有足够的金钱", Toast.LENGTH_SHORT).show();
 
@@ -304,7 +309,11 @@ public class Game extends AppCompatActivity {
     }
 
 
-
+    @Override
+    public void refreshUI() {
+    timeView.setText("第" + GameTime.timeDate.getYear() + "年     " + GameTime.season + "第" + GameTime.timeDate.getDay() + "天    " + Player.timeDate.getHour() + ":" + String.format("%02d", Player.timeDate.getMinute()));
+    playerView.setText("云团:" + GameTime.playerDate.getMoney() + "      声望:" + GameTime.playerDate.getPrestige());
+    }
 }
 
 

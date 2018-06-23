@@ -26,20 +26,34 @@ public class GameTime<T> extends TimerTask {
     private int year;
     //如果有其他表示坐标方法就改类型(只要不是SQL存不了的就行),
     private T coordinate;
+    private GameUI gameUI;
 
-    public GameTime(int minute, int hour, int day, int month, int year) {
+    public <A extends GameUI>GameTime(int minute, int hour, int day, int month, int year,A gameUI) {
         this.minute = minute;
         this.hour = hour;
         this.day = day;
         this.month = month;
         this.year = year;
+        this.gameUI = gameUI;
+    }
+
+    public static void getAllDate(){
+        Cursor iDate = getCursor(Info.BUILDING);
+        while (iDate.moveToNext()){
+            Building building = new Building(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.SECURITY)),iDate.getInt(iDate.getColumnIndex(Info.FACILITIES)),iDate.getInt(iDate.getColumnIndex(Info.capacity)),iDate.getInt(iDate.getColumnIndex(Info.customer)));
+            building.getDate();
+            buildings.add(building);
+
+        }
+        getTimeDate(Info.PLACE_NAME);
+        playerDate.getPlayerDate(Info.PLAYER);
     }
 
     public static void saveAllDate(GameTime timeDate){
         operatingSql(new String[]{"DELETE FROM "+Info.BUILDING});
         for (Building building:buildings)
         building.saveDate();
-        Player.saveDate();
+        playerDate.saveDate(Info.PLAYER);
         timeDate.saveDate();
     }
 
@@ -77,11 +91,10 @@ public class GameTime<T> extends TimerTask {
 
     @Override
     public void run() {
-        //NPC的行为
+        //NPC的行为,请允许我不创建实例了qwq,我(hao)怕(ma)会(fan)炸(de).
         int count = -1;
     for (Building building: buildings){
-        count++;
-        lalala:
+        building.work();
         do {
         switch ((int) (Math.random() * 9)) {
             //提意见
@@ -146,6 +159,7 @@ public class GameTime<T> extends TimerTask {
                 building.get(0).setCapacity(-3);
                 } } }while (false); }
                 setTime(this);
+                gameUI.refreshUI();
     }
 
     public void setTime(GameTime timeDate){
