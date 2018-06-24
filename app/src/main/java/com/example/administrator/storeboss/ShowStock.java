@@ -27,10 +27,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ShowStock extends AppCompatActivity {
+public class ShowStock{
 
-    private int who;
-    private int now;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +38,7 @@ public class ShowStock extends AppCompatActivity {
         Bundle bundle = this.getIntent().getExtras();
         who = bundle.getInt("who");
         now = bundle.getInt("now");
-        List<Map<String,Object>> listItem = new ArrayList<>();
+
         //不知道该怎么写,只好写了两边QWQ
         if (who==4){
             for (int i = 0; i<GameTime.buildings.get(now).size(); i++){
@@ -70,9 +70,7 @@ public class ShowStock extends AppCompatActivity {
             listItem.add(item);
         //int volume, int oPrice,int popular,int whenPopular
         }}
-        SimpleAdapter sa = new SimpleAdapter(this,listItem,R.layout.item_list,new String[]{"name","volume","sellPrice","total"},new int[]{R.id.name,R.id.volume,R.id.cost,R.id.total});
-        ListView list = findViewById(R.id.stockList);
-        list.setAdapter(sa);
+
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {

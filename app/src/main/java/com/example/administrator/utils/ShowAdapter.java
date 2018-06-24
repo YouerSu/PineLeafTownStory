@@ -1,10 +1,9 @@
 package com.example.administrator.utils;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
 public interface ShowAdapter {
 
-     List<HashMap<String,String>> UIPageAdapter();
+     Map<String,String> UIPageAdapter();
 
 }

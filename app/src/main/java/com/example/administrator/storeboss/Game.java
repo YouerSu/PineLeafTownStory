@@ -14,20 +14,27 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.administrator.buildings.Building;
+import com.example.administrator.buildings.Item;
 import com.example.administrator.utils.Db;
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.MyPagerAdapter;
 import com.example.administrator.utils.OwnName;
+import com.example.administrator.utils.ShowAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 
 public class Game extends AppCompatActivity implements GameUI{
@@ -53,6 +60,24 @@ public class Game extends AppCompatActivity implements GameUI{
         playerView = findViewById(R.id.player);
         Timer timer = new Timer();
         timer.schedule(timeDate, 3000L, 2000L);
+    }
+
+    @Override
+    public void showStockDialogue(final List<ShowAdapter> items){
+        List<Map<String,String>> listItem = new ArrayList<>();
+        for (ShowAdapter item:items)
+            listItem.add(item.UIPageAdapter());
+        AlertDialog alertDialog = getDialog(R.layout.activity_show_stock);
+        SimpleAdapter sa = new SimpleAdapter(this,listItem,R.layout.item_list,new String[]{"name","volume","sellPrice","total"},new int[]{R.id.name,R.id.lt1,R.id.lt2,R.id.lt3});
+        ListView list = findViewById(R.id.stockList);
+        list.setAdapter(sa);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                items.get(i).onClickListener();
+            }
+        });
+
     }
 
     @Override

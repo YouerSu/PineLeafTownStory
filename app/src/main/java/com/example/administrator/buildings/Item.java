@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 //创建新的类型来这登记一下 XD
 enum Article {Undeveloped,SellItem}
@@ -35,7 +36,7 @@ public abstract class Item implements ShowAdapter,ClickListener {
         this.article = article;
     }
 
-    public static Article[] getArticle() {
+    public static Article[] getArticleList() {
         return Article.values();
     }
 
@@ -99,8 +100,17 @@ public abstract class Item implements ShowAdapter,ClickListener {
     }
 
     @Override
-    public List<HashMap<String, String>> UIPageAdapter() {
-        return null;
+    public Map<String, String> UIPageAdapter() {
+        Map<String,String> item = new HashMap<>();
+        String name = getName();
+        String volume = "体积:"+ getVolume();
+        String price = "价格" + getOriginalPrice();
+        String total = "总量:"+ getTotal();
+        item.put(Info.NAME,name);
+        item.put(Info.VOLUME,volume);
+        item.put(Info.sellPrice,price);
+        item.put(Info.total,total);
+        return item;
     }
 
     public static HashMap<String,Item> getAllItems(String url) {

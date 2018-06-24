@@ -55,7 +55,7 @@ public class Customer implements NPC {
     }
 
     public static void randomList(Customer[] customers,int coordinateBoundary,int moneyBoundary) {
-        Article article[] = Article.values();
+        Article[] article = Item.getArticleList();
         Random random = new Random();
         for (int count = 0;count<customers.length;count++){
             customers[count] = new Customer(random.nextInt(coordinateBoundary),random.nextInt(moneyBoundary),article[random.nextInt(article.length)]);

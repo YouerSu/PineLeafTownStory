@@ -2,6 +2,10 @@ package com.example.administrator.utils;
 
 import android.widget.TextView;
 
+import com.example.administrator.buildings.Building;
+
+import java.util.List;
+
 public interface GameUI {
 
     void refreshUI();
@@ -13,5 +17,7 @@ public interface GameUI {
     void dialogueBox(String message);
 
     boolean trueOrFalseDialogue(String message);
+
+    void showStockDialogue(List<ShowAdapter> items);
 
 }
