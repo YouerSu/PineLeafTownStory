@@ -2,11 +2,11 @@ package com.example.administrator.buildings;
 
 import android.database.Cursor;
 
-import com.example.administrator.utils.ClickListener;
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.ShowAdapter;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -21,7 +21,7 @@ import java.util.Map;
 //创建新的类型来这登记一下 XD
 enum Article {Undeveloped,SellItem}
 
-public abstract class Item implements ShowAdapter,ClickListener {
+public abstract class Item implements ShowAdapter{
     String name;
     int volume;
     int originalPrice;
@@ -55,11 +55,8 @@ public abstract class Item implements ShowAdapter,ClickListener {
 
     public abstract void setType(HashMap<String,Item> articles);
 
-    @Override
     public void clickListener(GameUI gameUI){
-        if (gameUI.trueOrFalseDialogue("将"+name+"从你的仓库移除")){
-            gameUI.dialogueBox("移除成功");
-        }
+
     }
 
     public void saveSuperDate(String tableName){
@@ -111,6 +108,21 @@ public abstract class Item implements ShowAdapter,ClickListener {
         item.put(Info.sellPrice,price);
         item.put(Info.total,total);
         return item;
+    }
+
+    @Override
+    public void showMyOwnOnClick(GameUI UI) {
+        if (UI.trueOrFalseDialogue("将"+name+"从你的仓库移除")){
+            UI.dialogueBox("移除成功");
+        }
+    }
+
+    @Override
+    public void ShowNotMyOwnOnClick(GameUI UI,Building building) {
+        if (UI.reAmount("输入购买总数")!=0){
+            UI.dialogueBox("购买成功");
+            building.addItems(this);
+        }
     }
 
     public static HashMap<String,Item> getAllItems(String url) {

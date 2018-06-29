@@ -12,12 +12,14 @@ public interface GameUI {
 
     void dayHarvest();
 
-    void reName(OwnName item);
+    String reName(String message);
+
+    int reAmount(String message);
 
     void dialogueBox(String message);
 
     boolean trueOrFalseDialogue(String message);
 
-    void showStockDialogue(List<ShowAdapter> items);
+    void showListDialogue(List<ShowAdapter> items);
 
 }

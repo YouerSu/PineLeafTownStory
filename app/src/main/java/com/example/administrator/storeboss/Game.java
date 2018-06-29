@@ -22,17 +22,14 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.administrator.buildings.Building;
-import com.example.administrator.buildings.Item;
 import com.example.administrator.utils.Db;
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.MyPagerAdapter;
-import com.example.administrator.utils.OwnName;
 import com.example.administrator.utils.ShowAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -63,7 +60,7 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     @Override
-    public void showStockDialogue(final List<ShowAdapter> items){
+    public void showListDialogue(final List<ShowAdapter> items){
         List<Map<String,String>> listItem = new ArrayList<>();
         for (ShowAdapter item:items)
             listItem.add(item.UIPageAdapter());

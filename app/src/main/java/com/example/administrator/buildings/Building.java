@@ -4,11 +4,10 @@ package com.example.administrator.buildings;
 
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.Info;
-import com.example.administrator.utils.OwnName;
 
 import java.util.List;
 
-public class Building implements OwnName{
+public class Building {
     private String name;
     private int securityLevel;
     private int facilitiesLevel;
@@ -41,12 +40,10 @@ public class Building implements OwnName{
         });
     }
 
-    @Override
     public String getName() {
         return name;
     }
 
-    @Override
     public void setName(String name) {
         this.name = name;
     }
@@ -90,5 +87,13 @@ public class Building implements OwnName{
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    public void addEmployees(Employee employees) {
+        this.employees.add(employees);
+    }
+
+    public void addItems(Item items) {
+        this.items.add(items);
     }
 }

@@ -3,7 +3,6 @@ package com.example.administrator.buildings;
 import android.database.Cursor;
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.Info;
-import com.example.administrator.utils.OwnName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
