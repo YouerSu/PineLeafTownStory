@@ -305,33 +305,33 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     private void building(int id, int who) {
-        Intent intent = new Intent();
-        Bundle bundle=new Bundle();
-        bundle.putInt("who",who);
-        bundle.putInt("now",pager.getCurrentItem());
-        switch (id) {
-            case R.id.special:
-                bundle.putInt("who",4);
-            case R.id.buy:
-                intent.setClass(this,ShowBuy.class);
-                break;
-            case R.id.activity:
-                intent.setClass(this,ShowActivity.class);
-                break;
-            case R.id.expansion:
-                if (GameTime.playerDate.getMoney()>= timeDate.buildings.get(pager.getCurrentItem()).getCapacity()*2){
-                    timeDate.buildings.get(pager.getCurrentItem()).setCapacity(timeDate.buildings.get(pager.getCurrentItem()).getCapacity()+timeDate.buildings.get(pager.getCurrentItem()).getCapacity()/3);
-                    }
-                else Toast.makeText(this,"你没有足够的金钱",Toast.LENGTH_SHORT).show();
-                return;
-            case R.id.InfoOfShop:
-                bundle.putInt("who",4);
-            case R.id.stock:
-                intent.setClass(this,ShowStock.class);
-                break;
-        }
-            intent.putExtras(bundle);
-            startActivity(intent);
+//        Intent intent = new Intent();
+//        Bundle bundle=new Bundle();
+//        bundle.putInt("who",who);
+//        bundle.putInt("now",pager.getCurrentItem());
+//        switch (id) {
+//            case R.id.special:
+//                bundle.putInt("who",4);
+//            case R.id.buy:
+//                intent.setClass(this,ShowBuy.class);
+//                break;
+//            case R.id.activity:
+//                intent.setClass(this,ShowActivity.class);
+//                break;
+//            case R.id.expansion:
+//                if (GameTime.playerDate.getMoney()>= timeDate.buildings.get(pager.getCurrentItem()).getCapacity()*2){
+//                    timeDate.buildings.get(pager.getCurrentItem()).setCapacity(timeDate.buildings.get(pager.getCurrentItem()).getCapacity()+timeDate.buildings.get(pager.getCurrentItem()).getCapacity()/3);
+//                    }
+//                else Toast.makeText(this,"你没有足够的金钱",Toast.LENGTH_SHORT).show();
+//                return;
+//            case R.id.InfoOfShop:
+//                bundle.putInt("who",4);
+//            case R.id.stock:
+//                intent.setClass(this,ShowStock.class);
+//                break;
+//        }
+//            intent.putExtras(bundle);
+//            startActivity(intent);
     }
 
     public void hotel(View view) {

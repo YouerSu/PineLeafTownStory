@@ -20,6 +20,10 @@ public class StoresEmployee extends Employee {
     }
 
     @Override
+    public void setType() {
+    }
+
+    @Override
     public void disasterEvent() {
 
     }
