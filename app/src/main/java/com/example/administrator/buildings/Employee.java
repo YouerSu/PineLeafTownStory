@@ -11,7 +11,7 @@ import java.util.List;
 //创建新的类型来这登记一下 XD
 enum Career{StoresEmployee}
 
-public abstract class Employee implements OwnName{
+public abstract class Employee{
     private String name;
     private int salary;
     private int loyalty;
@@ -30,6 +30,8 @@ public abstract class Employee implements OwnName{
 
     public abstract boolean work(Item item);
 
+    public abstract void setType();
+
     public abstract void disasterEvent();
 
     public abstract void saveDate(String tableName);
@@ -40,7 +42,7 @@ public abstract class Employee implements OwnName{
 
     public void saveSuperDate(String tableName){
         GameTime.operatingSql(new String[]{
-        "insert into "+tableName+"("+Info.id+","+Info.NAME+","+Info.salary+","+Info.LOYALTY+","+Info.ABILITY+","+Info.RISEPOTENTIAL+") values("+ career.name()+","+name+","+salary+","+loyalty+","+ability+","+risePotential+")",
+        "insert into "+tableName+"("+Info.id+","+Info.NAME+","+Info.salary+","+Info.LOYALTY+","+Info.ABILITY+","+Info.RISEPOTENTIAL+") values("+ getClass().getName()+","+name+","+salary+","+loyalty+","+ability+","+risePotential+")",
         });
         saveDate(tableName);
     }
@@ -74,16 +76,41 @@ public abstract class Employee implements OwnName{
         return date;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
+    }
+
+    public void setLoyalty(int loyalty) {
+        this.loyalty = loyalty;
+    }
+
+    public void setAbility(int ability) {
+        this.ability = ability;
+    }
+
+    public void setRisePotential(int risePotential) {
+        this.risePotential = risePotential;
+    }
+
+    public void setCareer(Career career) {
+        this.career = career;
+    }
+
     public static List<Employee> getDate(String tableName) {
         List<Employee> list = new ArrayList<>();
         Cursor iDate = GameTime.getCursor(tableName);
         while (iDate.moveToNext()){
-            Employee employee = null;
-            switch (Career.valueOf(iDate.getString(iDate.getColumnIndex(Info.id)))){
-                case StoresEmployee:
-                    employee = new StoresEmployee(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.salary)),iDate.getInt(iDate.getColumnIndex(Info.LOYALTY)),iDate.getInt(iDate.getColumnIndex(Info.ABILITY)),iDate.getInt(iDate.getColumnIndex(Info.RISEPOTENTIAL)));
-                    break;
-            }
+            Employee employee = GameTime.getItem(iDate.getString(iDate.getColumnIndex(Info.id)));
+            employee.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
+            employee.setAbility(iDate.getInt(iDate.getColumnIndex(Info.ABILITY)));
+            employee.setLoyalty(iDate.getInt(iDate.getColumnIndex(Info.LOYALTY)));
+            employee.setSalary(iDate.getInt(iDate.getColumnIndex(Info.salary)));
+            employee.setRisePotential(iDate.getInt(iDate.getColumnIndex(Info.RISEPOTENTIAL)));
+            employee.setType();
             list.add(employee);
         }
         iDate.close();

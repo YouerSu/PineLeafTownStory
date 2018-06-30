@@ -93,7 +93,13 @@ public class Building {
         this.employees.add(employees);
     }
 
-    public void addItems(Item items) {
-        this.items.add(items);
+    public void addItems(Item item) {
+        this.items.add(item);
     }
+
+    public void removeItem(Item item){
+        if (item.getTotal()<=0)
+        items.remove(item);
+    }
+
 }

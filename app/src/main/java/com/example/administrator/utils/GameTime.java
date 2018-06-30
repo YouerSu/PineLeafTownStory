@@ -29,6 +29,21 @@ public class GameTime extends TimerTask {
         Customer.randomList(customers,buildings.size(),playerDate.getPrestige());
     }
 
+    public static<T> T getItem(String articles) {
+        T article = null;
+        try {
+            Class type = Class.forName(articles);
+            article = (T) type.newInstance();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+        return article;
+    }
+
     public void getAllDate(){
         Cursor iDate = getCursor(Info.BUILDING);
         while (iDate.moveToNext()){

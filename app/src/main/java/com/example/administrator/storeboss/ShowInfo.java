@@ -15,11 +15,4 @@ public class ShowInfo extends AppCompatActivity {
     }
 
 
-
-    @Override
-    protected void onStop() {
-        Game.saveAllDate();
-        super.onStop();
-    }
-
 }

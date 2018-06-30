@@ -8,8 +8,8 @@ public interface ShowAdapter {
 
      Map<String,String> UIPageAdapter();
 
-     void showMyOwnOnClick(GameUI UI, Building building);
+     void showMyOwnOnClick(GameUI UI,Building building);
 
-     void ShowNotMyOwnOnClick(GameUI UI);
+     void showNotMyOwnOnClick(GameUI UI, Building building);
 
 }

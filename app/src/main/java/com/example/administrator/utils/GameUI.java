@@ -20,6 +20,9 @@ public interface GameUI {
 
     boolean trueOrFalseDialogue(String message);
 
-    void showListDialogue(List<ShowAdapter> items);
+    void showMyOwnListDialogue(List<ShowAdapter> items);
+
+    void showNotMyOwnListDialogue(List<ShowAdapter> items);
+
 
 }

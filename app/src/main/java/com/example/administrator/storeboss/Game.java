@@ -1,10 +1,13 @@
 package com.example.administrator.storeboss;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
@@ -42,6 +45,9 @@ public class Game extends AppCompatActivity implements GameUI{
     static TextView timeView;
     static TextView playerView;
     private static long mExitTime;
+    boolean ok = false;
+    boolean choose = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -59,8 +65,7 @@ public class Game extends AppCompatActivity implements GameUI{
         timer.schedule(timeDate, 3000L, 2000L);
     }
 
-    @Override
-    public void showListDialogue(final List<ShowAdapter> items){
+    public ListView showListDialogue(final List<ShowAdapter> items){
         List<Map<String,String>> listItem = new ArrayList<>();
         for (ShowAdapter item:items)
             listItem.add(item.UIPageAdapter());
@@ -68,20 +73,51 @@ public class Game extends AppCompatActivity implements GameUI{
         SimpleAdapter sa = new SimpleAdapter(this,listItem,R.layout.item_list,new String[]{"name","volume","sellPrice","total"},new int[]{R.id.name,R.id.lt1,R.id.lt2,R.id.lt3});
         ListView list = findViewById(R.id.stockList);
         list.setAdapter(sa);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        return list;
+    }
+
+    @Override
+    public void showMyOwnListDialogue(final List<ShowAdapter> items) {
+        final GameUI UI = this;
+        showListDialogue(items).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                items.get(i).onClickListener();
+                items.get(i).showMyOwnOnClick(UI,timeDate.buildings.get(pager.getCurrentItem()));
             }
         });
 
     }
 
     @Override
+    public void showNotMyOwnListDialogue(final List<ShowAdapter> items) {
+        final GameUI UI = this;
+        showListDialogue(items).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                items.get(i).showNotMyOwnOnClick(UI,timeDate.buildings.get(pager.getCurrentItem()));
+            }
+        });
+    }
+
+    @Override
     public boolean trueOrFalseDialogue(String message) {
         AlertDialog alertDialog = getDialog(R.layout.crystal);
         alertDialog.setTitle(message);
-        return false;
+        alertDialog.setButton(Dialog.BUTTON_POSITIVE, "是", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                choose = true;
+            }
+        });
+        alertDialog.setButton(Dialog.BUTTON_POSITIVE, "否", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                choose = false;
+            }
+        });
+
+        waitOk();
+        return choose;
     }
 
     public void setBuiling(){
@@ -96,16 +132,41 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     @Override
-    public void reName(final OwnName item) {
-        AlertDialog alertDialog = getInputDialog("请输入新名称");
+    public String reName(String messages) {
+        EditText editText = getEditText(messages);
+        waitOk();
+        return editText.getText().toString();
+    }
+
+    public EditText getEditText(String messages) {
+        final AlertDialog alertDialog = getInputDialog(messages);
         Window window = alertDialog.getWindow();
         final EditText editText = window.findViewById(R.id.tname);
         window.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                item.setName(editText.getText().toString());
+                ok();
+                alertDialog.dismiss();
             }
         });
+        return editText;
+    }
+
+    @Override
+    public int reAmount(String message) {
+        EditText editText = getEditText(message);
+        editText.setRawInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        waitOk();
+        return Integer.valueOf(editText.getText().toString());
+    }
+
+    private void ok() {
+        ok = true;
+    }
+
+    private void waitOk() {
+        while (!ok) ;
+        ok = false;
     }
 
     @Override
@@ -187,7 +248,6 @@ public class Game extends AppCompatActivity implements GameUI{
         pagerList.add(view);
     }
 
-
     private AlertDialog getInputDialog(String text) {
         AlertDialog alertDialog = getDialog(R.layout.textin);
         Window window = alertDialog.getWindow();
@@ -200,10 +260,6 @@ public class Game extends AppCompatActivity implements GameUI{
         editText.setHint(ss);
         return alertDialog;
     }
-
-
-
-
 
     public void setText() {
         //加载适配器
@@ -219,8 +275,6 @@ public class Game extends AppCompatActivity implements GameUI{
         alertDialog.setContentView(layout);
         return alertDialog;
     }
-
-
 
     private void createBuilding() {
 
@@ -298,7 +352,6 @@ public class Game extends AppCompatActivity implements GameUI{
             building(i, 1);
 
     }
-
 
     @Override
     public void refreshUI() {

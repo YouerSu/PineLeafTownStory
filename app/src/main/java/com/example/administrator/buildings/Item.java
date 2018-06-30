@@ -62,7 +62,7 @@ public abstract class Item implements ShowAdapter{
     public void saveSuperDate(String tableName){
     //渣渣设计,速度极慢
       GameTime.operatingSql(new String[]{
-      "insert into "+tableName+" ("+Info.id+","+Info.NAME+","+Info.total+") values ("+article.name()+","+name+","+total+")"
+      "insert into "+tableName+" ("+Info.id+","+Info.NAME+","+Info.total+") values ("+getClass().getName()+","+name+","+total+")"
         });
       saveDate(tableName);
     }
@@ -94,6 +94,7 @@ public abstract class Item implements ShowAdapter{
 
     public void setTotal(int total) {
         this.total = total;
+
     }
 
     @Override
@@ -111,18 +112,20 @@ public abstract class Item implements ShowAdapter{
     }
 
     @Override
-    public void showMyOwnOnClick(GameUI UI) {
-        if (UI.trueOrFalseDialogue("将"+name+"从你的仓库移除")){
+    public void showMyOwnOnClick(GameUI UI,Building building) {
+        if (!UI.trueOrFalseDialogue("将"+name+"从你的仓库移除"))return;
+            int amount = UI.reAmount("输入移除的数量");
+            if (amount<0) return;
+            setTotal(getTotal() - amount);
+            building.removeItem(this);
             UI.dialogueBox("移除成功");
-        }
     }
 
     @Override
-    public void ShowNotMyOwnOnClick(GameUI UI,Building building) {
-        if (UI.reAmount("输入购买总数")!=0){
+    public void showNotMyOwnOnClick(GameUI UI,Building building) {
+        if (UI.reAmount("输入购买总数")<=0)return;
             UI.dialogueBox("购买成功");
             building.addItems(this);
-        }
     }
 
     public static HashMap<String,Item> getAllItems(String url) {
@@ -134,13 +137,7 @@ public abstract class Item implements ShowAdapter{
             Element root =  doc.getRootElement();
             for (Iterator<Element> it = root.elementIterator("item"); it.hasNext();) {
                 Element item = it.next();
-                Item article = null;
-                /**每次有新类型...我没想到更好的办法..*/
-                switch (Article.valueOf(item.elementText("type"))){
-                    case Undeveloped: continue;
-                    case SellItem: article = new SellItem();   break;
-
-                }
+                Item article = GameTime.getItem(item.elementText("type"));
                 article.setName(item.elementText("name"));
                 article.setTotal(Integer.valueOf(item.elementText("total")));
                 article.setVolume(Integer.valueOf(item.elementText("volume")));
@@ -157,15 +154,8 @@ public abstract class Item implements ShowAdapter{
         List<Item> list = new ArrayList<>();
         Cursor iDate = GameTime.getCursor(tableName);
         while (iDate.moveToNext()){
-            HashMap<String,Item> articles = null;
-            Item article = null;
-            switch (Article.valueOf(iDate.getString(iDate.getColumnIndex(Info.id)))){
-                /**同上...感觉这两方法一模一样...感觉游戏出来要卡死...*/
-                case  SellItem:
-                    articles = getAllItems("res\\xml\\sell_items.xml");
-                    article = new SellItem();
-                    break;
-            }
+        Item article = GameTime.getItem(iDate.getString(iDate.getColumnIndex(Info.id)));
+        HashMap<String,Item> articles = getAllItems("res\\xml\\"+iDate.getString(iDate.getColumnIndex(Info.id))+".xml");
         article.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
         article.setTotal(iDate.getInt(iDate.getColumnIndex(Info.total)));
         article.setVolume(articles.get(article.getName()).getVolume());
