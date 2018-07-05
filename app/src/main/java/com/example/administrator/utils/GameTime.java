@@ -13,8 +13,9 @@ public class GameTime extends TimerTask {
     //数据
     public static Sql info;
     public static Player playerDate;
-    public List<Building> buildings = new ArrayList<>();
-    public Customer[] customers = new Customer[60];
+    private Customer[] customers = new Customer[60];
+    private List<Building> buildings = new ArrayList<>();
+
     //各类时间事件
     private int minute;
     private int hour;
@@ -26,7 +27,7 @@ public class GameTime extends TimerTask {
 
     public <A extends GameUI>GameTime(A gameUI) {
         this.gameUI = gameUI;
-        Customer.randomList(customers,buildings.size(),playerDate.getPrestige());
+       //Customer.randomList(customers,buildings.size(),playerDate.getPrestige());
     }
 
     public static<T> T getItem(String articles) {
@@ -251,5 +252,13 @@ public class GameTime extends TimerTask {
 
     public void setXCoordinate(int xCoordinate) {
         this.xCoordinate = xCoordinate;
+    }
+
+    public Customer[] getCustomers() {
+        return customers;
+    }
+
+    public List<Building> getBuildings() {
+        return buildings;
     }
 }

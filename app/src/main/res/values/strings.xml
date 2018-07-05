@@ -22,4 +22,5 @@
     <string name="hSpecial">设施</string>
     <string name="room">房间</string>
     <string name="equipment">装潢</string>
+    <string name="title_activity_game">GameActivity</string>
 </resources>

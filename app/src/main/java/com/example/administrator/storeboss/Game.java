@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -63,6 +65,13 @@ public class Game extends AppCompatActivity implements GameUI{
         playerView = findViewById(R.id.player);
         Timer timer = new Timer();
         timer.schedule(timeDate, 3000L, 2000L);
+        FloatingActionButton fab = findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //展示多个按钮
+            }
+        });
     }
 
     public ListView showListDialogue(final List<ShowAdapter> items){
@@ -82,7 +91,7 @@ public class Game extends AppCompatActivity implements GameUI{
         showListDialogue(items).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                items.get(i).showMyOwnOnClick(UI,timeDate.buildings.get(pager.getCurrentItem()));
+                items.get(i).showMyOwnOnClick(UI,timeDate.getBuildings().get(pager.getCurrentItem()));
             }
         });
 
@@ -94,7 +103,7 @@ public class Game extends AppCompatActivity implements GameUI{
         showListDialogue(items).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                items.get(i).showNotMyOwnOnClick(UI,timeDate.buildings.get(pager.getCurrentItem()));
+                items.get(i).showNotMyOwnOnClick(UI,timeDate.getBuildings().get(pager.getCurrentItem()));
             }
         });
     }
@@ -121,7 +130,7 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     public void setBuiling(){
-        for (Building building:timeDate.buildings){
+        for (Building building:timeDate.getBuildings()){
         showBuilding(building.getName(),R.layout.building);
         }
     }

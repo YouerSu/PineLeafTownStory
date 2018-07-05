@@ -20,7 +20,7 @@
         <activity android:name=".Help" />
         <activity android:name=".ShowActivity" />
         <activity android:name=".ShowInfo" />
-        <activity android:name=".ShowStock"></activity>
+        <activity android:name=".ShowStock" />
     </application>
 
 </manifest>
