@@ -42,7 +42,7 @@ public abstract class Employee{
 
     public void saveSuperDate(String tableName){
         GameTime.operatingSql(new String[]{
-        "insert into "+tableName+"("+Info.id+","+Info.NAME+","+Info.salary+","+Info.LOYALTY+","+Info.ABILITY+","+Info.RISEPOTENTIAL+") values("+ getClass().getName()+","+name+","+salary+","+loyalty+","+ability+","+risePotential+")",
+        "insert into "+tableName+"("+Info.id+","+Info.NAME+","+Info.salary+","+Info.LOYALTY+","+Info.ABILITY+","+Info.RISE_POTENTIAL +") values("+ getClass().getName()+","+name+","+salary+","+loyalty+","+ability+","+risePotential+")",
         });
         saveDate(tableName);
     }
@@ -109,7 +109,7 @@ public abstract class Employee{
             employee.setAbility(iDate.getInt(iDate.getColumnIndex(Info.ABILITY)));
             employee.setLoyalty(iDate.getInt(iDate.getColumnIndex(Info.LOYALTY)));
             employee.setSalary(iDate.getInt(iDate.getColumnIndex(Info.salary)));
-            employee.setRisePotential(iDate.getInt(iDate.getColumnIndex(Info.RISEPOTENTIAL)));
+            employee.setRisePotential(iDate.getInt(iDate.getColumnIndex(Info.RISE_POTENTIAL)));
             employee.setType();
             list.add(employee);
         }

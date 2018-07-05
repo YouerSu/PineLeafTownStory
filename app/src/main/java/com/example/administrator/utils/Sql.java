@@ -29,7 +29,7 @@ public class Sql extends SQLiteOpenHelper{
         +Info.HOUR +","+Info.DAY +"," +Info.MONTH +","+Info.YEAR +","+Info.coordinate+") values " +//|工|工|工-----------------
         "("+Info.PLACE_NAME+",10,7,3,1)");db.execSQL("create table if not exists "+Info.BUILDING+"("+Info.id+
                     " text," +Info.NAME +" text,"
-        +Info.SECURITY+" integer,"+Info.FACILITIES +" integer,"+Info.capacity+" integer,"+ customer+" integer)");
+        +Info.SECURITY+" integer,"+Info.FACILITIES +" integer,"+Info.capacity+" integer)");
 //db.execSQL("insert into "+Info.STAFF_AND_SHOP +0+"("+Info.NAME +","+Info.CLEVER +","+Info.STRONG_LEVEL +","+Info.LOYALTY +","+Info.salary+","+Info.capacity+","+Info.customer+") values('建筑',100,20,2,0,550,0)");
 //db.execSQL("create table if not exists "+Info.wareHouse+0+"("+Info.id+" integer primary key autoincrement,"+Info.NAME +" text,"+Info.sellPrice+" integer,"+Info.total+" integer)");
 //db.execSQL("insert into "+Info.wareHouse+0+"("+Info.NAME +","+Info.sellPrice+","+Info.total+") values('杨梅',10,50)");

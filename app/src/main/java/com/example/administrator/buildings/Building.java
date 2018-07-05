@@ -12,16 +12,14 @@ public class Building {
     private int securityLevel;
     private int facilitiesLevel;
     private int capacity;
-    private int customer;
     private List<Employee> employees;
     private List<Item> items;
 
-    public Building(String name, int securityLevel, int facilitiesLevel, int capacity, int customer) {
+    public Building(String name, int securityLevel, int facilitiesLevel, int capacity) {
         this.name = name;
         this.securityLevel = securityLevel;
         this.facilitiesLevel = facilitiesLevel;
         this.capacity = capacity;
-        this.customer = customer;
     }
 
     //在GameTime类读取Building数据
@@ -30,10 +28,10 @@ public class Building {
         items = Item.getDate(name + "Item");
     }
 
-    public void createNewBuilding() {
+    public void createBuilding() {
         GameTime.operatingSql(new String[]{
-                "insert into " + Info.BUILDING + "(" + Info.NAME + "," + Info.SECURITY + "," + Info.FACILITIES + "," + Info.capacity + "," + Info.customer + ") values(" + name + "," + securityLevel + "," + facilitiesLevel + "," + capacity + "," + customer + ")",
-                "create table if not exists " + name + "Employee" + "(" + Info.id + " text," + Info.NAME + " text," + Info.salary + " integer," + Info.LOYALTY + " integer," + Info.ABILITY + " integer," + Info.RISEPOTENTIAL + " integer)",
+                "insert into " + Info.BUILDING + "(" + Info.NAME + "," + Info.SECURITY + "," + Info.FACILITIES + "," + Info.capacity + "," + Info.customer + ") values(" + name + "," + securityLevel + "," + facilitiesLevel + "," + capacity + ")",
+                "create table if not exists " + name + "Employee" + "(" + Info.id + " text," + Info.NAME + " text," + Info.salary + " integer," + Info.LOYALTY + " integer," + Info.ABILITY + " integer," + Info.RISE_POTENTIAL + " integer)",
                 "create table if not exists " + name + "Item" + "(" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer," + Info.sellPrice + " integer)",
                 "DELETE FROM " + name + "Employee",
                 "DELETE FROM " + name + "Item"
@@ -60,21 +58,14 @@ public class Building {
         return capacity;
     }
 
-    public int getCustomer() {
-        return customer;
-    }
-
     public void saveDate() {
-        createNewBuilding();
+        createBuilding();
         for (Employee employee : employees)
             employee.saveSuperDate(name + "Employee");
         for (Item item : items)
             item.saveSuperDate(name + "Item");
     }
 
-    public void setCustomer(int customer) {
-        this.customer = customer;
-    }
 
     public static void clearSql(String tableName) {
         GameTime.info.getWritableDatabase().execSQL("DELETE FROM " + tableName);

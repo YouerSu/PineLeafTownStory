@@ -99,16 +99,7 @@ public abstract class Item implements ShowAdapter{
 
     @Override
     public Map<String, String> UIPageAdapter() {
-        Map<String,String> item = new HashMap<>();
-        String name = getName();
-        String volume = "体积:"+ getVolume();
-        String price = "价格" + getOriginalPrice();
-        String total = "总量:"+ getTotal();
-        item.put(Info.NAME,name);
-        item.put(Info.VOLUME,volume);
-        item.put(Info.sellPrice,price);
-        item.put(Info.total,total);
-        return item;
+        return GameTime.getAdapterMap(getName(),"体积:"+ getVolume(),"价格" + getOriginalPrice(),"总量:"+ getTotal());
     }
 
     @Override

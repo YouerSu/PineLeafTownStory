@@ -1,33 +1,82 @@
 package com.example.administrator.buildings;
 
+import com.example.administrator.utils.GameTime;
+import com.example.administrator.utils.GameUI;
 import com.example.administrator.utils.NPC;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class Customer implements NPC {
 
+    private String name;
     private int xCoordinate;
     private int money;
     private Article want;
-    private int life = 100;
+    private int goodValue;
 
-    public Customer(int coordinate, int money, Article want) {
-        this.xCoordinate = coordinate;
+    public Customer(String name, int xCoordinate, int money, Article want, int goodValue) {
+        this.name = name;
+        this.xCoordinate = xCoordinate;
         this.money = money;
         this.want = want;
+        this.goodValue = goodValue;
+    }
+
+    @Override
+    public void saveDate() {
+        //改写XML文件
     }
 
     public void work(){
-
     }
 
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
     public int getxCoordinate() {
         return xCoordinate;
     }
 
+    @Override
     public void setxCoordinate(int xCoordinate) {
         this.xCoordinate = xCoordinate;
+    }
+
+    @Override
+    public Map<String, String> UIPageAdapter() {
+        return GameTime.getAdapterMap(getName(),"好感值："+getGoodValue(),null,null);
+    }
+
+    @Override
+    public void showMyOwnOnClick(GameUI UI, Building building) {
+
+    }
+
+    @Override
+    public void showNotMyOwnOnClick(GameUI UI, Building building) {
+
+    }
+
+    @Override
+    public void setGoodValue(int newGoodValue) {
+        goodValue = newGoodValue;
+    }
+
+    @Override
+    public int getGoodValue() {
+        return goodValue;
     }
 
     public int getMoney() {
@@ -46,19 +95,6 @@ public class Customer implements NPC {
         this.want = want;
     }
 
-    public int getLife() {
-        return life;
-    }
 
-    public void setLife(int life) {
-        this.life = life;
-    }
 
-    public static void randomList(Customer[] customers,int coordinateBoundary,int moneyBoundary) {
-        Article[] article = Item.getArticleList();
-        Random random = new Random();
-        for (int count = 0;count<customers.length;count++){
-            customers[count] = new Customer(random.nextInt(coordinateBoundary),random.nextInt(moneyBoundary),article[random.nextInt(article.length)]);
-        }
-    }
 }

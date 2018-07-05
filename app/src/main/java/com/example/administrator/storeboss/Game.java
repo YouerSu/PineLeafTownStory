@@ -3,9 +3,7 @@ package com.example.administrator.storeboss;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -70,6 +68,20 @@ public class Game extends AppCompatActivity implements GameUI{
             @Override
             public void onClick(View view) {
                 //展示多个按钮
+                AlertDialog alertDialog = getDialog(R.layout.crystal);
+                alertDialog.setButton(Dialog.BUTTON_POSITIVE, "是", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        choose = true;
+                    }
+                });
+                alertDialog.setButton(Dialog.BUTTON_POSITIVE, "否", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        choose = false;
+                    }
+                });
+
             }
         });
     }
@@ -78,8 +90,7 @@ public class Game extends AppCompatActivity implements GameUI{
         List<Map<String,String>> listItem = new ArrayList<>();
         for (ShowAdapter item:items)
             listItem.add(item.UIPageAdapter());
-        AlertDialog alertDialog = getDialog(R.layout.activity_show_stock);
-        SimpleAdapter sa = new SimpleAdapter(this,listItem,R.layout.item_list,new String[]{"name","volume","sellPrice","total"},new int[]{R.id.name,R.id.lt1,R.id.lt2,R.id.lt3});
+        SimpleAdapter sa = new SimpleAdapter(this,listItem,R.layout.item_list,new String[]{Info.NAME,Info.LT1,Info.LT2,Info.LT3},new int[]{R.id.name,R.id.lt1,R.id.lt2,R.id.lt3});
         ListView list = findViewById(R.id.stockList);
         list.setAdapter(sa);
         return list;
@@ -116,12 +127,14 @@ public class Game extends AppCompatActivity implements GameUI{
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 choose = true;
+                ok();
             }
         });
         alertDialog.setButton(Dialog.BUTTON_POSITIVE, "否", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 choose = false;
+                ok();
             }
         });
 
@@ -289,78 +302,13 @@ public class Game extends AppCompatActivity implements GameUI{
 
         if (GameTime.playerDate.getMoney()>= Info.BUILDING_PRICE) {
             GameTime.playerDate.setMoney(GameTime.playerDate.getMoney()-Info.BUILDING_PRICE);
-            new Building("建筑",1,1,1,1).createNewBuilding();
-            dialogueBox("ada:等你下次回来我就帮你修好");
+            timeDate.getBuildings().add(new  Building("建筑",1,1,1));
+            dialogueBox("ada:OK");
         } else
             Toast.makeText(this, "你没有足够的金钱", Toast.LENGTH_SHORT).show();
-
     }
 
-    public void bank(View view) {
-        //银行的监听
-        int i = view.getId();
-        switch (i) {
-            case R.id.loan:
-                Log.i("a", "build:");
-                break;
-            case R.id.Inquire:
-                Log.i("a", "build: restaurant");
-                break;
-            case R.id.sell:
-                Log.i("a", "build: hotel");
-                break;
-        }
 
-    }
-
-    private void building(int id, int who) {
-//        Intent intent = new Intent();
-//        Bundle bundle=new Bundle();
-//        bundle.putInt("who",who);
-//        bundle.putInt("now",pager.getCurrentItem());
-//        switch (id) {
-//            case R.id.special:
-//                bundle.putInt("who",4);
-//            case R.id.buy:
-//                intent.setClass(this,ShowBuy.class);
-//                break;
-//            case R.id.activity:
-//                intent.setClass(this,ShowActivity.class);
-//                break;
-//            case R.id.expansion:
-//                if (GameTime.playerDate.getMoney()>= timeDate.buildings.get(pager.getCurrentItem()).getCapacity()*2){
-//                    timeDate.buildings.get(pager.getCurrentItem()).setCapacity(timeDate.buildings.get(pager.getCurrentItem()).getCapacity()+timeDate.buildings.get(pager.getCurrentItem()).getCapacity()/3);
-//                    }
-//                else Toast.makeText(this,"你没有足够的金钱",Toast.LENGTH_SHORT).show();
-//                return;
-//            case R.id.InfoOfShop:
-//                bundle.putInt("who",4);
-//            case R.id.stock:
-//                intent.setClass(this,ShowStock.class);
-//                break;
-//        }
-//            intent.putExtras(bundle);
-//            startActivity(intent);
-    }
-
-    public void hotel(View view) {
-        //旅馆监听
-        int i = view.getId();
-        building(i, 2);
-    }
-
-    public void restaurant(View view) {
-        //餐馆监听
-        int i = view.getId();
-        building(i,3);
-    }
-
-    public void shop(View view) {
-            //超市监听
-            int i = view.getId();
-            building(i, 1);
-
-    }
 
     @Override
     public void refreshUI() {
@@ -378,8 +326,8 @@ public class Game extends AppCompatActivity implements GameUI{
             case 4:
                 season = "冬季日";
         }
-    timeView.setText("第" + timeDate.getYear() + "年     " + season + "第" + timeDate.getDay() + "天    " + timeDate.getHour() + ":" + String.format("%02d", timeDate.getMinute()));
-    playerView.setText("云团:" + GameTime.playerDate.getMoney() + "      声望:" + GameTime.playerDate.getPrestige());
+    timeView.setText(season + "第" + timeDate.getDay() + "天  " + timeDate.getHour() + ":" + String.format("%02d", timeDate.getMinute()));
+    playerView.setText("云团:" + GameTime.playerDate.getMoney() + "   声望:" + GameTime.playerDate.getPrestige());
     }
 }
 

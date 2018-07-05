@@ -2,18 +2,22 @@ package com.example.administrator.utils;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.NonNull;
+
 import com.example.administrator.buildings.Building;
 import com.example.administrator.buildings.Customer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimerTask;
 
 public class GameTime extends TimerTask {
     //数据
     public static Sql info;
     public static Player playerDate;
-    private Customer[] customers = new Customer[60];
+    private ArrayList<NPC> npcs = new ArrayList<>();
     private List<Building> buildings = new ArrayList<>();
 
     //各类时间事件
@@ -45,10 +49,20 @@ public class GameTime extends TimerTask {
         return article;
     }
 
+    @NonNull
+    public static Map<String, String> getAdapterMap(String name, String l1, String l2, String l3) {
+        Map<String,String> item = new HashMap<>();
+        item.put(Info.NAME,name);
+        item.put(Info.LT1,l1);
+        item.put(Info.LT2,l2);
+        item.put(Info.LT3,l3);
+        return item;
+    }
+
     public void getAllDate(){
         Cursor iDate = getCursor(Info.BUILDING);
         while (iDate.moveToNext()){
-            Building building = new Building(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.SECURITY)),iDate.getInt(iDate.getColumnIndex(Info.FACILITIES)),iDate.getInt(iDate.getColumnIndex(Info.capacity)),iDate.getInt(iDate.getColumnIndex(Info.customer)));
+            Building building = new Building(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.SECURITY)),iDate.getInt(iDate.getColumnIndex(Info.FACILITIES)),iDate.getInt(iDate.getColumnIndex(Info.capacity)));
             building.getDate();
             buildings.add(building);
 
@@ -62,6 +76,8 @@ public class GameTime extends TimerTask {
         for (Building building:buildings)
         building.saveDate();
         playerDate.saveDate(Info.PLAYER);
+        for (NPC npc:npcs)
+            npc.saveDate();
         timeDate.saveDate();
     }
 
@@ -103,96 +119,30 @@ public class GameTime extends TimerTask {
 
     @Override
     public void run() {
-        int count = -1;
-    for (Customer customer: customers){
-        customer.work();
-//        do {
-//        switch ((int) (Math.random() * 9)) {
-//            //提意见
-//            case 1:
-//                if (customer.get(0).getClever()<120)
-//                continue;
-//                else {
-//                int totalOfClever = 0;
-//                for (Building clever:customer){
-//                totalOfClever+=clever.getClever(); }
-//                if ((int)(Math.random()*totalOfClever)>70)
-//                customer.get(0).setClever(1);}
-//                break;
-//            //离店
-//            case 2:
-//                if (customer.get(0).getCustomer()>0){
-//                customer.get(0).setCustomer(-1);
-//                if (customer.get(0).getSalary()>0)
-//                customer.get(0).setCapacity(+3);}
-//                if (Player.prestige>250)
-//                continue ;
-//                break;
-//            //购买
-//            case 3:
-//                int a =0;
-//                do{
-//                if (customer.get(0).getCustomer()<=0|| allWare.get(count).size()<=0) continue lalala;
-//                a++;
-//                int b = (int)(Math.random()* allWare.get(count).size());
-//                Item ware = allWare.get(count).get(b);
-//                if (customer.get(0).getSalary()==0){
-//                if (ware.getOriginalPrice()*2>ware.getSellPrice()-ware.getPopular()){
-//                Player.money +=ware.getSellPrice();
-//                allWare.get(count).get(b).setTotal(-1,count); } }
-//                else{
-//                Player.money +=ware.getSellPrice();
-//                customer.get(0).setCustomer(-3);}
-//                }while (a<(Math.random()* Player.prestige)/4);
-//                if (Player.prestige>200)
-//                continue;
-//                break;
-//            //称赞
-//            case 4:
-//                if (Player.prestige<200){
-//                Player.prestige++;}
-//                else continue;
-//                break;
-//            //不满
-//            case 5:
-//                if (Player.prestige>0)
-//                Player.prestige--;
-//                continue;
-//            //进店
-//            default:
-//                if (customer.get(0).getCustomer()<customer.get(0).getCapacity()/3&&hour<22){
-//                int i = 0 ;
-//                for (Building allThings:customer){
-//                i+=allThings.getClever(); }
-//                if ((int)(Math.random()*i)>8)
-//                customer.get(0).setCustomer(1);
-//                if (customer.get(0).getSalary()>0&&customer.get(0).getCapacity()>3)
-//                customer.get(0).setCapacity(-3);
-//                } } }while (false);
-                                }
-                setTime(this);
-                gameUI.refreshUI();
-    }
 
-    public void setTime(GameTime timeDate){
-        timeDate.setMinute(timeDate.getMinute()+2);
-        if (timeDate.getMinute() >= 60) {
-            timeDate.setMinute(0);
-            timeDate.setHour(timeDate.getHour()+1);
-            if (timeDate.getHour() >= 24) {
-                timeDate.setHour(7);
-                timeDate.setDay(timeDate.getDay()+1);
-                if (timeDate.getDay() > 25) {
-                    timeDate.setDay(1);
+        setMinute(getMinute()+2);
+        if (getMinute() >= 60) {
+            setMinute(0);
+            setHour(getHour()+1);
+            if (getHour() >= 24) {
+                setHour(7);
+                setDay(getDay()+1);
+                if (getDay() > 25) {
+                    setDay(1);
                     investment();
-                    timeDate.setMonth(timeDate.getMonth()+1);
-                    if (timeDate.getMonth()> 4) {
-                        timeDate.setMonth(1);
-                        timeDate.setYear(timeDate.getYear()+1);
+                    setMonth(getMonth()+1);
+                    if (getMonth()> 4) {
+                        setMonth(1);
+                        setYear(getYear()+1);
                     }
                 }
             }
         }
+                gameUI.refreshUI();
+    }
+
+    public void setTime(){
+
     }
 
 
@@ -254,9 +204,6 @@ public class GameTime extends TimerTask {
         this.xCoordinate = xCoordinate;
     }
 
-    public Customer[] getCustomers() {
-        return customers;
-    }
 
     public List<Building> getBuildings() {
         return buildings;
