@@ -24,7 +24,6 @@ public final class Info {
     MONTH = "month",
     YEAR = "year",
     DAY = "day",
-    wareHouse = "wareHouse",
     VOLUME = "volume",
     OPRICE = "Oprice",
     POPULAR = "popular",
@@ -34,10 +33,10 @@ public final class Info {
     loanTime = "loanTime",
     coordinate = "coordinate",
     ABILITY = "ability",
-    RISE_POTENTIAL = "risePotential",
     DIFFERENT_WORLD = "differentWorld",
     PLACE_NAME = "松叶镇",
     LT1 ="lt1",
     LT2 ="lt2",
-    LT3 ="lt3" ;
+    LT3 ="lt3" ,
+    STATUS ="status";
 }

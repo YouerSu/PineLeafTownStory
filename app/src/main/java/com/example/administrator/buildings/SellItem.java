@@ -15,14 +15,18 @@ public class SellItem extends Item{
     private int popular;
 
     public SellItem(String name, int volume, int originalPrice, int total, int sellPrice, int popular) {
-        super(name, volume, originalPrice, total, Article.SellItem);
+        super(name, volume, originalPrice, total);
         this.sellPrice = sellPrice;
         this.popular = popular;
     }
 
-    public SellItem() {
-        super();
+    public static void createSellItem(String name){
+        GameTime.operatingSql(new String[]{
+        "create table if not exits "+name+Article.SellItem.name()+"("+Info.NAME+" text,"+Info.sellPrice+" integer)",
+        "DELETE FROM " + name + "SellItem"
+        });
     }
+
 
     @Override
     public void setType(HashMap<String,Item> articles) {
@@ -30,7 +34,8 @@ public class SellItem extends Item{
     }
 
     @Override
-    public void setType(Cursor cursor) {
+    public void setType(String name) {
+        Cursor cursor = GameTime.getCursor(name+Article.SellItem.name(),Info.sellPrice,Info.NAME,new String[]{getName()});
         sellPrice = Integer.valueOf(cursor.getInt(cursor.getColumnIndex(Info.sellPrice)));
     }
 
@@ -50,9 +55,10 @@ public class SellItem extends Item{
     }
 
     @Override
-    public void saveDate(String tableName) {
+    public void saveDate(String name) {
+        createSellItem(name);
         GameTime.operatingSql(new String[]{
-                "insert into "+tableName+" ("+ Info.sellPrice+") values("+sellPrice+")"
+        "insert into "+name+Article.SellItem.name()+" ("+ Info.NAME+","+ Info.sellPrice+") values("+getName()+","+sellPrice+")"
         });
     }
 

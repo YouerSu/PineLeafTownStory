@@ -6,8 +6,8 @@ import com.example.administrator.utils.GameTime;
 public class StoresEmployee extends Employee {
 
 
-    public StoresEmployee(String name, int salary, int loyalty, int ability, int risePotential) {
-        super(name, salary, loyalty, ability, risePotential,Career.StoresEmployee);
+    public StoresEmployee(String name, int salary, int loyalty, int ability) {
+        super(name, salary, loyalty, ability);
     }
 
     @Override

@@ -1,24 +1,20 @@
 package com.example.administrator.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public interface NPC extends ShowAdapter{
+
+    public static List<NPC> npcs = new ArrayList<>();
+
+
 
     default void startActivity(){
 
     }
 
-    void saveDate();
+    void work();
 
-    void setGoodValue(int newGoodValue);
-
-    int getGoodValue();
-
-    String getName();
-
-    void setName(String name);
-
-    int getxCoordinate();
-
-    void setxCoordinate(int xCoordinate);
-
+    void move();
 
 }

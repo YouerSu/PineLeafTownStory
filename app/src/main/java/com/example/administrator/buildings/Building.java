@@ -5,6 +5,8 @@ package com.example.administrator.buildings;
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.Info;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 public class Building {
@@ -13,7 +15,7 @@ public class Building {
     private int facilitiesLevel;
     private int capacity;
     private List<Employee> employees;
-    private List<Item> items;
+    private HashMap<String,Item> items;
 
     public Building(String name, int securityLevel, int facilitiesLevel, int capacity) {
         this.name = name;
@@ -24,17 +26,15 @@ public class Building {
 
     //在GameTime类读取Building数据
     public void getDate() {
-        employees = Employee.getDate(name + "Employee");
-        items = Item.getDate(name + "Item");
+        employees = Employee.getDate(name+"Employee");
+        items = Item.getDate(name);
     }
 
     public void createBuilding() {
+        Item.createTable(name);
+        Employee.createTable(name);
         GameTime.operatingSql(new String[]{
-                "insert into " + Info.BUILDING + "(" + Info.NAME + "," + Info.SECURITY + "," + Info.FACILITIES + "," + Info.capacity + "," + Info.customer + ") values(" + name + "," + securityLevel + "," + facilitiesLevel + "," + capacity + ")",
-                "create table if not exists " + name + "Employee" + "(" + Info.id + " text," + Info.NAME + " text," + Info.salary + " integer," + Info.LOYALTY + " integer," + Info.ABILITY + " integer," + Info.RISE_POTENTIAL + " integer)",
-                "create table if not exists " + name + "Item" + "(" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer," + Info.sellPrice + " integer)",
-                "DELETE FROM " + name + "Employee",
-                "DELETE FROM " + name + "Item"
+        "insert into " + Info.BUILDING + "(" + Info.NAME + "," + Info.SECURITY + "," + Info.FACILITIES + "," + Info.capacity + "," + Info.customer + ") values(" + name + "," + securityLevel + "," + facilitiesLevel + "," + capacity + ")",
         });
     }
 
@@ -62,10 +62,13 @@ public class Building {
         createBuilding();
         for (Employee employee : employees)
             employee.saveSuperDate(name + "Employee");
-        for (Item item : items)
+        for (Item item : getItems())
             item.saveSuperDate(name + "Item");
     }
 
+    public Collection<Item> getItems() {
+        return items.values();
+    }
 
     public static void clearSql(String tableName) {
         GameTime.info.getWritableDatabase().execSQL("DELETE FROM " + tableName);
@@ -85,7 +88,7 @@ public class Building {
     }
 
     public void addItems(Item item) {
-        this.items.add(item);
+        this.items.put(item.getName(),item);
     }
 
     public void removeItem(Item item){

@@ -12,10 +12,8 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 //创建新的类型来这登记一下 XD
@@ -26,21 +24,17 @@ public abstract class Item implements ShowAdapter{
     int volume;
     int originalPrice;
     int total;
-    Article article;
 
-    public Item(String name, int volume, int originalPrice, int total, Article article) {
+    public Item(String name, int volume, int originalPrice, int total) {
         this.name = name;
         this.volume = volume;
         this.originalPrice = originalPrice;
         this.total = total;
-        this.article = article;
     }
 
     public static Article[] getArticleList() {
         return Article.values();
     }
-
-    public Item(){}
 
     //根据不同情况调整数据
     public abstract void affectedByTheCurrentSituation();
@@ -49,22 +43,18 @@ public abstract class Item implements ShowAdapter{
 
     public abstract void setType(Element element);
 
-    public abstract void setType(Cursor cursor);
+    public abstract void setType(String name);
 
     public abstract void saveDate(String tableName);
 
     public abstract void setType(HashMap<String,Item> articles);
 
-    public void clickListener(GameUI gameUI){
-
-    }
-
-    public void saveSuperDate(String tableName){
+    public void saveSuperDate(String name){
     //渣渣设计,速度极慢
       GameTime.operatingSql(new String[]{
-      "insert into "+tableName+" ("+Info.id+","+Info.NAME+","+Info.total+") values ("+getClass().getName()+","+name+","+total+")"
+      "insert into "+name+"Index ("+Info.id+","+Info.NAME+","+Info.total+") values ("+getClass().getName()+","+ this.name +","+total+")"
         });
-      saveDate(tableName);
+      saveDate(name);
     }
 
     public String getName() {
@@ -120,7 +110,7 @@ public abstract class Item implements ShowAdapter{
     }
 
     public static HashMap<String,Item> getAllItems(String url) {
-        //十分暴力,无能为力
+        //从XML里读取数据
         HashMap<String,Item> items = new HashMap<>();
         SAXReader reader = new SAXReader();
         try {
@@ -141,20 +131,31 @@ public abstract class Item implements ShowAdapter{
         return items;
     }
 
-    public static List<Item> getDate(String tableName) {
-        List<Item> list = new ArrayList<>();
-        Cursor iDate = GameTime.getCursor(tableName);
+    public static HashMap<String,Item> getDate(String tableName) {
+        //从XML与SQL中获取数据
+        HashMap<String,Item> map = new HashMap<>();
+        Cursor iDate = GameTime.getCursorAllInformation(tableName);
         while (iDate.moveToNext()){
         Item article = GameTime.getItem(iDate.getString(iDate.getColumnIndex(Info.id)));
+        //垃圾设计
         HashMap<String,Item> articles = getAllItems("res\\xml\\"+iDate.getString(iDate.getColumnIndex(Info.id))+".xml");
         article.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
         article.setTotal(iDate.getInt(iDate.getColumnIndex(Info.total)));
         article.setVolume(articles.get(article.getName()).getVolume());
-        article.setType(iDate);
+        article.setType(article.getName());
         article.setType(articles);
+        map.put(article.getName(),article);
         }
         iDate.close();
-        return list;
+        return map;
     }
 
+    public static void createTable(String name) {
+        GameTime.operatingSql(//," + Info.sellPrice + " integer
+        new String[]{
+        "create table if not exists " + name + "Index(" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)",
+        "DELETE FROM " + name + "Index"
+        }
+        );
+    }
 }

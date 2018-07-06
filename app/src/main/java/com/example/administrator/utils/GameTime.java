@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
 import com.example.administrator.buildings.Building;
-import com.example.administrator.buildings.Customer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +25,6 @@ public class GameTime extends TimerTask {
     private int day;
     private int month;
     private int year;
-    private int xCoordinate;
     private GameUI gameUI;
 
     public <A extends GameUI>GameTime(A gameUI) {
@@ -60,7 +58,7 @@ public class GameTime extends TimerTask {
     }
 
     public void getAllDate(){
-        Cursor iDate = getCursor(Info.BUILDING);
+        Cursor iDate = getCursorAllInformation(Info.BUILDING);
         while (iDate.moveToNext()){
             Building building = new Building(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.SECURITY)),iDate.getInt(iDate.getColumnIndex(Info.FACILITIES)),iDate.getInt(iDate.getColumnIndex(Info.capacity)));
             building.getDate();
@@ -76,18 +74,20 @@ public class GameTime extends TimerTask {
         for (Building building:buildings)
         building.saveDate();
         playerDate.saveDate(Info.PLAYER);
-        for (NPC npc:npcs)
-            npc.saveDate();
         timeDate.saveDate();
     }
 
-    public static Cursor getCursor(String tableName) {
+    public static Cursor getCursorAllInformation(String tableName) {
         return info.getWritableDatabase().rawQuery("select * from "+tableName,null);
+    }
+
+    public static Cursor getCursor(String tableName,String want,String selectionArg,String[] selectionArgs){
+        return info.getWritableDatabase().rawQuery("select "+want+" from "+tableName+" WHERE "+selectionArg+" = ?",selectionArgs);
     }
 
     public void saveDate(){
         operatingSql(new String[]{
-        "update "+Info.DIFFERENT_WORLD+" set "+Info.MINUTE+" = "+getMinute()+" "+Info.HOUR+" = "+getHour()+ " "+Info.DAY+" = "+getDay()+" "+Info.MONTH+" = "+getMonth()+ " "+Info.YEAR+" = "+getYear()+" "+Info.coordinate+" = "+ xCoordinate +" where "+Info.MINUTE+/*异世界并不十分稳定(漏洞)*/" = "+minute
+        "update "+Info.DIFFERENT_WORLD+" set "+Info.MINUTE+" = "+getMinute()+" "+Info.HOUR+" = "+getHour()+ " "+Info.DAY+" = "+getDay()+" "+Info.MONTH+" = "+getMonth()+ " "+Info.YEAR+" = "+getYear()+" "+Info.coordinate+" = "+ playerDate.getX_coordinate() +" where "+Info.MINUTE+/*异世界并不十分稳定(漏洞)*/" = "+minute
         });
     }
 
@@ -99,7 +99,7 @@ public class GameTime extends TimerTask {
         setDay(iDate.getInt(iDate.getColumnIndex(Info.DAY)));
         setMonth(iDate.getInt(iDate.getColumnIndex(Info.MONTH)));
         setYear(iDate.getInt(iDate.getColumnIndex(Info.YEAR)));
-        setXCoordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
+        playerDate.setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
         data.setTransactionSuccessful();
         data.endTransaction();
         return true;
@@ -196,13 +196,7 @@ public class GameTime extends TimerTask {
     }
 
 
-    public int getXCoordinate() {
-        return xCoordinate;
-    }
 
-    public void setXCoordinate(int xCoordinate) {
-        this.xCoordinate = xCoordinate;
-    }
 
 
     public List<Building> getBuildings() {
