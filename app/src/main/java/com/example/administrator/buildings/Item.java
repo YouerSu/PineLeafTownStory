@@ -118,7 +118,7 @@ public abstract class Item implements ShowAdapter{
             Element root =  doc.getRootElement();
             for (Iterator<Element> it = root.elementIterator("item"); it.hasNext();) {
                 Element item = it.next();
-                Item article = GameTime.getItem(item.elementText("type"));
+                Item article = GameTime.getType(item.elementText("type"));
                 article.setName(item.elementText("name"));
                 article.setTotal(Integer.valueOf(item.elementText("total")));
                 article.setVolume(Integer.valueOf(item.elementText("volume")));
@@ -136,7 +136,7 @@ public abstract class Item implements ShowAdapter{
         HashMap<String,Item> map = new HashMap<>();
         Cursor iDate = GameTime.getCursorAllInformation(tableName);
         while (iDate.moveToNext()){
-        Item article = GameTime.getItem(iDate.getString(iDate.getColumnIndex(Info.id)));
+        Item article = GameTime.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
         //垃圾设计
         HashMap<String,Item> articles = getAllItems("res\\xml\\"+iDate.getString(iDate.getColumnIndex(Info.id))+".xml");
         article.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));

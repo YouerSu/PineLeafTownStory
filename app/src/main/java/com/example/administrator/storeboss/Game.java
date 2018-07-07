@@ -198,7 +198,7 @@ public class Game extends AppCompatActivity implements GameUI{
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         window.setGravity(Gravity.BOTTOM);
         TextView next;
-        if (message.substring(0,message.indexOf(":")).equals(GameTime.playerDate.getName())) {
+        if (message.substring(0,message.indexOf(":")).equals(timeDate.playerDate.getName())) {
             //玩家对话框
             next = window.findViewById(R.id.pmessage);
             ImageView npc = window.findViewById(R.id.player);
@@ -300,9 +300,9 @@ public class Game extends AppCompatActivity implements GameUI{
 
     private void createBuilding() {
 
-        if (GameTime.playerDate.getMoney()>= Info.BUILDING_PRICE) {
-            GameTime.playerDate.setMoney(GameTime.playerDate.getMoney()-Info.BUILDING_PRICE);
-            timeDate.getBuildings().add(new  Building("建筑",1,1,1));
+        if (timeDate.playerDate.getMoney()>= Info.BUILDING_PRICE) {
+            timeDate.playerDate.setMoney(timeDate.playerDate.getMoney()-Info.BUILDING_PRICE);
+            timeDate.getBuildings().add(new  Building("建筑",1));
             dialogueBox("ada:OK");
         } else
             Toast.makeText(this, "你没有足够的金钱", Toast.LENGTH_SHORT).show();
@@ -327,7 +327,7 @@ public class Game extends AppCompatActivity implements GameUI{
                 season = "冬季日";
         }
     timeView.setText(season + "第" + timeDate.getDay() + "天  " + timeDate.getHour() + ":" + String.format("%02d", timeDate.getMinute()));
-    playerView.setText("云团:" + GameTime.playerDate.getMoney() + "   声望:" + GameTime.playerDate.getPrestige());
+    playerView.setText("云团:" + timeDate.playerDate.getMoney() + "   声望:" + timeDate.playerDate.getPrestige());
     }
 }
 

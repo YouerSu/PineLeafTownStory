@@ -15,7 +15,7 @@ public final class Info {
     SECURITY = "security",
     id = "_id",
     FACILITIES = "facilities",
-    LOYALTY = "loyalty",
+    GOOD_VALUE = "GoodValue",
     salary = "salary",
     capacity = "capacity",
     customer = "customer",
@@ -38,5 +38,7 @@ public final class Info {
     LT1 ="lt1",
     LT2 ="lt2",
     LT3 ="lt3" ,
-    STATUS ="status";
+    STATUS ="status",
+    CHARACTER = "Character",
+    MASTER = "Master";
 }

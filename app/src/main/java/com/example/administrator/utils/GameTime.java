@@ -15,7 +15,7 @@ import java.util.TimerTask;
 public class GameTime extends TimerTask {
     //数据
     public static Sql info;
-    public static Player playerDate;
+    public Player playerDate;
     private ArrayList<NPC> npcs = new ArrayList<>();
     private List<Building> buildings = new ArrayList<>();
 
@@ -32,10 +32,10 @@ public class GameTime extends TimerTask {
        //Customer.randomList(customers,buildings.size(),playerDate.getPrestige());
     }
 
-    public static<T> T getItem(String articles) {
+    public static<T> T getType(String className) {
         T article = null;
         try {
-            Class type = Class.forName(articles);
+            Class type = Class.forName(className);
             article = (T) type.newInstance();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -60,13 +60,12 @@ public class GameTime extends TimerTask {
     public void getAllDate(){
         Cursor iDate = getCursorAllInformation(Info.BUILDING);
         while (iDate.moveToNext()){
-            Building building = new Building(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.SECURITY)),iDate.getInt(iDate.getColumnIndex(Info.FACILITIES)),iDate.getInt(iDate.getColumnIndex(Info.capacity)));
-            building.getDate();
+            Building building = null;
+            building.getDate(iDate);
             buildings.add(building);
-
         }
         getTimeDate(Info.PLACE_NAME);
-        playerDate.getPlayerDate(Info.PLAYER);
+        playerDate.getDate(info.getWritableDatabase().rawQuery("select * from "+Info.PLAYER,null));
     }
 
     public void saveAllDate(GameTime timeDate){
