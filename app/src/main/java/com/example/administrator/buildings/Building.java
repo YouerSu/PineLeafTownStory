@@ -7,21 +7,38 @@ import android.database.Cursor;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.Sql;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 public class Building {
+    public static List<Building> buildings = new ArrayList<>();
     private String name;
     private int capacity;
     private String master;
-    private List<Employee> employees;
     private HashMap<String,Item> items;
 
     public Building(String name, int capacity, String master) {
         this.name = name;
         this.capacity = capacity;
         this.master = master;
+        buildings.add(this);
+    }
+
+    static Building findWorkSpace(String workSpace){
+        for (Building building: buildings)
+            if (workSpace.equals(building.getName()))
+                return building;
+        return null;
+    }
+
+    public String getMaster() {
+        return master;
+    }
+
+    public static List<Building> getBuildings() {
+        return buildings;
     }
 
     //在GameTime类读取Building数据

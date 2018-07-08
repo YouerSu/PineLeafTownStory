@@ -2,17 +2,13 @@ package com.example.administrator.buildings;
 
 import android.database.Cursor;
 
-import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.GameUI;
 import com.example.administrator.utils.Info;
-import com.example.administrator.utils.NPC;
 import com.example.administrator.utils.Sql;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class Character{
     public static LinkedList<Character> characters;
@@ -22,8 +18,8 @@ public class Character{
     private GameUI gameUI;
     private int x_coordinate;
     private int salary;
-    private List<Building> buildings = new ArrayList<>();
-    private String master;
+    private List<Building> assets = new ArrayList<>();
+    private String workSpace;
 //    Career career;
 
 
@@ -36,16 +32,17 @@ public class Character{
         while (iDate.moveToNext()){
             Building building = null;
             building.getDate(iDate);
-            buildings.add(building);
+            Building.getBuildings().add(building);
         }
         getDate(Sql.info.getWritableDatabase().rawQuery("select * from "+Info.PLAYER,null));
     }
 
     public void saveAllDate(){
         Sql.operatingSql(new String[]{"DELETE FROM "+Info.BUILDING});
-        for (Building building:buildings)
+        for (Building building: Building.getBuildings())
             building.saveDate();
     }
+
 
     public static void saveCharacterDate(String name){
         for (Character character:characters)
@@ -55,7 +52,7 @@ public class Character{
 
     public void saveDate(){
         Sql.operatingSql(new String[]{
-        "update "+Info.CHARACTER+" set  "+Info.MONEY+" = "+money+" "+Info.PRESTIGE+" = "+prestige+" "+Info.PRESTIGE+" = "+x_coordinate+" "+Info.salary+" = "+salary+" "+Info.MASTER+" = "+master+" where "+Info.NAME+" = "+ name
+        "update "+Info.CHARACTER+" set  "+Info.MONEY+" = "+money+" "+Info.PRESTIGE+" = "+prestige+" "+Info.PRESTIGE+" = "+x_coordinate+" "+Info.salary+" = "+salary+" "+Info.MASTER+" = "+ workSpace +" where "+Info.NAME+" = "+ name
         });
     }
 
@@ -64,24 +61,31 @@ public class Character{
         setMoney(iDate.getInt(iDate.getColumnIndex(Info.MONEY)));
         setPrestige(iDate.getInt(iDate.getColumnIndex(Info.PRESTIGE)));
         setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
-        setMaster(iDate.getString(iDate.getColumnIndex(Info.MASTER)));
+        setWorkSpace(iDate.getString(iDate.getColumnIndex(Info.MASTER)));
         setSalary(iDate.getInt(iDate.getColumnIndex(Info.salary)));
         setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
     }
 
     public void wages(){
-        findMaster(master).setMoney(findMaster(master).getMoney()-getSalary());
+        findMaster(Building.findWorkSpace(workSpace).getMaster()).setMoney(findMaster(Building.findWorkSpace(workSpace).getMaster()).getMoney()-getSalary());
         setMoney(getMoney()+getSalary());
     }
 
-    private static Character findMaster(String master) {
+    //可用泛型
+    public static Character findMaster(String master) {
         for (Character character:characters)
             if (master.equals(character.getName()))
                 return character;
         return null;
     }
 
-//    @Override
+    public void findWorker(String buildingName,Item item){
+
+
+
+    }
+
+    //    @Override
 //    public void work() {
 //        career.behavior(this);
 //    }
@@ -146,8 +150,8 @@ public class Character{
         this.x_coordinate = x_coordinate;
     }
 
-    public void setMaster(String master) {
-        this.master = master;
+    public void setWorkSpace(String workSpace) {
+        this.workSpace = workSpace;
     }
 
     public static LinkedList<Character> getCharacters() {
@@ -166,16 +170,16 @@ public class Character{
         this.gameUI = gameUI;
     }
 
-    public List<Building> getBuildings() {
-        return buildings;
+    public List<Building> getAssets() {
+        return assets;
     }
 
-    public void setBuildings(List<Building> buildings) {
-        this.buildings = buildings;
+    public void setAssets(List<Building> assets) {
+        this.assets = assets;
     }
 
-    public String getMaster() {
-        return master;
+    public String getWorkSpace() {
+        return workSpace;
     }
 }
 

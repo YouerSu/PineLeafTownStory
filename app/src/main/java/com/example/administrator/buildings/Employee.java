@@ -4,10 +4,8 @@ import com.example.administrator.utils.GameTime;
 
 public abstract class Employee extends Career {
 
-    abstract boolean work(Item item, Player master);
+    abstract boolean work(Item item);
 
-    public static void findMaster(Player master,GameTime timeDate){
 
-    }
 
 }

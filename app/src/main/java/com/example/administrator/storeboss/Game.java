@@ -76,7 +76,7 @@ public class Game extends AppCompatActivity implements GameUI{
         showListDialogue(items).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                items.get(i).showMyOwnOnClick(UI, playerDate.getBuildings().get(pager.getCurrentItem()));
+                items.get(i).showMyOwnOnClick(UI, playerDate.getAssets().get(pager.getCurrentItem()));
             }
         });
 
@@ -88,7 +88,7 @@ public class Game extends AppCompatActivity implements GameUI{
         showListDialogue(items).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                items.get(i).showNotMyOwnOnClick(UI,playerDate.getBuildings().get(pager.getCurrentItem()));
+                items.get(i).showNotMyOwnOnClick(UI,playerDate.getAssets().get(pager.getCurrentItem()));
             }
         });
     }
@@ -117,7 +117,7 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     public void setBuiling(){
-        for (Building building: playerDate.getBuildings()){
+        for (Building building: playerDate.getAssets()){
         showBuilding(building.getName(),R.layout.building);
         }
     }
@@ -271,7 +271,7 @@ public class Game extends AppCompatActivity implements GameUI{
 
         if (playerDate.getMoney()>= Info.BUILDING_PRICE) {
             playerDate.setMoney(playerDate.getMoney()-Info.BUILDING_PRICE);
-            playerDate.getBuildings().add(new  Building("建筑",1,""));
+            playerDate.getAssets().add(new  Building("建筑",1,""));
             dialogueBox("ada:OK");
         } else
             Toast.makeText(this, "你没有足够的金钱", Toast.LENGTH_SHORT).show();
