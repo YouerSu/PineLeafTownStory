@@ -1,34 +1,20 @@
 package com.example.administrator.buildings;
 
 
-import com.example.administrator.utils.GameTime;
-
-public class StoresEmployee extends Employee {
+public class StoresEmployee extends Employee{
 
 
-    public StoresEmployee(String name, int salary, int loyalty, int ability) {
-        super(name, salary, loyalty, ability);
+    @Override
+    public void behavior(Character character) {
+
     }
 
     @Override
-    public boolean work(Item item) {
-        //为了同种商品(或具有相似性质)能不同利用,所以放在员工这.
+    public boolean work(Item item,Player master) {
         if (item instanceof SellItem) return false;
         item.setTotal(item.getTotal()-1);
-        GameTime.playerDate.setMoney(GameTime.playerDate.getMoney() + ((SellItem)item).getSellPrice());
+        master.setMoney(master.getMoney() + ((SellItem)item).getSellPrice());
         return true;
     }
 
-    @Override
-    public void setType() {
-    }
-
-    @Override
-    public void disasterEvent() {
-
-    }
-
-    @Override
-    public void saveDate(String tableName) {
-    }
 }

@@ -8,6 +8,7 @@ public abstract class Career {
     //GameTime activityTime;
 
 
-    abstract void behavior();
+    //主动事件
+    abstract void behavior(Character character);
 
 }

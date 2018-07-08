@@ -4,20 +4,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 
-import com.example.administrator.buildings.Building;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 
 public class GameTime extends TimerTask {
-    //数据
-    public static Sql info;
-    public Player playerDate;
-    private ArrayList<NPC> npcs = new ArrayList<>();
-    private List<Building> buildings = new ArrayList<>();
 
     //各类时间事件
     private int minute;
@@ -29,7 +20,7 @@ public class GameTime extends TimerTask {
 
     public <A extends GameUI>GameTime(A gameUI) {
         this.gameUI = gameUI;
-       //Customer.randomList(customers,buildings.size(),playerDate.getPrestige());
+
     }
 
     public static<T> T getType(String className) {
@@ -57,62 +48,25 @@ public class GameTime extends TimerTask {
         return item;
     }
 
-    public void getAllDate(){
-        Cursor iDate = getCursorAllInformation(Info.BUILDING);
-        while (iDate.moveToNext()){
-            Building building = null;
-            building.getDate(iDate);
-            buildings.add(building);
-        }
-        getTimeDate(Info.PLACE_NAME);
-        playerDate.getDate(info.getWritableDatabase().rawQuery("select * from "+Info.PLAYER,null));
-    }
-
-    public void saveAllDate(GameTime timeDate){
-        operatingSql(new String[]{"DELETE FROM "+Info.BUILDING});
-        for (Building building:buildings)
-        building.saveDate();
-        playerDate.saveDate(Info.PLAYER);
-        timeDate.saveDate();
-    }
-
-    public static Cursor getCursorAllInformation(String tableName) {
-        return info.getWritableDatabase().rawQuery("select * from "+tableName,null);
-    }
-
-    public static Cursor getCursor(String tableName,String want,String selectionArg,String[] selectionArgs){
-        return info.getWritableDatabase().rawQuery("select "+want+" from "+tableName+" WHERE "+selectionArg+" = ?",selectionArgs);
-    }
 
     public void saveDate(){
-        operatingSql(new String[]{
-        "update "+Info.DIFFERENT_WORLD+" set "+Info.MINUTE+" = "+getMinute()+" "+Info.HOUR+" = "+getHour()+ " "+Info.DAY+" = "+getDay()+" "+Info.MONTH+" = "+getMonth()+ " "+Info.YEAR+" = "+getYear()+" "+Info.coordinate+" = "+ playerDate.getX_coordinate() +" where "+Info.MINUTE+/*异世界并不十分稳定(漏洞)*/" = "+minute
+        Sql.operatingSql(new String[]{
+        "update "+Info.DIFFERENT_WORLD+" set "+Info.MINUTE+" = "+getMinute()+" "+Info.HOUR+" = "+getHour()+ " "+Info.DAY+" = "+getDay()+" "+Info.MONTH+" = "+getMonth()+ " "+Info.YEAR+" = "+getYear()+" where "+Info.MINUTE+" = "+minute
         });
     }
 
-    public boolean getTimeDate(String placeName) {
-        SQLiteDatabase data = GameTime.info.getWritableDatabase();
-        Cursor iDate = data.query(Info.DIFFERENT_WORLD, null, Info.NAME + "=?", new String[]{placeName}, null, null, null);
+    public boolean getTimeDate() {
+
+        SQLiteDatabase data = Sql.info.getWritableDatabase();
+        Cursor iDate = data.query(Info.DIFFERENT_WORLD, null, Info.NAME + "=?", new String[]{Info.PLACE_NAME}, null, null, null);
         setMinute(iDate.getInt(iDate.getColumnIndex(Info.MINUTE)));
         setHour(iDate.getInt(iDate.getColumnIndex(Info.HOUR)));
         setDay(iDate.getInt(iDate.getColumnIndex(Info.DAY)));
         setMonth(iDate.getInt(iDate.getColumnIndex(Info.MONTH)));
         setYear(iDate.getInt(iDate.getColumnIndex(Info.YEAR)));
-        playerDate.setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
         data.setTransactionSuccessful();
         data.endTransaction();
         return true;
-    }
-
-    //用于执行Sql语句;
-    public static void operatingSql(String statements[]) {
-        SQLiteDatabase db = info.getWritableDatabase();
-        db.beginTransaction();
-        for (int count = 0;count<statements.length;count++)
-        db.execSQL(statements[count]);
-        db.setTransactionSuccessful();
-        db.endTransaction();
-        db.close();
     }
 
 
@@ -198,7 +152,5 @@ public class GameTime extends TimerTask {
 
 
 
-    public List<Building> getBuildings() {
-        return buildings;
-    }
+
 }

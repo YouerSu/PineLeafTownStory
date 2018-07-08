@@ -6,65 +6,95 @@ import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.NPC;
-import com.example.administrator.utils.Player;
+import com.example.administrator.utils.Sql;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class Character extends Player implements NPC {
+public class Character{
+    public static LinkedList<Character> characters;
+    public int money;
+    public int prestige;
+    public String name;
+    private GameUI gameUI;
+    private int x_coordinate;
     private int salary;
-    private int goodValue;
-    private Player master;
-    Career career;
+    private List<Building> buildings = new ArrayList<>();
+    private String master;
+//    Career career;
 
-    public void saveDate(String name){
-        super.saveDate(name+Info.CHARACTER);
-        GameTime.operatingSql(new String[]{
-        "update "+name+Info.CHARACTER+Info.PLAYER+" set "+Info.salary+" = "+salary+" "+Info.GOOD_VALUE+" = "+goodValue+" "+Info.MASTER+" = "+master+" where "+Info.NAME+" = "+ this.name
+
+    public Character(GameUI gameUI) {
+        this.gameUI = gameUI;
+    }
+
+    public void getAllDate(){
+        Cursor iDate = Sql.getCursorAllInformation(Info.BUILDING);
+        while (iDate.moveToNext()){
+            Building building = null;
+            building.getDate(iDate);
+            buildings.add(building);
+        }
+        getDate(Sql.info.getWritableDatabase().rawQuery("select * from "+Info.PLAYER,null));
+    }
+
+    public void saveAllDate(){
+        Sql.operatingSql(new String[]{"DELETE FROM "+Info.BUILDING});
+        for (Building building:buildings)
+            building.saveDate();
+    }
+
+    public static void saveCharacterDate(String name){
+        for (Character character:characters)
+            character.saveDate();
+    }
+
+
+    public void saveDate(){
+        Sql.operatingSql(new String[]{
+        "update "+Info.CHARACTER+" set  "+Info.MONEY+" = "+money+" "+Info.PRESTIGE+" = "+prestige+" "+Info.PRESTIGE+" = "+x_coordinate+" "+Info.salary+" = "+salary+" "+Info.MASTER+" = "+master+" where "+Info.NAME+" = "+ name
         });
     }
 
-    @Override
     public void getDate(Cursor iDate) {
-        setMoney(iDate.getInt(iDate.getColumnIndex(Info.NAME)));
         setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
+        setMoney(iDate.getInt(iDate.getColumnIndex(Info.MONEY)));
         setPrestige(iDate.getInt(iDate.getColumnIndex(Info.PRESTIGE)));
         setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
-        setGoodValue(iDate.getInt(iDate.getColumnIndex(Info.GOOD_VALUE)));
+        setMaster(iDate.getString(iDate.getColumnIndex(Info.MASTER)));
         setSalary(iDate.getInt(iDate.getColumnIndex(Info.salary)));
+        setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
     }
 
     public void wages(){
-        master.setMoney(master.getMoney()-getSalary());
+        findMaster(master).setMoney(findMaster(master).getMoney()-getSalary());
         setMoney(getMoney()+getSalary());
     }
 
-    @Override
-    public void work() {
-        career.behavior();
+    private static Character findMaster(String master) {
+        for (Character character:characters)
+            if (master.equals(character.getName()))
+                return character;
+        return null;
     }
 
-    @Override
-    public Map<String, String> UIPageAdapter() {
-        HashMap<String,String> date = new HashMap<>();
-        date.put("name",name);
-        date.put("l1","薪酬:"+salary);
-        date.put("l2","职业:"+career.getClass().getName());
-        date.put("l3","好感:"+goodValue);
-        return date;
-    }
+//    @Override
+//    public void work() {
+//        career.behavior(this);
+//    }
 
-    @Override
-    public void showMyOwnOnClick(GameUI UI, Building building) {
+////    @Override
+////    public Map<String, String> UIPageAdapter() {
+////        HashMap<String,String> date = new HashMap<>();
+////        date.put("name",name);
+////        date.put("l1","薪酬:"+salary);
+////        date.put("l2","职业:"+career.getClass().getName());
+//        return date;
+//    }
 
-    }
-
-    @Override
-    public void showNotMyOwnOnClick(GameUI UI, Building building) {
-
-    }
 
     public String getName() {
         return name;
@@ -82,19 +112,71 @@ public class Character extends Player implements NPC {
         this.salary = salary;
     }
 
-    public int getGoodValue() {
-        return goodValue;
+
+//    public Career getCareer() {
+//        return career;
+//    }
+//
+//    public void setCareer(Career career) {
+//        this.career = career;
+//    }
+
+    public int getMoney() {
+        return money;
     }
 
-    public void setGoodValue(int goodValue) {
-        this.goodValue = goodValue;
+    public void setMoney(int money) {
+        this.money = money;
     }
 
-    public Career getCareer() {
-        return career;
+    public int getPrestige() {
+        return prestige;
     }
 
-    public void setCareer(Career career) {
-        this.career = career;
+    public void setPrestige(int prestige) {
+        this.prestige = prestige;
+    }
+
+
+    public int getX_coordinate() {
+        return x_coordinate;
+    }
+
+    public void setX_coordinate(int x_coordinate) {
+        this.x_coordinate = x_coordinate;
+    }
+
+    public void setMaster(String master) {
+        this.master = master;
+    }
+
+    public static LinkedList<Character> getCharacters() {
+        return characters;
+    }
+
+    public static void setCharacters(LinkedList<Character> characters) {
+        Character.characters = characters;
+    }
+
+    public GameUI getGameUI() {
+        return gameUI;
+    }
+
+    public void setGameUI(GameUI gameUI) {
+        this.gameUI = gameUI;
+    }
+
+    public List<Building> getBuildings() {
+        return buildings;
+    }
+
+    public void setBuildings(List<Building> buildings) {
+        this.buildings = buildings;
+    }
+
+    public String getMaster() {
+        return master;
     }
 }
+
+

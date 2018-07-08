@@ -6,6 +6,7 @@ import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.ShowAdapter;
+import com.example.administrator.utils.Sql;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -36,9 +37,6 @@ public abstract class Item implements ShowAdapter{
         return Article.values();
     }
 
-    //根据不同情况调整数据
-    public abstract void affectedByTheCurrentSituation();
-
     public abstract void purchase();
 
     public abstract void setType(Element element);
@@ -51,7 +49,7 @@ public abstract class Item implements ShowAdapter{
 
     public void saveSuperDate(String name){
     //渣渣设计,速度极慢
-      GameTime.operatingSql(new String[]{
+      Sql.operatingSql(new String[]{
       "insert into "+name+"Index ("+Info.id+","+Info.NAME+","+Info.total+") values ("+getClass().getName()+","+ this.name +","+total+")"
         });
       saveDate(name);
@@ -134,7 +132,7 @@ public abstract class Item implements ShowAdapter{
     public static HashMap<String,Item> getDate(String tableName) {
         //从XML与SQL中获取数据
         HashMap<String,Item> map = new HashMap<>();
-        Cursor iDate = GameTime.getCursorAllInformation(tableName);
+        Cursor iDate = Sql.getCursorAllInformation(tableName);
         while (iDate.moveToNext()){
         Item article = GameTime.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
         //垃圾设计
@@ -151,7 +149,7 @@ public abstract class Item implements ShowAdapter{
     }
 
     public static void createTable(String name) {
-        GameTime.operatingSql(//," + Info.sellPrice + " integer
+        Sql.operatingSql(//," + Info.sellPrice + " integer
         new String[]{
         "create table if not exists " + name + "Index(" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)",
         "DELETE FROM " + name + "Index"

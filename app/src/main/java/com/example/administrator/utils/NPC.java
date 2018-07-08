@@ -1,15 +1,18 @@
 package com.example.administrator.utils;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public interface NPC extends ShowAdapter{
 
-    public static List<NPC> npcs = new ArrayList<>();
-
     //开启线程
-    default void startActivity(){
-
+    default void startActivity() {
+        new Thread(()->{
+            work();
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     //NPC的行为
