@@ -2,42 +2,58 @@ package com.example.administrator.buildings;
 
 import android.database.Cursor;
 
+import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.GameUI;
 import com.example.administrator.utils.Info;
+import com.example.administrator.utils.OwnName;
+import com.example.administrator.utils.ShowAdapter;
 import com.example.administrator.utils.Sql;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-public class Character{
-    public static LinkedList<Character> characters;
+public abstract class Character implements OwnName,ShowAdapter{
+    public static LinkedList<Character> characters = new LinkedList<>();
     public int money;
     public int prestige;
     public String name;
-    private GameUI gameUI;
+    private static GameUI gameUI;
     private int x_coordinate;
     private int salary;
-    private List<Building> assets = new ArrayList<>();
     private String workSpace;
-//    Career career;
 
 
-    public Character(GameUI gameUI) {
-        this.gameUI = gameUI;
+    @Override
+    public Map<String, String> UIPageAdapter() {
+        return null;
     }
 
-    public void getAllDate(){
+    abstract void initialization();
+
+    @Override
+    public void showMyOwnOnClick(GameUI UI, Building building) {
+
+    }
+
+    @Override
+    public void showNotMyOwnOnClick(GameUI UI, Building building) {
+
+    }
+
+    public static void getAllDate(GameUI gameUI){
         Cursor iDate = Sql.getCursorAllInformation(Info.BUILDING);
         while (iDate.moveToNext()){
             Building building = null;
             building.getDate(iDate);
             Building.getBuildings().add(building);
         }
-        getDate(Sql.info.getWritableDatabase().rawQuery("select * from "+Info.PLAYER,null));
+        getDate(Sql.info.getWritableDatabase().rawQuery("select * from "+Info.CHARACTER,null));
     }
 
-    public void saveAllDate(){
+    public static void saveBuildingDate(){
         Sql.operatingSql(new String[]{"DELETE FROM "+Info.BUILDING});
         for (Building building: Building.getBuildings())
             building.saveDate();
@@ -56,32 +72,37 @@ public class Character{
         });
     }
 
-    public void getDate(Cursor iDate) {
-        setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
-        setMoney(iDate.getInt(iDate.getColumnIndex(Info.MONEY)));
-        setPrestige(iDate.getInt(iDate.getColumnIndex(Info.PRESTIGE)));
-        setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
-        setWorkSpace(iDate.getString(iDate.getColumnIndex(Info.MASTER)));
-        setSalary(iDate.getInt(iDate.getColumnIndex(Info.salary)));
-        setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
+    public static void getDate(Cursor iDate) {
+        while (iDate.moveToNext()){
+        Character character = GameTime.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
+        character.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
+        character.setMoney(iDate.getInt(iDate.getColumnIndex(Info.MONEY)));
+        character.setPrestige(iDate.getInt(iDate.getColumnIndex(Info.PRESTIGE)));
+        character.setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
+        character.setWorkSpace(iDate.getString(iDate.getColumnIndex(Info.MASTER)));
+        character.setSalary(iDate.getInt(iDate.getColumnIndex(Info.salary)));
+        character.setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
+        character.initialization();
+        }
     }
 
     public void wages(){
-        findMaster(Building.findWorkSpace(workSpace).getMaster()).setMoney(findMaster(Building.findWorkSpace(workSpace).getMaster()).getMoney()-getSalary());
+        for (Character character:findMaster(Building.findWorkSpace(workSpace).getMaster(),characters))
+            character.setMoney(character.getMoney()-getSalary());
         setMoney(getMoney()+getSalary());
     }
 
-    //可用泛型
-    public static Character findMaster(String master) {
-        for (Character character:characters)
-            if (master.equals(character.getName()))
-                return character;
-        return null;
+    public static<T extends OwnName> List<T> findMaster(String master,List<T> list) {
+        List things = new ArrayList();
+        for (T thing:list)
+            if (master.equals(thing.getName())) things.add(thing);
+        return things;
     }
 
-    public void findWorker(String buildingName,Item item){
-
-
+    public static void findWorker(String buildingName,Item item){
+        for (Character employee:findMaster(buildingName,characters))
+            if (employee instanceof Employee&&((Employee) employee).work(item))
+                return;
 
     }
 
@@ -168,14 +189,6 @@ public class Character{
 
     public void setGameUI(GameUI gameUI) {
         this.gameUI = gameUI;
-    }
-
-    public List<Building> getAssets() {
-        return assets;
-    }
-
-    public void setAssets(List<Building> assets) {
-        this.assets = assets;
     }
 
     public String getWorkSpace() {

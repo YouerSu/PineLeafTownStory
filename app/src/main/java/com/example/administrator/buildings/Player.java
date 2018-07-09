@@ -9,8 +9,8 @@ public class Player extends Character{
 
     public GameTime timeDate;
 
-    public Player(GameUI gameUI) {
-        super(gameUI);
+    @Override
+    void initialization() {
         timeDate.getTimeDate();
         Timer timer = new Timer();
         timer.schedule(timeDate, 3000L, 2000L);

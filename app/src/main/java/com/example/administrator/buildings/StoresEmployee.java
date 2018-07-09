@@ -3,17 +3,13 @@ package com.example.administrator.buildings;
 
 public class StoresEmployee extends Employee{
 
-
     @Override
-    public void behavior(Character character) {
-
-    }
-
-    @Override
-    public boolean work(Item item,Player master) {
+    public boolean work(Item item) {
         if (item instanceof SellItem) return false;
         item.setTotal(item.getTotal()-1);
-        master.setMoney(master.getMoney() + ((SellItem)item).getSellPrice());
+        for (Character character:findMaster(Building.findWorkSpace(getWorkSpace()).getMaster(),characters))
+            if (character!=null)
+            character.setMoney(character.getMoney() + ((SellItem)item).getSellPrice());
         return true;
     }
 

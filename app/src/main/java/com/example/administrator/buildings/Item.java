@@ -17,9 +17,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-//创建新的类型来这登记一下 XD
-enum Article {Undeveloped,SellItem}
-
 public abstract class Item implements ShowAdapter{
     String name;
     int volume;
@@ -31,10 +28,6 @@ public abstract class Item implements ShowAdapter{
         this.volume = volume;
         this.originalPrice = originalPrice;
         this.total = total;
-    }
-
-    public static Article[] getArticleList() {
-        return Article.values();
     }
 
     public abstract void purchase();

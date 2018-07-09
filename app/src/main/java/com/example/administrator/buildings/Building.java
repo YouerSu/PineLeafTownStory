@@ -5,6 +5,7 @@ package com.example.administrator.buildings;
 import android.database.Cursor;
 
 import com.example.administrator.utils.Info;
+import com.example.administrator.utils.OwnName;
 import com.example.administrator.utils.Sql;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-public class Building {
+public class Building implements OwnName {
     public static List<Building> buildings = new ArrayList<>();
     private String name;
     private int capacity;
@@ -27,9 +28,8 @@ public class Building {
     }
 
     static Building findWorkSpace(String workSpace){
-        for (Building building: buildings)
-            if (workSpace.equals(building.getName()))
-                return building;
+        for (Building building:Character.findMaster(workSpace,buildings))
+            return building;
         return null;
     }
 
@@ -58,6 +58,10 @@ public class Building {
 
     public String getName() {
         return name;
+    }
+
+    public void work(Item item){
+        Character.findWorker(name,item);
     }
 
     public void setName(String name) {

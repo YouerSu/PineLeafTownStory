@@ -22,7 +22,7 @@ public class SellItem extends Item{
 
     public static void createSellItem(String name){
         Sql.operatingSql(new String[]{
-        "create table if not exits "+name+Article.SellItem.name()+"("+Info.NAME+" text,"+Info.sellPrice+" integer)",
+        "create table if not exits "+name+SellItem.class.getName()+"("+Info.NAME+" text,"+Info.sellPrice+" integer)",
         "DELETE FROM " + name + "SellItem"
         });
     }
@@ -35,7 +35,7 @@ public class SellItem extends Item{
 
     @Override
     public void setType(String name) {
-        Cursor cursor = Sql.getCursor(name+Article.SellItem.name(),Info.sellPrice,Info.NAME,new String[]{getName()});
+        Cursor cursor = Sql.getCursor(name+SellItem.class.getName(),Info.sellPrice,Info.NAME,new String[]{getName()});
         sellPrice = Integer.valueOf(cursor.getInt(cursor.getColumnIndex(Info.sellPrice)));
     }
 
@@ -53,7 +53,7 @@ public class SellItem extends Item{
     public void saveDate(String name) {
         createSellItem(name);
         Sql.operatingSql(new String[]{
-        "insert into "+name+Article.SellItem.name()+" ("+ Info.NAME+","+ Info.sellPrice+") values("+getName()+","+sellPrice+")"
+        "insert into "+name+SellItem.class.getName()+" ("+ Info.NAME+","+ Info.sellPrice+") values("+getName()+","+sellPrice+")"
         });
     }
 
