@@ -2,7 +2,6 @@ package com.example.administrator.storeboss;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +14,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -30,13 +28,12 @@ import com.example.administrator.utils.Info;
 import com.example.administrator.utils.MyPagerAdapter;
 import com.example.administrator.utils.ShowAdapter;
 import com.example.administrator.utils.Sql;
-
+import com.example.administrator.buildings.Character;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Game extends AppCompatActivity implements GameUI{
-    public static Player playerDate;
     private static ViewPager pager;
     private static List<View> pagerList = new ArrayList<>();
     private static List<String> titleList = new ArrayList<>();
@@ -50,7 +47,6 @@ public class Game extends AppCompatActivity implements GameUI{
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        playerDate = new Player(this);
         setContentView(R.layout.activity_game);
         Sql.info = Db.setInfo(this);
         getDefaultBuilding();
@@ -61,6 +57,7 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     public ListView showListDialogue(final List<ShowAdapter> items){
+        //接收参数，转化参数，展示参数
         List<Map<String,String>> listItem = new ArrayList<>();
         for (ShowAdapter item:items)
             listItem.add(item.UIPageAdapter());
@@ -73,43 +70,27 @@ public class Game extends AppCompatActivity implements GameUI{
     @Override
     public void showMyOwnListDialogue(final List<ShowAdapter> items) {
         final GameUI UI = this;
-        showListDialogue(items).setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                items.get(i).showMyOwnOnClick(UI, playerDate.getAssets().get(pager.getCurrentItem()));
-            }
-        });
+        showListDialogue(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showMyOwnOnClick(UI));
 
     }
 
     @Override
     public void showNotMyOwnListDialogue(final List<ShowAdapter> items) {
         final GameUI UI = this;
-        showListDialogue(items).setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                items.get(i).showNotMyOwnOnClick(UI,playerDate.getAssets().get(pager.getCurrentItem()));
-            }
-        });
+        showListDialogue(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showNotMyOwnOnClick(UI));
     }
 
     @Override
     public boolean trueOrFalseDialogue(String message) {
         AlertDialog alertDialog = getDialog(R.layout.crystal);
         alertDialog.setTitle(message);
-        alertDialog.setButton(Dialog.BUTTON_POSITIVE, "是", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                choose = true;
-                ok();
-            }
+        alertDialog.setButton(Dialog.BUTTON_POSITIVE, "是", (dialogInterface, i) -> {
+            choose = true;
+            ok();
         });
-        alertDialog.setButton(Dialog.BUTTON_POSITIVE, "否", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                choose = false;
-                ok();
-            }
+        alertDialog.setButton(Dialog.BUTTON_POSITIVE, "否", (dialogInterface, i) -> {
+            choose = false;
+            ok();
         });
 
         waitOk();
@@ -117,7 +98,7 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     public void setBuiling(){
-        for (Building building: playerDate.getAssets()){
+        for (Building building: Building.getBuildings()){
         showBuilding(building.getName(),R.layout.building);
         }
     }
@@ -138,12 +119,9 @@ public class Game extends AppCompatActivity implements GameUI{
         final AlertDialog alertDialog = getInputDialog(messages);
         Window window = alertDialog.getWindow();
         final EditText editText = window.findViewById(R.id.tname);
-        window.findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ok();
-                alertDialog.dismiss();
-            }
+        window.findViewById(R.id.ok).setOnClickListener(view -> {
+            ok();
+            alertDialog.dismiss();
         });
         return editText;
     }
@@ -172,7 +150,7 @@ public class Game extends AppCompatActivity implements GameUI{
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         window.setGravity(Gravity.BOTTOM);
         TextView next;
-        if (message.substring(0,message.indexOf(":")).equals(playerDate.getName())) {
+        if (message.substring(0,message.indexOf(":")).equals(Player.getPlayerName())) {
             //玩家对话框
             next = window.findViewById(R.id.pmessage);
             ImageView npc = window.findViewById(R.id.player);
@@ -208,7 +186,7 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     private static void saveDate(){
-        playerDate.saveDate();
+        Character.saveAllDate();
     }
 
     @Override
@@ -269,9 +247,9 @@ public class Game extends AppCompatActivity implements GameUI{
 
     private void createBuilding() {
 
-        if (playerDate.getMoney()>= Info.BUILDING_PRICE) {
-            playerDate.setMoney(playerDate.getMoney()-Info.BUILDING_PRICE);
-            playerDate.getAssets().add(new  Building("建筑",1,""));
+        if (Player.getPlayerDate().getMoney()>= Info.BUILDING_PRICE) {
+            Player.getPlayerDate().setMoney(Player.getPlayerDate().getMoney()-Info.BUILDING_PRICE);
+            new  Building("建筑",1, Player.getPlayerDate().getName());
             dialogueBox("ada:OK");
         } else
             Toast.makeText(this, "你没有足够的金钱", Toast.LENGTH_SHORT).show();
@@ -282,7 +260,7 @@ public class Game extends AppCompatActivity implements GameUI{
     @Override
     public void refreshUI() {
         String season = null;
-        switch (playerDate.timeDate.getMonth()) {
+        switch (Player.getPlayerDate().timeDate.getMonth()) {
             case 1:
                 season = "春季日";
                 break;
@@ -295,8 +273,8 @@ public class Game extends AppCompatActivity implements GameUI{
             case 4:
                 season = "冬季日";
         }
-    timeView.setText(season + "第" + playerDate.timeDate.getDay() + "天  " + playerDate.timeDate.getHour() + ":" + String.format("%02d", playerDate.timeDate.getMinute()));
-    playerView.setText("云团:" + playerDate.getMoney() + "   声望:" + playerDate.getPrestige());
+    timeView.setText(season + "第" + Player.getPlayerDate().timeDate.getDay() + "天  " + Player.getPlayerDate().timeDate.getHour() + ":" + String.format("%02d", Player.getPlayerDate().timeDate.getMinute()));
+    playerView.setText("云团:" + Player.getPlayerDate().getMoney() + "   声望:" + Player.getPlayerDate().getPrestige());
     }
 }
 

@@ -18,10 +18,7 @@ public class GameTime extends TimerTask {
     private int year;
     private GameUI gameUI;
 
-    public <A extends GameUI>GameTime(A gameUI) {
-        this.gameUI = gameUI;
 
-    }
 
     public static<T> T getType(String className) {
         T article = null;

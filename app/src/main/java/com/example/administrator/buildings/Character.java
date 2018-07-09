@@ -20,7 +20,6 @@ public abstract class Character implements OwnName,ShowAdapter{
     public int money;
     public int prestige;
     public String name;
-    private static GameUI gameUI;
     private int x_coordinate;
     private int salary;
     private String workSpace;
@@ -34,13 +33,13 @@ public abstract class Character implements OwnName,ShowAdapter{
     abstract void initialization();
 
     @Override
-    public void showMyOwnOnClick(GameUI UI, Building building) {
-
+    public void showMyOwnOnClick(GameUI UI) {
+//Building building
     }
 
     @Override
-    public void showNotMyOwnOnClick(GameUI UI, Building building) {
-
+    public void showNotMyOwnOnClick(GameUI UI ) {
+//Building building
     }
 
     public static void getAllDate(GameUI gameUI){
@@ -48,7 +47,6 @@ public abstract class Character implements OwnName,ShowAdapter{
         while (iDate.moveToNext()){
             Building building = null;
             building.getDate(iDate);
-            Building.getBuildings().add(building);
         }
         getDate(Sql.info.getWritableDatabase().rawQuery("select * from "+Info.CHARACTER,null));
     }
@@ -60,9 +58,14 @@ public abstract class Character implements OwnName,ShowAdapter{
     }
 
 
-    public static void saveCharacterDate(String name){
+    public static void saveCharacterDate(){
         for (Character character:characters)
             character.saveDate();
+    }
+
+    public static void saveAllDate() {
+        saveBuildingDate();
+        saveCharacterDate();
     }
 
 
@@ -183,13 +186,6 @@ public abstract class Character implements OwnName,ShowAdapter{
         Character.characters = characters;
     }
 
-    public GameUI getGameUI() {
-        return gameUI;
-    }
-
-    public void setGameUI(GameUI gameUI) {
-        this.gameUI = gameUI;
-    }
 
     public String getWorkSpace() {
         return workSpace;
