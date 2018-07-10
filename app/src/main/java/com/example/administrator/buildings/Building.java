@@ -46,7 +46,7 @@ public class Building implements OwnName {
         setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
         setCapacity(iDate.getInt(iDate.getColumnIndex(Info.capacity)));
         setMaster(iDate.getString(iDate.getColumnIndex(Info.MASTER)));
-        items = Item.getDate(name);
+        items = Item.getSuperDate(name);
         buildings.add(this);
     }
 

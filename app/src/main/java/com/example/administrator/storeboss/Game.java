@@ -49,11 +49,14 @@ public class Game extends AppCompatActivity implements GameUI{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         Sql.info = Db.setInfo(this);
+        Character.getAllDate();
         getDefaultBuilding();
         setText();
         //时间流逝
         timeView = findViewById(R.id.clock);
         playerView = findViewById(R.id.player);
+        //onCreate没跑完不会显示任何UI
+        //Player.getDate();
     }
 
     public ListView showListDialogue(final List<ShowAdapter> items){
@@ -117,6 +120,7 @@ public class Game extends AppCompatActivity implements GameUI{
 
     public EditText getEditText(String messages) {
         final AlertDialog alertDialog = getInputDialog(messages);
+        alertDialog.show();
         Window window = alertDialog.getWindow();
         final EditText editText = window.findViewById(R.id.tname);
         window.findViewById(R.id.ok).setOnClickListener(view -> {
@@ -138,8 +142,8 @@ public class Game extends AppCompatActivity implements GameUI{
         ok = true;
     }
 
-    private void waitOk() {
-        while (!ok) ;
+    private synchronized void waitOk() {
+        while (!ok);
         ok = false;
     }
 
@@ -247,9 +251,9 @@ public class Game extends AppCompatActivity implements GameUI{
 
     private void createBuilding() {
 
-        if (Player.getPlayerDate().getMoney()>= Info.BUILDING_PRICE) {
-            Player.getPlayerDate().setMoney(Player.getPlayerDate().getMoney()-Info.BUILDING_PRICE);
-            new  Building("建筑",1, Player.getPlayerDate().getName());
+        if (Player.getPlayerDate(this).getMoney()>= Info.BUILDING_PRICE) {
+            Player.getPlayerDate(this).setMoney(Player.getPlayerDate(this).getMoney()-Info.BUILDING_PRICE);
+            new  Building("建筑",1, Player.getPlayerDate(this).getName());
             dialogueBox("ada:OK");
         } else
             Toast.makeText(this, "你没有足够的金钱", Toast.LENGTH_SHORT).show();
@@ -260,7 +264,7 @@ public class Game extends AppCompatActivity implements GameUI{
     @Override
     public void refreshUI() {
         String season = null;
-        switch (Player.getPlayerDate().timeDate.getMonth()) {
+        switch (Player.getPlayerDate(this).timeDate.getMonth()) {
             case 1:
                 season = "春季日";
                 break;
@@ -273,8 +277,8 @@ public class Game extends AppCompatActivity implements GameUI{
             case 4:
                 season = "冬季日";
         }
-    timeView.setText(season + "第" + Player.getPlayerDate().timeDate.getDay() + "天  " + Player.getPlayerDate().timeDate.getHour() + ":" + String.format("%02d", Player.getPlayerDate().timeDate.getMinute()));
-    playerView.setText("云团:" + Player.getPlayerDate().getMoney() + "   声望:" + Player.getPlayerDate().getPrestige());
+    timeView.setText(season + "第" + Player.getPlayerDate(this).timeDate.getDay() + "天  " + Player.getPlayerDate(this).timeDate.getHour() + ":" + String.format("%02d", Player.getPlayerDate(this).timeDate.getMinute()));
+    playerView.setText("云团:" + Player.getPlayerDate(this).getMoney() + "   声望:" + Player.getPlayerDate(this).getPrestige());
     }
 }
 

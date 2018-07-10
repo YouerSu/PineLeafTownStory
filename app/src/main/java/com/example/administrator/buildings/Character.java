@@ -42,8 +42,9 @@ public abstract class Character implements OwnName,ShowAdapter{
 //Building building
     }
 
-    public static void getAllDate(GameUI gameUI){
+    public static void getAllDate(){
         Cursor iDate = Sql.getCursorAllInformation(Info.BUILDING);
+        if (iDate!=null)
         while (iDate.moveToNext()){
             Building building = null;
             building.getDate(iDate);
@@ -55,6 +56,12 @@ public abstract class Character implements OwnName,ShowAdapter{
         Sql.operatingSql(new String[]{"DELETE FROM "+Info.BUILDING});
         for (Building building: Building.getBuildings())
             building.saveDate();
+    }
+
+    public static<T> T getFirstMaster(List<T> list){
+        for (T master:list)
+            return master;
+        return null;
     }
 
 

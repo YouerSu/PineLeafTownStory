@@ -38,16 +38,12 @@ public class Sql extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-//    db.execSQL
-//    ("create table if not exists "+Info.PLAYER+"(" +Info.NAME+" text not null,"+Info.MONEY+" integer,"+Info.PRESTIGE+" integer," +Info.coordinate+" integer)");
     db.execSQL
     ("create table if not exists "+Info.CHARACTER+"(" +Info.NAME+" text not null,"+Info.MONEY+" integer,"+Info.PRESTIGE+" integer," +Info.coordinate+" integer,"+Info.salary+" integer,"+Info.MASTER+" text)");
     db.execSQL
-    ("create table if not exists "+Info.DIFFERENT_WORLD+"("+Info.NAME+" text,"+Info.MINUTE+ " integer,"+Info.HOUR+" integer,"+Info.DAY+" integer,"+Info.MONTH+" integer,"+Info.YEAR+ " integer)");
+    ("create table if not exists "+Info.TIME+"("+Info.MINUTE+ " integer,"+Info.HOUR+" integer,"+Info.DAY+" integer,"+Info.MONTH+" integer,"+Info.YEAR+ " integer)");
     db.execSQL
-    ("insert into "+Info.PLAYER +"("+Info.NAME +","+Info.MONEY +","+Info.PRESTIGE + ","+Info.coordinate+ ") values(null,0,0,0)");
-    db.execSQL
-    ("insert into "+Info.DIFFERENT_WORLD+"("+Info.NAME+","+Info.MINUTE+"," +Info.HOUR +","+Info.DAY +"," +Info.MONTH +","+Info.YEAR +") " + "values " + "("+Info.PLACE_NAME+",10,7,3)");
+    ("insert into "+Info.TIME+"("+Info.MINUTE+"," +Info.HOUR +","+Info.DAY +"," +Info.MONTH +","+Info.YEAR +")" + "values" + "(10,7,3,1,1)");
     db.execSQL
     ("create table if not exists "+Info.BUILDING+"(" +Info.NAME +" text," +Info.MASTER +" text,"+Info.capacity+" integer)");
     }

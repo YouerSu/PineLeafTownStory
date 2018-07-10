@@ -2,6 +2,8 @@ package com.example.administrator.buildings;
 
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.GameUI;
+import com.example.administrator.utils.Info;
+import com.example.administrator.utils.Sql;
 
 import java.util.Timer;
 
@@ -28,14 +30,19 @@ public class Player extends Character{
         return playerName;
     }
 
-    public static Player getPlayerDate() {
-        for (Character character:findMaster(playerName,characters))
-            if (character instanceof Player)
-                return (Player)character;
-        return null;
-    }
-
-    public static void setPlayerName(String name) {
+    public static Player getPlayerDate(GameUI gameUI) {
+        Character character = getFirstMaster(findMaster(playerName,characters));
+            if (character ==null) {
+                character = new Player();
+                String name = gameUI.reName("输入你的名字");
+                //判断是否重复
+                character.setName(name);
+                Sql.operatingSql(new String[]{
+                "insert into "+ Info.CHARACTER +"("+Info.NAME +","+Info.MONEY +","+Info.PRESTIGE + ","+Info.coordinate+ ") values("+name+",0,0,0)"
+                });
+                Character.characters.add(character);
+            }
+        return (Player)character;
 
     }
 

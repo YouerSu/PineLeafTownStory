@@ -40,5 +40,7 @@ public final class Info {
     LT3 ="lt3" ,
     STATUS ="status",
     CHARACTER = "Character",
-    MASTER = "Master";
+    MASTER = "Master",
+    ITEM = "Item",
+    TIME = "Time";
 }
