@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.administrator.buildings.Player;
+
 import static com.example.administrator.utils.Info.capacity;
 import static com.example.administrator.utils.Info.customer;
 
@@ -20,11 +22,8 @@ public class Sql extends SQLiteOpenHelper{
     //用于执行Sql语句;
     public static void operatingSql(String statements[]) {
         SQLiteDatabase db = info.getWritableDatabase();
-        db.beginTransaction();
-        for (int count = 0;count<statements.length;count++)
-        db.execSQL(statements[count]);
-        db.setTransactionSuccessful();
-        db.endTransaction();
+        for (String sql:statements)
+        db.execSQL(sql);
         db.close();
     }
 
@@ -39,13 +38,15 @@ public class Sql extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
     db.execSQL
-    ("create table if not exists "+Info.CHARACTER+"(" +Info.NAME+" text not null,"+Info.MONEY+" integer,"+Info.PRESTIGE+" integer," +Info.coordinate+" integer,"+Info.salary+" integer,"+Info.MASTER+" text)");
+    ("create table if not exists "+Info.CHARACTER+"(" +Info.id+" text," +Info.NAME+" text,"+Info.MONEY+" integer,"+Info.PRESTIGE+" integer," +Info.coordinate+" integer,"+Info.salary+" integer,"+Info.MASTER+" text)");
     db.execSQL
-    ("create table if not exists "+Info.TIME+"("+Info.MINUTE+ " integer,"+Info.HOUR+" integer,"+Info.DAY+" integer,"+Info.MONTH+" integer,"+Info.YEAR+ " integer)");
+    ("insert into "+Info.CHARACTER+" ("+Info.id +","+Info.NAME +","+Info.MONEY +","+Info.PRESTIGE + ","+Info.coordinate+ ","+Info.salary+ ","+Info.MASTER+ ") values ('"+ Player.class.getName()+"','You',0,0,0,3000,'You')");
     db.execSQL
-    ("insert into "+Info.TIME+"("+Info.MINUTE+"," +Info.HOUR +","+Info.DAY +"," +Info.MONTH +","+Info.YEAR +")" + "values" + "(10,7,3,1,1)");
+    ("create table if not exists "+Info.TIME+" ("+Info.MINUTE+ " integer,"+Info.HOUR+" integer,"+Info.DAY+" integer,"+Info.MONTH+" integer,"+Info.YEAR+ " integer)");
     db.execSQL
-    ("create table if not exists "+Info.BUILDING+"(" +Info.NAME +" text," +Info.MASTER +" text,"+Info.capacity+" integer)");
+    ("insert into "+Info.TIME+" ("+Info.MINUTE+"," +Info.HOUR +","+Info.DAY +"," +Info.MONTH +","+Info.YEAR +") values (10,7,3,1,1)");
+    db.execSQL
+    ("create table if not exists "+Info.BUILDING+" (" +Info.NAME +" text," +Info.MASTER +" text,"+Info.capacity+" integer)");
     }
 
     @Override

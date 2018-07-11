@@ -2,6 +2,8 @@ package com.example.administrator.storeboss;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Game extends AppCompatActivity implements GameUI{
+
     private static ViewPager pager;
     private static List<View> pagerList = new ArrayList<>();
     private static List<String> titleList = new ArrayList<>();
@@ -42,6 +45,7 @@ public class Game extends AppCompatActivity implements GameUI{
     private static long mExitTime;
     boolean ok = false;
     boolean choose = false;
+    Handler handler;
 
 
     @Override
@@ -49,14 +53,34 @@ public class Game extends AppCompatActivity implements GameUI{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         Sql.info = Db.setInfo(this);
-        Character.getAllDate();
         getDefaultBuilding();
         setText();
         //时间流逝
+        Character.getAllDate();
+        Player.createPlayerDate(this);
         timeView = findViewById(R.id.clock);
-        playerView = findViewById(R.id.player);
-        //onCreate没跑完不会显示任何UI
-        //Player.getDate();
+        playerView = findViewById(R.id.playerDate);
+        handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                String season = null;
+                switch (Player.getPlayerDate().timeDate.getMonth()) {
+                    case 1:
+                        season = "春季日";
+                        break;
+                    case 2:
+                        season = "夏季日";
+                        break;
+                    case 3:
+                        season = "秋季日";
+                        break;
+                    case 4:
+                        season = "冬季日";
+                }
+                timeView.setText(season + "第" + Player.getPlayerDate().timeDate.getDay() + "天  " + Player.getPlayerDate().timeDate.getHour() + ":" + String.format("%02d", Player.getPlayerDate().timeDate.getMinute())+"   ");
+                playerView.setText("云团:" + Player.getPlayerDate().getMoney() + "   声望:" + Player.getPlayerDate().getPrestige());
+            }
+        };
     }
 
     public ListView showListDialogue(final List<ShowAdapter> items){
@@ -112,30 +136,31 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     @Override
-    public String reName(String messages) {
-        EditText editText = getEditText(messages);
-        waitOk();
-        return editText.getText().toString();
+    public<T> void reName(String messages,T[] name) {
+        AlertDialog alertDialog = getEditDialog(messages);
+        alertDialog.findViewById(R.id.ok).setOnClickListener((view)->{
+            try {
+                name[0] = (T)((EditText)(alertDialog.findViewById(R.id.tname))).getText().toString();
+                alertDialog.dismiss();
+            }catch (ClassCastException e){
+                Toast.makeText(this,"您输入的字符不符合格式",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    public EditText getEditText(String messages) {
+    public AlertDialog getEditDialog(String messages) {
         final AlertDialog alertDialog = getInputDialog(messages);
-        alertDialog.show();
         Window window = alertDialog.getWindow();
         final EditText editText = window.findViewById(R.id.tname);
-        window.findViewById(R.id.ok).setOnClickListener(view -> {
-            ok();
-            alertDialog.dismiss();
-        });
-        return editText;
+        return alertDialog;
     }
 
     @Override
     public int reAmount(String message) {
-        EditText editText = getEditText(message);
-        editText.setRawInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        AlertDialog alertDialog = getEditDialog(message);
+        ((EditText)(alertDialog.findViewById(R.id.tname))).setRawInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_NORMAL);
         waitOk();
-        return Integer.valueOf(editText.getText().toString());
+        return Integer.valueOf(((EditText)(alertDialog.findViewById(R.id.tname))).getText().toString());
     }
 
     private void ok() {
@@ -157,7 +182,7 @@ public class Game extends AppCompatActivity implements GameUI{
         if (message.substring(0,message.indexOf(":")).equals(Player.getPlayerName())) {
             //玩家对话框
             next = window.findViewById(R.id.pmessage);
-            ImageView npc = window.findViewById(R.id.player);
+            ImageView npc = window.findViewById(R.id.playerDate);
             npc.setImageResource(R.drawable.ic_launcher_background);
         } else {
             //NPC对话框
@@ -251,9 +276,9 @@ public class Game extends AppCompatActivity implements GameUI{
 
     private void createBuilding() {
 
-        if (Player.getPlayerDate(this).getMoney()>= Info.BUILDING_PRICE) {
-            Player.getPlayerDate(this).setMoney(Player.getPlayerDate(this).getMoney()-Info.BUILDING_PRICE);
-            new  Building("建筑",1, Player.getPlayerDate(this).getName());
+        if (Player.getPlayerDate().getMoney()>= Info.BUILDING_PRICE) {
+            Player.getPlayerDate().setMoney(Player.getPlayerDate().getMoney()-Info.BUILDING_PRICE);
+            new  Building("建筑",1, Player.getPlayerDate().getName());
             dialogueBox("ada:OK");
         } else
             Toast.makeText(this, "你没有足够的金钱", Toast.LENGTH_SHORT).show();
@@ -263,22 +288,7 @@ public class Game extends AppCompatActivity implements GameUI{
 
     @Override
     public void refreshUI() {
-        String season = null;
-        switch (Player.getPlayerDate(this).timeDate.getMonth()) {
-            case 1:
-                season = "春季日";
-                break;
-            case 2:
-                season = "夏季日";
-                break;
-            case 3:
-                season = "秋季日";
-                break;
-            case 4:
-                season = "冬季日";
-        }
-    timeView.setText(season + "第" + Player.getPlayerDate(this).timeDate.getDay() + "天  " + Player.getPlayerDate(this).timeDate.getHour() + ":" + String.format("%02d", Player.getPlayerDate(this).timeDate.getMinute()));
-    playerView.setText("云团:" + Player.getPlayerDate(this).getMoney() + "   声望:" + Player.getPlayerDate(this).getPrestige());
+        handler.sendEmptyMessage(0);
     }
 }
 

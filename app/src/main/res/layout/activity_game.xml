@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.administrator.storeboss.Game">
 
     <LinearLayout
@@ -22,7 +21,7 @@
 
         <TextView
             android:textSize="16dp"
-            android:id="@+id/player"
+            android:id="@+id/playerDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

@@ -35,6 +35,7 @@ public abstract class Character implements OwnName,ShowAdapter{
     @Override
     public void showMyOwnOnClick(GameUI UI) {
 //Building building
+
     }
 
     @Override
@@ -91,8 +92,8 @@ public abstract class Character implements OwnName,ShowAdapter{
         character.setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
         character.setWorkSpace(iDate.getString(iDate.getColumnIndex(Info.MASTER)));
         character.setSalary(iDate.getInt(iDate.getColumnIndex(Info.salary)));
-        character.setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
         character.initialization();
+        characters.add(character);
         }
     }
 
@@ -103,9 +104,10 @@ public abstract class Character implements OwnName,ShowAdapter{
     }
 
     public static<T extends OwnName> List<T> findMaster(String master,List<T> list) {
-        List things = new ArrayList();
+        List<T> things = new ArrayList();
         for (T thing:list)
-            if (master.equals(thing.getName())) things.add(thing);
+            if (thing.getName()!=null&&master!=null&&master.equals(thing.getName()))
+                things.add(thing);
         return things;
     }
 

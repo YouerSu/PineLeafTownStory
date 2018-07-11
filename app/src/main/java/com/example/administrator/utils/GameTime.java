@@ -19,6 +19,9 @@ public class GameTime extends TimerTask {
     private GameUI gameUI;
 
 
+    public GameTime(GameUI gameUI) {
+        this.gameUI = gameUI;
+    }
 
     public static<T> T getType(String className) {
         T article = null;
@@ -55,21 +58,22 @@ public class GameTime extends TimerTask {
     public boolean getTimeDate() {
 
         SQLiteDatabase data = Sql.info.getWritableDatabase();
-        Cursor iDate = data.query(Info.DIFFERENT_WORLD, null, Info.NAME + "=?", new String[]{Info.PLACE_NAME}, null, null, null);
+        Cursor iDate = Sql.getCursorAllInformation(Info.TIME);
+        if (iDate==null) return false;
+        while (iDate.moveToNext()){
+        //事实证明Curson的指针是从第一条数据的前一个开始的
         setMinute(iDate.getInt(iDate.getColumnIndex(Info.MINUTE)));
         setHour(iDate.getInt(iDate.getColumnIndex(Info.HOUR)));
         setDay(iDate.getInt(iDate.getColumnIndex(Info.DAY)));
         setMonth(iDate.getInt(iDate.getColumnIndex(Info.MONTH)));
         setYear(iDate.getInt(iDate.getColumnIndex(Info.YEAR)));
-        data.setTransactionSuccessful();
-        data.endTransaction();
+        }
         return true;
     }
 
 
     @Override
     public void run() {
-
         setMinute(getMinute()+2);
         if (getMinute() >= 60) {
             setMinute(0);
@@ -88,7 +92,7 @@ public class GameTime extends TimerTask {
                 }
             }
         }
-                gameUI.refreshUI();
+        gameUI.refreshUI();
     }
 
     public void setTime(){

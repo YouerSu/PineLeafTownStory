@@ -12,7 +12,7 @@ public interface GameUI {
 
     void dayHarvest();
 
-    String reName(String message);
+    <T> void reName(String message,T[] list);
 
     int reAmount(String message);
 

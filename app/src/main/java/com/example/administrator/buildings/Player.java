@@ -1,8 +1,11 @@
 package com.example.administrator.buildings;
 
+import android.support.annotation.NonNull;
+
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.GameUI;
 import com.example.administrator.utils.Info;
+import com.example.administrator.utils.Response;
 import com.example.administrator.utils.Sql;
 
 import java.util.Timer;
@@ -14,6 +17,11 @@ public class Player extends Character{
 
     @Override
     void initialization() {
+        playerName = name;
+    }
+
+    private void setTimeDate(GameUI gameUI) {
+        timeDate = new GameTime(gameUI);
         timeDate.getTimeDate();
         Timer timer = new Timer();
         timer.schedule(timeDate, 3000L, 2000L);
@@ -30,19 +38,37 @@ public class Player extends Character{
         return playerName;
     }
 
-    public static Player getPlayerDate(GameUI gameUI) {
+    public static Player getPlayerDate() {
         Character character = getFirstMaster(findMaster(playerName,characters));
-            if (character ==null) {
-                character = new Player();
-                String name = gameUI.reName("输入你的名字");
-                //判断是否重复
-                character.setName(name);
-                Sql.operatingSql(new String[]{
-                "insert into "+ Info.CHARACTER +"("+Info.NAME +","+Info.MONEY +","+Info.PRESTIGE + ","+Info.coordinate+ ") values("+name+",0,0,0)"
-                });
-                Character.characters.add(character);
-            }
         return (Player)character;
+
+    }
+
+    public static void createPlayerDate(GameUI gameUI) {
+        Character character = getFirstMaster(findMaster(playerName,characters));
+        if (character instanceof Player)
+        ((Player)character).setTimeDate(gameUI);
+        return;
+//        character = new Player();
+//        String[]name =new String[1];
+//        gameUI.reName("输入你的名字",name);
+//        //判断是否重复
+//        Character finalCharacter = character;
+//        new Response<String>(name){
+//            @Override
+//            public void run() {
+//                while (name[0] == null);
+//                    finalCharacter.setName(name[0]);
+//                Sql.operatingSql(new String[]{
+//                        "insert into "+ Info.CHARACTER +"("+Info.NAME +","+Info.MONEY +","+Info.PRESTIGE + ","+Info.coordinate+ ")values("+name[0]+",0,0,0)"
+//                });
+//                finalCharacter.initialization();
+//                Character.characters.add(finalCharacter);
+//                createPlayerDate(gameUI);
+//                gameUI.dialogueBox("设置成功");
+//                interrupted();
+//            }
+//        }.start();
 
     }
 
