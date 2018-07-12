@@ -1,9 +1,11 @@
 package com.example.administrator.storeboss;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.administrator.buildings.Building;
+import com.example.administrator.buildings.Item;
 import com.example.administrator.buildings.Player;
 import com.example.administrator.utils.Db;
 import com.example.administrator.utils.GameUI;
@@ -37,17 +40,18 @@ import java.util.Map;
 
 public class Game extends AppCompatActivity implements GameUI{
 
-    private static ViewPager pager;
+    private ViewPager pager;
     private static List<View> pagerList = new ArrayList<>();
     private static List<String> titleList = new ArrayList<>();
-    static TextView timeView;
-    static TextView playerView;
+    TextView timeView;
+    TextView playerView;
     private static long mExitTime;
     boolean ok = false;
     boolean choose = false;
-    Handler handler;
+    static Handler handler;
 
 
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -60,6 +64,16 @@ public class Game extends AppCompatActivity implements GameUI{
         Player.createPlayerDate(this);
         timeView = findViewById(R.id.clock);
         playerView = findViewById(R.id.playerDate);
+        findViewById(R.id.showItem).setOnClickListener((view)->{
+            List<Map<String ,String >> list = new ArrayList<>();
+            try {
+                for (Character character:Character.getCharacters())
+                    list.add(character.UIPageAdapter());
+                for (Item item:Building.getBuildings().get(pager.getCurrentItem()).getItems())
+                    list.add(item.UIPageAdapter()) ;
+            }catch (IndexOutOfBoundsException e){}
+            getListView(list);
+        });
         handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -77,19 +91,25 @@ public class Game extends AppCompatActivity implements GameUI{
                     case 4:
                         season = "冬季日";
                 }
-                timeView.setText(season + "第" + Player.getPlayerDate().timeDate.getDay() + "天  " + Player.getPlayerDate().timeDate.getHour() + ":" + String.format("%02d", Player.getPlayerDate().timeDate.getMinute())+"   ");
-                playerView.setText("云团:" + Player.getPlayerDate().getMoney() + "   声望:" + Player.getPlayerDate().getPrestige());
+                timeView.setText(String.format("%s第%d天  %d:%02d",season,Player.getPlayerDate().timeDate.getDay(),Player.getPlayerDate().timeDate.getHour(), Player.getPlayerDate().timeDate.getMinute()));
+                playerView.setText(String.format("云团:%d   声望:%d",Player.getPlayerDate().getMoney(),Player.getPlayerDate().getPrestige()));
             }
         };
     }
 
-    public ListView showListDialogue(final List<ShowAdapter> items){
+    public ListView changeList(final List<ShowAdapter> items){
         //接收参数，转化参数，展示参数
         List<Map<String,String>> listItem = new ArrayList<>();
         for (ShowAdapter item:items)
             listItem.add(item.UIPageAdapter());
-        SimpleAdapter sa = new SimpleAdapter(this,listItem,R.layout.item_list,new String[]{Info.NAME,Info.LT1,Info.LT2,Info.LT3},new int[]{R.id.name,R.id.lt1,R.id.lt2,R.id.lt3});
-        ListView list = findViewById(R.id.stockList);
+        return getListView(listItem);
+    }
+
+
+    public ListView getListView(List<Map<String, String>> listItem) {
+        SimpleAdapter sa = new SimpleAdapter(this,listItem, R.layout.item_list,new String[]{Info.NAME,Info.LT1,Info.LT2,Info.LT3},new int[]{R.id.name,R.id.lt1,R.id.lt2,R.id.lt3});
+        AlertDialog alertDialog = getDialog(R.layout.activity_show_stock);
+        ListView list = alertDialog.getWindow().findViewById(R.id.stockList);
         list.setAdapter(sa);
         return list;
     }
@@ -97,14 +117,14 @@ public class Game extends AppCompatActivity implements GameUI{
     @Override
     public void showMyOwnListDialogue(final List<ShowAdapter> items) {
         final GameUI UI = this;
-        showListDialogue(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showMyOwnOnClick(UI));
+        changeList(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showMyOwnOnClick(UI));
 
     }
 
     @Override
     public void showNotMyOwnListDialogue(final List<ShowAdapter> items) {
         final GameUI UI = this;
-        showListDialogue(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showNotMyOwnOnClick(UI));
+        changeList(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showNotMyOwnOnClick(UI));
     }
 
     @Override
@@ -268,7 +288,7 @@ public class Game extends AppCompatActivity implements GameUI{
 
     private AlertDialog getDialog(int layout) {
         //创建Dialog
-        final AlertDialog alertDialog = new AlertDialog.Builder(this).setCancelable(false).create();
+        final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.show();
         alertDialog.setContentView(layout);
         return alertDialog;

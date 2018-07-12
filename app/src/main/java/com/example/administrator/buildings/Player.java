@@ -1,12 +1,7 @@
 package com.example.administrator.buildings;
 
-import android.support.annotation.NonNull;
-
 import com.example.administrator.utils.GameTime;
 import com.example.administrator.utils.GameUI;
-import com.example.administrator.utils.Info;
-import com.example.administrator.utils.Response;
-import com.example.administrator.utils.Sql;
 
 import java.util.Timer;
 

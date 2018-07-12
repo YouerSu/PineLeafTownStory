@@ -88,7 +88,7 @@ public abstract class Item implements ShowAdapter{
 
     @Override
     public Map<String, String> UIPageAdapter() {
-        return GameTime.getAdapterMap(getName(),"体积:"+ getVolume(),"价格" + getOriginalPrice(),"总量:"+ getTotal());
+        return GameUI.getAdapterMap(getName(),"体积:"+ getVolume(),"价格" + getOriginalPrice(),"总量:"+ getTotal());
     }
 
     @Override
@@ -141,7 +141,7 @@ public abstract class Item implements ShowAdapter{
         Cursor iDate = Sql.getCursorAllInformation(name+Info.ITEM);
         while (iDate.moveToNext()){
         Item article = GameTime.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
-        HashMap<String,Item> articles = getAllItems("res\\xml\\"+iDate.getString(iDate.getColumnIndex(Info.id))+".xml");
+        HashMap<String,Item> articles = getAllItems("res\\xml\\"+iDate.getString(iDate.getColumnIndex(Info.id)).substring(iDate.getString(iDate.getColumnIndex(Info.id)).lastIndexOf(".")+1)+".xml");
         article.setWorkSpace(name);
         article.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
         article.setTotal(iDate.getInt(iDate.getColumnIndex(Info.total)));

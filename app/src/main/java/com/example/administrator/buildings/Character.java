@@ -27,7 +27,7 @@ public abstract class Character implements OwnName,ShowAdapter{
 
     @Override
     public Map<String, String> UIPageAdapter() {
-        return null;
+        return GameUI.getAdapterMap(name,"薪水："+salary,"工作地点："+workSpace,"职业："+getClass().getName().substring(getClass().getName().lastIndexOf(".")+1));
     }
 
     abstract void initialization();
@@ -79,7 +79,7 @@ public abstract class Character implements OwnName,ShowAdapter{
 
     public void saveDate(){
         Sql.operatingSql(new String[]{
-        "update "+Info.CHARACTER+" set  "+Info.MONEY+" = "+money+" "+Info.PRESTIGE+" = "+prestige+" "+Info.PRESTIGE+" = "+x_coordinate+" "+Info.salary+" = "+salary+" "+Info.MASTER+" = "+ workSpace +" where "+Info.NAME+" = "+ name
+        "update "+Info.CHARACTER+" set  "+Info.id+" = "+getClass().getName()+" "+Info.MONEY+" = "+money+" "+Info.PRESTIGE+" = "+prestige+" "+Info.PRESTIGE+" = "+x_coordinate+" "+Info.salary+" = "+salary+" "+Info.MASTER+" = "+ workSpace +" where "+Info.NAME+" = "+ name
         });
     }
 
