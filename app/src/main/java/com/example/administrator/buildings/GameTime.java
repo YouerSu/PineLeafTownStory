@@ -1,11 +1,11 @@
-package com.example.administrator.utils;
+package com.example.administrator.buildings;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.NonNull;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.example.administrator.utils.Info;
+import com.example.administrator.utils.Sql;
+
 import java.util.TimerTask;
 
 public class GameTime extends TimerTask {
@@ -43,7 +43,7 @@ public class GameTime extends TimerTask {
 
     public void saveDate(){
         Sql.operatingSql(new String[]{
-        "update "+Info.DIFFERENT_WORLD+" set "+Info.MINUTE+" = "+getMinute()+" "+Info.HOUR+" = "+getHour()+ " "+Info.DAY+" = "+getDay()+" "+Info.MONTH+" = "+getMonth()+ " "+Info.YEAR+" = "+getYear()+" where "+Info.MINUTE+" = "+minute
+        "update "+ Info.DIFFERENT_WORLD+" set "+Info.MINUTE+" = "+getMinute()+" "+Info.HOUR+" = "+getHour()+ " "+Info.DAY+" = "+getDay()+" "+Info.MONTH+" = "+getMonth()+ " "+Info.YEAR+" = "+getYear()+" where "+Info.MINUTE+" = "+minute
         });
     }
 

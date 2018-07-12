@@ -1,6 +1,6 @@
-package com.example.administrator.utils;
+package com.example.administrator.buildings;
 
-import com.example.administrator.buildings.Building;
+import com.example.administrator.buildings.GameUI;
 
 import java.util.Map;
 

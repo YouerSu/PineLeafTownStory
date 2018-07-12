@@ -1,4 +1,4 @@
-package com.example.administrator.buildings;
+package com.example.administrator.Item;
 
 import android.database.Cursor;
 
@@ -9,7 +9,7 @@ import org.dom4j.Element;
 
 import java.util.HashMap;
 
-public class SellItem extends Item{
+public class SellItem extends Item {
 
     private int sellPrice;
     private int popular;
@@ -30,7 +30,7 @@ public class SellItem extends Item{
 
     @Override
     public void getDate(HashMap<String,Item> articles) {
-        popular = ((SellItem)articles.get(name)).getPopular();
+        popular = ((SellItem)articles.get(getName())).getPopular();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class SellItem extends Item{
     }
 
     @Override
-    public void getDate(Element element) {
+    public void getXMLDate(Element element) {
         this.popular = Integer.valueOf(element.elementText("popular"));
     }
 

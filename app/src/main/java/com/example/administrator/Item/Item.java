@@ -1,11 +1,13 @@
-package com.example.administrator.buildings;
+package com.example.administrator.Item;
 
 import android.database.Cursor;
 
-import com.example.administrator.utils.GameTime;
-import com.example.administrator.utils.GameUI;
+import com.example.administrator.Character.Character;
+import com.example.administrator.buildings.Building;
+import com.example.administrator.buildings.GameTime;
+import com.example.administrator.buildings.GameUI;
 import com.example.administrator.utils.Info;
-import com.example.administrator.utils.ShowAdapter;
+import com.example.administrator.buildings.ShowAdapter;
 import com.example.administrator.utils.Sql;
 
 import org.dom4j.Document;
@@ -18,11 +20,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 public abstract class Item implements ShowAdapter{
-    String name;
-    String workSpace;
-    int volume;
-    int originalPrice;
-    int total;
+    private String name;
+    private String workSpace;
+    private int volume;
+    private int originalPrice;
+    private int total;
 
     public Item(String name, int volume, int originalPrice, int total) {
         this.name = name;
@@ -33,12 +35,13 @@ public abstract class Item implements ShowAdapter{
 
     public abstract void purchase();
 
-    public abstract void getDate(Element element);
-
+    //从XML读取额外数据
+    public abstract void getXMLDate(Element element);
+    //从SQL中读取数据
     public abstract void getDate(String name, String ItemName);
 
     public abstract void saveDate(String tableName);
-
+    //从数据集合中读取额外数据
     public abstract void getDate(HashMap<String,Item> articles);
 
     public void saveSuperDate(String name){
@@ -97,7 +100,7 @@ public abstract class Item implements ShowAdapter{
             int amount = UI.reAmount("输入移除的数量");
             if (amount<=0) return;
             setTotal(getTotal() - amount);
-            Character.getFirstMaster(Character.findMaster(getWorkSpace(),Building.buildings)).removeItem(this);
+            Character.getFirstMaster(Character.findMaster(getWorkSpace(), Building.buildings)).removeItem(this);
             UI.dialogueBox("移除成功");
     }
 
@@ -126,7 +129,7 @@ public abstract class Item implements ShowAdapter{
                 article.setOriginalPrice(Integer.valueOf(item.elementText("original")));
                 article.setTotal(Integer.valueOf(item.elementText("total")));
                 article.setVolume(Integer.valueOf(item.elementText("volume")));
-                article.getDate(item);
+                article.getXMLDate(item);
                 items.put(article.name,article);
             }
         } catch (DocumentException e) {

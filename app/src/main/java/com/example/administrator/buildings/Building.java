@@ -4,6 +4,8 @@ package com.example.administrator.buildings;
 
 import android.database.Cursor;
 
+import com.example.administrator.Character.Character;
+import com.example.administrator.Item.Item;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.OwnName;
 import com.example.administrator.utils.Sql;
@@ -27,8 +29,8 @@ public class Building implements OwnName {
         buildings.add(this);
     }
 
-    static Building findWorkSpace(String workSpace){
-        for (Building building:Character.findMaster(workSpace,buildings))
+    public static Building findWorkSpace(String workSpace){
+        for (Building building: Character.findMaster(workSpace,buildings))
             return building;
         return null;
     }

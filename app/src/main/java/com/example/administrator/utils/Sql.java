@@ -6,10 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.administrator.buildings.Player;
-
-import static com.example.administrator.utils.Info.capacity;
-import static com.example.administrator.utils.Info.customer;
+import com.example.administrator.Character.Player;
 
 public class Sql extends SQLiteOpenHelper{
     //数据

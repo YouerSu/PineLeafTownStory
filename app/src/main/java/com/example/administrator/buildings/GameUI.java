@@ -1,8 +1,6 @@
-package com.example.administrator.utils;
+package com.example.administrator.buildings;
 
-import android.widget.TextView;
-
-import com.example.administrator.buildings.Building;
+import com.example.administrator.utils.Info;
 
 import java.util.HashMap;
 import java.util.List;

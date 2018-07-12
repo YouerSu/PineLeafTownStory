@@ -1,8 +1,11 @@
-package com.example.administrator.buildings;
+package com.example.administrator.Character;
 
 
+import com.example.administrator.Item.Item;
+import com.example.administrator.Item.SellItem;
+import com.example.administrator.buildings.Building;
 
-public class StoresEmployee extends Employee{
+public class StoresEmployee extends Employee {
 
     @Override
     public boolean work(Item item) {

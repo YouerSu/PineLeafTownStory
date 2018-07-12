@@ -1,11 +1,11 @@
-package com.example.administrator.buildings;
+package com.example.administrator.Character;
 
-import com.example.administrator.utils.GameTime;
-import com.example.administrator.utils.GameUI;
+import com.example.administrator.buildings.GameTime;
+import com.example.administrator.buildings.GameUI;
 
 import java.util.Timer;
 
-public class Player extends Character{
+public class Player extends Character {
 
     public GameTime timeDate;
     private static String playerName;

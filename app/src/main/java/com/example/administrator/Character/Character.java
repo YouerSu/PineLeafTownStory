@@ -1,15 +1,16 @@
-package com.example.administrator.buildings;
+package com.example.administrator.Character;
 
 import android.database.Cursor;
 
-import com.example.administrator.utils.GameTime;
-import com.example.administrator.utils.GameUI;
+import com.example.administrator.buildings.Building;
+import com.example.administrator.Item.Item;
+import com.example.administrator.buildings.GameTime;
+import com.example.administrator.buildings.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.OwnName;
-import com.example.administrator.utils.ShowAdapter;
+import com.example.administrator.buildings.ShowAdapter;
 import com.example.administrator.utils.Sql;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -113,7 +114,7 @@ public abstract class Character implements OwnName,ShowAdapter{
 
     public static void findWorker(String buildingName,Item item){
         for (Character employee:findMaster(buildingName,characters))
-            if (employee instanceof Employee&&((Employee) employee).work(item))
+            if (employee instanceof Employee &&((Employee) employee).work(item))
                 return;
 
     }
