@@ -1,8 +1,8 @@
-package com.example.administrator.Character;
+package com.example.administrator.character;
 
 
-import com.example.administrator.Item.Item;
-import com.example.administrator.Item.SellItem;
+import com.example.administrator.item.Item;
+import com.example.administrator.item.SellItem;
 import com.example.administrator.buildings.Building;
 
 public class StoresEmployee extends Employee {

@@ -1,4 +1,4 @@
-package com.example.administrator.Character;
+package com.example.administrator.character;
 
 import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;

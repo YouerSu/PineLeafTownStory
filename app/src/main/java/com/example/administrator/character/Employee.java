@@ -1,6 +1,6 @@
-package com.example.administrator.Character;
+package com.example.administrator.character;
 
-import com.example.administrator.Item.Item;
+import com.example.administrator.item.Item;
 
 public abstract class Employee extends Character {
 

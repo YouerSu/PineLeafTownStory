@@ -1,4 +1,4 @@
-package com.example.administrator.Item;
+package com.example.administrator.item;
 
 
 import org.dom4j.Element;
@@ -12,7 +12,7 @@ public class Mall extends Item {
     }
 
     @Override
-    public void purchase() {
+    public void createItemTable(String name) {
 
     }
 

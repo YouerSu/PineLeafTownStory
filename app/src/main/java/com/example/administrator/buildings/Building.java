@@ -4,8 +4,8 @@ package com.example.administrator.buildings;
 
 import android.database.Cursor;
 
-import com.example.administrator.Character.Character;
-import com.example.administrator.Item.Item;
+import com.example.administrator.character.Character;
+import com.example.administrator.item.Item;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.OwnName;
 import com.example.administrator.utils.Sql;

@@ -1,9 +1,9 @@
-package com.example.administrator.Character;
+package com.example.administrator.character;
 
 import android.database.Cursor;
 
 import com.example.administrator.buildings.Building;
-import com.example.administrator.Item.Item;
+import com.example.administrator.item.Item;
 import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;
 import com.example.administrator.utils.Info;

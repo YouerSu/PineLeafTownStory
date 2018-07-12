@@ -1,4 +1,4 @@
-package com.example.administrator.Item;
+package com.example.administrator.item;
 
 import android.database.Cursor;
 
@@ -20,9 +20,10 @@ public class SellItem extends Item {
         this.popular = popular;
     }
 
-    public static void createSellItem(String name){
+    @Override
+    public void createItemTable(String name){
         Sql.operatingSql(new String[]{
-        "create table if not exits "+name+SellItem.class.getName()+"("+Info.NAME+" text,"+Info.sellPrice+" integer)",
+        "create table if not exits "+name+getClass().getName().substring(getClass().getName().lastIndexOf(".")+1)+"("+Info.NAME+" text,"+Info.sellPrice+" integer)",
         "DELETE FROM " + name + "SellItem"
         });
     }
@@ -35,7 +36,7 @@ public class SellItem extends Item {
 
     @Override
     public void getDate(String name,String ItemName) {
-        Cursor cursor = Sql.getCursor(name+SellItem.class.getName(),Info.sellPrice,Info.NAME,new String[]{getName()});
+        Cursor cursor = Sql.getCursor(name+getClass().getName().substring(getClass().getName().lastIndexOf("."+1)),Info.sellPrice,Info.NAME,new String[]{getName()});
         sellPrice = Integer.valueOf(cursor.getInt(cursor.getColumnIndex(Info.sellPrice)));
     }
 
@@ -44,16 +45,12 @@ public class SellItem extends Item {
         this.popular = Integer.valueOf(element.elementText("popular"));
     }
 
-    @Override
-    public void purchase() {
-
-    }
 
     @Override
     public void saveDate(String name) {
-        createSellItem(name);
+        createItemTable(name);
         Sql.operatingSql(new String[]{
-        "insert into "+name+SellItem.class.getName()+" ("+ Info.NAME+","+ Info.sellPrice+") values("+getName()+","+sellPrice+")"
+        "insert into "+name+getClass().getName().substring(getClass().getName().lastIndexOf(".")+1)+" ("+ Info.NAME+","+ Info.sellPrice+") values("+getName()+","+sellPrice+")"
         });
     }
 

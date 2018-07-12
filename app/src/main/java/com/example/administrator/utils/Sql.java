@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.administrator.Character.Player;
+import com.example.administrator.character.Player;
 
 public class Sql extends SQLiteOpenHelper{
     //数据

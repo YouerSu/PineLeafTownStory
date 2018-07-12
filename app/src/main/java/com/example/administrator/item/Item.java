@@ -1,8 +1,8 @@
-package com.example.administrator.Item;
+package com.example.administrator.item;
 
 import android.database.Cursor;
 
-import com.example.administrator.Character.Character;
+import com.example.administrator.character.Character;
 import com.example.administrator.buildings.Building;
 import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;
@@ -33,7 +33,8 @@ public abstract class Item implements ShowAdapter{
         this.total = total;
     }
 
-    public abstract void purchase();
+
+    public abstract void createItemTable(String name);
 
     //从XML读取额外数据
     public abstract void getXMLDate(Element element);

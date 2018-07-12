@@ -1,8 +1,8 @@
-package com.example.administrator.Character;
+package com.example.administrator.character;
 
 import com.example.administrator.buildings.Building;
-import com.example.administrator.Item.Item;
-import com.example.administrator.Item.SellItem;
+import com.example.administrator.item.Item;
+import com.example.administrator.item.SellItem;
 import com.example.administrator.utils.NPC;
 
 import java.util.Random;
@@ -22,6 +22,9 @@ public class Customer extends Character implements NPC{
             Random random = new Random();
             if (random.nextBoolean())
             Building.buildings.get(getX_coordinate()).work(item);
+            else
+            //大传送术 XD
+            setX_coordinate(random.nextInt(Building.getBuildings().size()));
         }
     }
 }

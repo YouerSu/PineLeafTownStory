@@ -1,4 +1,4 @@
-package com.example.administrator.Character;
+package com.example.administrator.character;
 
 //让角色拥有额外可替换的行为
 
