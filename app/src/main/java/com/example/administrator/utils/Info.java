@@ -42,5 +42,8 @@ public final class Info {
     CHARACTER = "Character",
     MASTER = "Master",
     ITEM = "Item",
-    TIME = "Time";
+    TIME = "Time",
+    XML = "xml",
+    YOU = "You",
+    INDEX = "Index";
 }

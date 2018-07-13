@@ -1,15 +1,12 @@
 package com.example.administrator.buildings;
 
-import com.example.administrator.buildings.GameUI;
-
 import java.util.Map;
 
 public interface ShowAdapter {
 
      Map<String,String> UIPageAdapter();
 
-     void showMyOwnOnClick(GameUI UI);
+     void showOnClick(GameUI gameUI);
 
-     void showNotMyOwnOnClick(GameUI UI);
 
 }

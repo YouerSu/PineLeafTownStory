@@ -30,14 +30,13 @@ public class SellItem extends Item {
 
 
     @Override
-    public void getDate(HashMap<String,Item> articles) {
+    public void getListDate(HashMap<String,Item> articles) {
         popular = ((SellItem)articles.get(getName())).getPopular();
     }
 
     @Override
-    public void getDate(String name,String ItemName) {
-        Cursor cursor = Sql.getCursor(name+getClass().getName().substring(getClass().getName().lastIndexOf("."+1)),Info.sellPrice,Info.NAME,new String[]{getName()});
-        sellPrice = Integer.valueOf(cursor.getInt(cursor.getColumnIndex(Info.sellPrice)));
+    public void getSQLDate(Cursor cursor) {
+        sellPrice = cursor.getInt(cursor.getColumnIndex(Info.sellPrice));
     }
 
     @Override

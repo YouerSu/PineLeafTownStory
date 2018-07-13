@@ -33,13 +33,20 @@ public abstract class Character implements OwnName,ShowAdapter{
 
     abstract void initialization();
 
-    @Override
+
     public void showMyOwnOnClick(GameUI UI) {
 //Building building
 
     }
 
     @Override
+    public void showOnClick(GameUI gameUI) {
+        if (Character.getFirstMaster(Character.findMaster(workSpace,Building.getBuildings())).getMaster().equals(Info.YOU))
+            showMyOwnOnClick(gameUI);
+        else
+            showNotMyOwnOnClick(gameUI);
+    }
+
     public void showNotMyOwnOnClick(GameUI UI ) {
 //Building building
     }

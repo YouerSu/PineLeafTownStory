@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface GameUI {
+public interface GameUI{
 
     static Map<String, String> getAdapterMap(String name, String l1, String l2, String l3) {
         Map<String,String> item = new HashMap<>();
@@ -29,9 +29,8 @@ public interface GameUI {
 
     boolean trueOrFalseDialogue(String message);
 
-    void showMyOwnListDialogue(List<ShowAdapter> items);
+    <T extends ShowAdapter> void showListDialogue(List<T> items);
 
-    void showNotMyOwnListDialogue(List<ShowAdapter> items);
 
 
 }

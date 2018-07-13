@@ -1,19 +1,33 @@
 package com.example.administrator.character;
 
+import android.database.Cursor;
+
 import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;
+import com.example.administrator.item.Item;
+import com.example.administrator.utils.Info;
+import com.example.administrator.utils.Sql;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Timer;
 
 public class Player extends Character {
 
     public GameTime timeDate;
     private static String playerName;
+    private HashMap<String,Item> bag;
 
     @Override
     void initialization() {
         playerName = name;
+        getBagDate();
     }
+
+    private void getBagDate() {
+        bag = Item.getSuperDate(Info.YOU);
+    }
+
 
     private void setTimeDate(GameUI gameUI) {
         timeDate = new GameTime(gameUI);
@@ -26,6 +40,8 @@ public class Player extends Character {
     public void saveDate() {
         super.saveDate();
         timeDate.saveDate();
+        for (Item item:bag.values())
+            item.saveSuperDate(Info.YOU);
     }
 
 

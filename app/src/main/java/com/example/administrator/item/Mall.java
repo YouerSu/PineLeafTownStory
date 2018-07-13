@@ -1,11 +1,19 @@
 package com.example.administrator.item;
 
 
-import org.dom4j.Element;
+import android.database.Cursor;
 
+import com.example.administrator.buildings.Building;
+import com.example.administrator.buildings.GameUI;
+import com.example.administrator.character.Player;
+import com.example.administrator.utils.Info;
+import org.dom4j.Element;
 import java.util.HashMap;
+import java.util.List;
 
 public class Mall extends Item {
+
+    private String xml;
 
     public Mall(String name, int volume, int originalPrice, int total) {
         super(name, volume, originalPrice, total);
@@ -13,16 +21,15 @@ public class Mall extends Item {
 
     @Override
     public void createItemTable(String name) {
-
     }
 
     @Override
     public void getXMLDate(Element element) {
-
+        xml = element.elementText(Info.XML);
     }
 
     @Override
-    public void getDate(String name, String ItemName) {
+    public void getSQLDate(Cursor cursor) {
 
     }
 
@@ -32,7 +39,22 @@ public class Mall extends Item {
     }
 
     @Override
-    public void getDate(HashMap<String, Item> articles) {
-
+    public void getListDate(HashMap<String, Item> articles) {
+        setXml(((Mall)articles.get(getName())).getXml());
     }
+
+    public String getXml() {
+        return xml;
+    }
+
+    public void setXml(String xml) {
+        this.xml = xml;
+    }
+
+
+    @Override
+    public void showMyOwnOnClick(GameUI UI) {
+        UI.showListDialogue((List<Item>)getAllItems(xml).values());
+    }
+
 }

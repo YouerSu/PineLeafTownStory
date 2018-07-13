@@ -96,7 +96,7 @@ public class Game extends AppCompatActivity implements GameUI{
         };
     }
 
-    public ListView changeList(final List<ShowAdapter> items){
+    public <T extends ShowAdapter>ListView changeList(final List<T> items){
         //接收参数，转化参数，展示参数
         List<Map<String,String>> listItem = new ArrayList<>();
         for (ShowAdapter item:items)
@@ -114,17 +114,12 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     @Override
-    public void showMyOwnListDialogue(final List<ShowAdapter> items) {
+    public <T extends ShowAdapter>void showListDialogue(final List<T> items) {
         final GameUI UI = this;
-        changeList(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showMyOwnOnClick(UI));
+        changeList(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showOnClick(UI));
 
     }
 
-    @Override
-    public void showNotMyOwnListDialogue(final List<ShowAdapter> items) {
-        final GameUI UI = this;
-        changeList(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showNotMyOwnOnClick(UI));
-    }
 
     @Override
     public boolean trueOrFalseDialogue(String message) {
