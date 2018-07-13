@@ -86,7 +86,7 @@ public class Building implements OwnName {
     }
 
     public static void clearSql(String tableName) {
-        Sql.info.getWritableDatabase().execSQL("DELETE FROM " + tableName);
+        Sql.getDateBase().execSQL("DELETE FROM " + tableName);
     }
 
     public void setCapacity(int capacity) {

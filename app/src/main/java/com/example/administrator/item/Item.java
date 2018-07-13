@@ -151,7 +151,7 @@ public abstract class Item implements ShowAdapter,OwnName{
     public static HashMap<String,Item> getSuperDate(String name) {
         //从XML与SQL中获取数据
         HashMap<String,Item> map = new HashMap<>();
-        Cursor iDate = Sql.getCursorAllInformation(name+Info.ITEM);
+        Cursor iDate = Sql.getCursorAllInformation(name+Info.INDEX);
         while (iDate.moveToNext()){
         Item article = GameTime.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
         HashMap<String,Item> articles = getAllItems(iDate.getString(iDate.getColumnIndex(Info.id)).substring(iDate.getString(iDate.getColumnIndex(Info.id)).lastIndexOf(".")+1));
@@ -169,10 +169,10 @@ public abstract class Item implements ShowAdapter,OwnName{
     }
 
     public static void createTable(String name) {
-        Sql.operatingSql(//," + Info.sellPrice + " integer
+        Sql.operatingSql(
         new String[]{
-        "create table if not exists " + name + "Index(" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)",
-        "DELETE FROM " + name + "Index"
+        "create table if not exists " + name + Info.INDEX+" (" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)",
+        "DELETE FROM " + name + Info.INDEX+""
         }
         );
     }

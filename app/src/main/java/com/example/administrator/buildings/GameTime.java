@@ -48,12 +48,10 @@ public class GameTime extends TimerTask {
     }
 
     public boolean getTimeDate() {
-
-        SQLiteDatabase data = Sql.info.getWritableDatabase();
         Cursor iDate = Sql.getCursorAllInformation(Info.TIME);
         if (iDate==null) return false;
         while (iDate.moveToNext()){
-        //事实证明Curson的指针是从第一条数据的前一个开始的
+        //事实证明Cursor的指针是从第一条数据的前一个开始的
         setMinute(iDate.getInt(iDate.getColumnIndex(Info.MINUTE)));
         setHour(iDate.getInt(iDate.getColumnIndex(Info.HOUR)));
         setDay(iDate.getInt(iDate.getColumnIndex(Info.DAY)));

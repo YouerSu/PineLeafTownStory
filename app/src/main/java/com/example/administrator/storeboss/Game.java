@@ -1,6 +1,5 @@
 package com.example.administrator.storeboss;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Handler;
@@ -26,7 +25,6 @@ import android.widget.Toast;
 import com.example.administrator.buildings.Building;
 import com.example.administrator.item.Item;
 import com.example.administrator.character.Player;
-import com.example.administrator.utils.Db;
 import com.example.administrator.buildings.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.MyPagerAdapter;
@@ -47,53 +45,53 @@ public class Game extends AppCompatActivity implements GameUI{
     private static long mExitTime;
     boolean ok = false;
     boolean choose = false;
-    static Handler handler;
+    class MyHandler extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            String season = null;
+            switch (Player.getPlayerDate().timeDate.getMonth()) {
+                case 1:
+                    season = "春季日";
+                    break;
+                case 2:
+                    season = "夏季日";
+                    break;
+                case 3:
+                    season = "秋季日";
+                    break;
+                case 4:
+                    season = "冬季日";
+            }
+            timeView.setText(String.format("%s第%d天  %d:%02d",season,Player.getPlayerDate().timeDate.getDay(),Player.getPlayerDate().timeDate.getHour(), Player.getPlayerDate().timeDate.getMinute()));
+            playerView.setText(String.format("云团:%d   声望:%d",Player.getPlayerDate().getMoney(),Player.getPlayerDate().getPrestige()));
+        }
+    }
+    MyHandler handler = new MyHandler();
 
 
-    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        Sql.info = Db.setInfo(this);
-        getDefaultBuilding();
+        Sql.setInfo(new Sql(this));
         setText();
         //时间流逝
         Character.getAllDate();
         Player.createPlayerDate(this);
         timeView = findViewById(R.id.clock);
         playerView = findViewById(R.id.playerDate);
-        findViewById(R.id.showItem).setOnClickListener((view)->{
+        findViewById(R.id.showItem).setOnClickListener((View view) ->{
             List<Map<String ,String >> list = new ArrayList<>();
             try {
                 for (Character character:Character.getCharacters())
                     list.add(character.UIPageAdapter());
                 for (Item item:Building.getBuildings().get(pager.getCurrentItem()).getItems())
                     list.add(item.UIPageAdapter()) ;
-            }catch (IndexOutOfBoundsException e){}
+            }catch (IndexOutOfBoundsException ignored){
+            }
             getListView(list);
         });
-        handler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                String season = null;
-                switch (Player.getPlayerDate().timeDate.getMonth()) {
-                    case 1:
-                        season = "春季日";
-                        break;
-                    case 2:
-                        season = "夏季日";
-                        break;
-                    case 3:
-                        season = "秋季日";
-                        break;
-                    case 4:
-                        season = "冬季日";
-                }
-                timeView.setText(String.format("%s第%d天  %d:%02d",season,Player.getPlayerDate().timeDate.getDay(),Player.getPlayerDate().timeDate.getHour(), Player.getPlayerDate().timeDate.getMinute()));
-                playerView.setText(String.format("云团:%d   声望:%d",Player.getPlayerDate().getMoney(),Player.getPlayerDate().getPrestige()));
-            }
-        };
+        setBuiling();
     }
 
     public <T extends ShowAdapter>ListView changeList(final List<T> items){
@@ -107,7 +105,7 @@ public class Game extends AppCompatActivity implements GameUI{
 
     public ListView getListView(List<Map<String, String>> listItem) {
         SimpleAdapter sa = new SimpleAdapter(this,listItem, R.layout.item_list,new String[]{Info.NAME,Info.LT1,Info.LT2,Info.LT3},new int[]{R.id.name,R.id.lt1,R.id.lt2,R.id.lt3});
-        AlertDialog alertDialog = getDialog(R.layout.activity_show_stock);
+        AlertDialog alertDialog = getDialog(R.layout.show_list);
         ListView list = alertDialog.getWindow().findViewById(R.id.stockList);
         list.setAdapter(sa);
         return list;
@@ -139,9 +137,8 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     public void setBuiling(){
-        for (Building building: Building.getBuildings()){
+        for (Building building: Building.getBuildings())
         showBuilding(building.getName(),R.layout.building);
-        }
     }
 
     public void dayHarvest() {
@@ -151,7 +148,7 @@ public class Game extends AppCompatActivity implements GameUI{
 
     @Override
     public<T> void reName(String messages,T[] name) {
-        AlertDialog alertDialog = getEditDialog(messages);
+        AlertDialog alertDialog = getInputDialog(messages);
         alertDialog.findViewById(R.id.ok).setOnClickListener((view)->{
             try {
                 name[0] = (T)((EditText)(alertDialog.findViewById(R.id.tname))).getText().toString();
@@ -162,16 +159,10 @@ public class Game extends AppCompatActivity implements GameUI{
         });
     }
 
-    public AlertDialog getEditDialog(String messages) {
-        final AlertDialog alertDialog = getInputDialog(messages);
-        Window window = alertDialog.getWindow();
-        final EditText editText = window.findViewById(R.id.tname);
-        return alertDialog;
-    }
 
     @Override
     public int reAmount(String message) {
-        AlertDialog alertDialog = getEditDialog(message);
+        AlertDialog alertDialog = getInputDialog(message);
         ((EditText)(alertDialog.findViewById(R.id.tname))).setRawInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_NORMAL);
         waitOk();
         return Integer.valueOf(((EditText)(alertDialog.findViewById(R.id.tname))).getText().toString());
@@ -247,12 +238,6 @@ public class Game extends AppCompatActivity implements GameUI{
         return super.onKeyDown(keyCode, event);
     }
 
-    private void getDefaultBuilding() {
-        showBuilding("建筑小屋",R.layout.workshop);
-        showBuilding("银行",R.layout.bank);
-        showBuilding("工厂",R.layout.factory);
-        showBuilding("洞窟",R.layout.cave);
-    }
 
     public void showBuilding(String s, int a){
         titleList.add(s);
@@ -278,6 +263,22 @@ public class Game extends AppCompatActivity implements GameUI{
         pager = findViewById(R.id.pager);
         MyPagerAdapter adapter = new MyPagerAdapter(pagerList, titleList);
         pager.setAdapter(adapter);
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Player.getPlayerDate().setX_coordinate(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private AlertDialog getDialog(int layout) {

@@ -58,7 +58,7 @@ public abstract class Character implements OwnName,ShowAdapter{
             Building building = null;
             building.getDate(iDate);
         }
-        getDate(Sql.info.getWritableDatabase().rawQuery("select * from "+Info.CHARACTER,null));
+        getDate(Sql.getDateBase().rawQuery("select * from "+Info.CHARACTER,null));
     }
 
     public static void saveBuildingDate(){
