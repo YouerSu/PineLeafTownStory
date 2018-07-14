@@ -5,6 +5,9 @@ public final class Info {
     VER = 1,
     BUILDING_PRICE = 20000;
 
+    public static final long
+    SPEED = 10000;
+
     public static final String
     name = "Info",
     PLAYER = "Player",
@@ -46,4 +49,5 @@ public final class Info {
     XML = "xml",
     YOU = "You",
     INDEX = "Index";
+
 }

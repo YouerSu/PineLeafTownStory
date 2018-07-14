@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<items>
+    <item>
+        <name>杨梅</name>
+        <voulme>2</voulme>
+        <price>6</price>
+        <popular>10</popular>
+    </item>
+
+    <item>
+        <name>松叶牌可乐</name>
+        <voulme>2</voulme>
+        <price>3</price>
+        <popular>15</popular>
+    </item>
+
+    <item>
+        <name>松叶牌酸奶</name>
+        <voulme>3</voulme>
+        <price>8</price>
+        <popular>15</popular>
+    </item>
+
+    <item>
+        <name>矿泉水</name>
+        <voulme>1</voulme>
+        <price>1</price>
+        <popular>5</popular>
+    </item>
+
+    <item>
+        <name>雨伞</name>
+        <voulme>5</voulme>
+        <price>25</price>
+        <popular>5</popular>
+    </item>
+
+    <item>
+        <name>苹果</name>
+        <voulme>2</voulme>
+        <price>5</price>
+        <popular>10</popular>
+    </item>
+
+    <item>
+        <name>晓辰牌冰棍</name>
+        <voulme>1</voulme>
+        <price>3</price>
+        <popular>10</popular>
+    </item>
+
+</items>

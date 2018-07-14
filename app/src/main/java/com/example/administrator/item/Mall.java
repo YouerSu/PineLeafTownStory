@@ -15,8 +15,12 @@ public class Mall extends Item {
 
     private String xml;
 
-    public Mall(String name, int volume, int originalPrice, int total) {
+    public Mall(String name, int volume, int originalPrice, int total, String xml) {
         super(name, volume, originalPrice, total);
+        this.xml = xml;
+    }
+
+    public Mall() {
     }
 
     @Override
@@ -53,8 +57,9 @@ public class Mall extends Item {
 
 
     @Override
-    public void showMyOwnOnClick(GameUI UI) {
-        UI.showListDialogue((List<Item>)getAllItems(xml).values());
+    public void showOnClick(GameUI gameUI) {
+    gameUI.showListDialogue((List<Item>)getAllItems(xml).values());
     }
+
 
 }

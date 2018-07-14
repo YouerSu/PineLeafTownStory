@@ -74,24 +74,29 @@ public class Game extends AppCompatActivity implements GameUI{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         Sql.setInfo(new Sql(this));
-        setText();
-        //时间流逝
         Character.getAllDate();
         Player.createPlayerDate(this);
         timeView = findViewById(R.id.clock);
         playerView = findViewById(R.id.playerDate);
-        findViewById(R.id.showItem).setOnClickListener((View view) ->{
+        findViewById(R.id.showItem).setOnClickListener((view) ->{
             List<Map<String ,String >> list = new ArrayList<>();
             try {
                 for (Character character:Character.getCharacters())
                     list.add(character.UIPageAdapter());
-                for (Item item:Building.getBuildings().get(pager.getCurrentItem()).getItems())
+                for (Item item:Building.getBuildings().get(pager.getCurrentItem()).getItems().values())
                     list.add(item.UIPageAdapter()) ;
             }catch (IndexOutOfBoundsException ignored){
             }
             getListView(list);
         });
+        findViewById(R.id.showBag).setOnClickListener((view)->{
+            List<Map<String,String>> list = new ArrayList<>();
+            for (Item item:Player.getPlayerDate().getBag().values())
+                list.add(item.UIPageAdapter());
+            getListView(list);
+        });
         setBuiling();
+        setText();
     }
 
     public <T extends ShowAdapter>ListView changeList(final List<T> items){

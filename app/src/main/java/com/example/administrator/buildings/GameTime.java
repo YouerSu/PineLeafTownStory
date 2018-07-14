@@ -27,6 +27,7 @@ public class GameTime extends TimerTask {
         T article = null;
         try {
             Class type = Class.forName(className);
+            //newInstance回调用构造器
             article = (T) type.newInstance();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -43,7 +44,7 @@ public class GameTime extends TimerTask {
 
     public void saveDate(){
         Sql.operatingSql(new String[]{
-        "update "+ Info.DIFFERENT_WORLD+" set "+Info.MINUTE+" = "+getMinute()+" "+Info.HOUR+" = "+getHour()+ " "+Info.DAY+" = "+getDay()+" "+Info.MONTH+" = "+getMonth()+ " "+Info.YEAR+" = "+getYear()+" where "+Info.MINUTE+" = "+minute
+        "update "+ Info.TIME+" set "+Info.MINUTE+" = "+getMinute()+","+Info.HOUR+" = "+getHour()+ ","+Info.DAY+" = "+getDay()+","+Info.MONTH+" = "+getMonth()+ ","+Info.YEAR+" = "+getYear()
         });
     }
 
@@ -64,7 +65,7 @@ public class GameTime extends TimerTask {
 
     @Override
     public void run() {
-        setMinute(getMinute()+2);
+        setMinute(getMinute()+(int) Info.SPEED/1000);
         if (getMinute() >= 60) {
             setMinute(0);
             setHour(getHour()+1);

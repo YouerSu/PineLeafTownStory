@@ -20,6 +20,9 @@ public class SellItem extends Item {
         this.popular = popular;
     }
 
+    public SellItem() {
+    }
+
     @Override
     public void createItemTable(String name){
         Sql.operatingSql(new String[]{

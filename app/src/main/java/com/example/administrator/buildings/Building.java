@@ -3,6 +3,7 @@ package com.example.administrator.buildings;
 
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.example.administrator.character.Character;
 import com.example.administrator.item.Item;
@@ -10,6 +11,9 @@ import com.example.administrator.utils.Info;
 import com.example.administrator.utils.OwnName;
 import com.example.administrator.utils.Sql;
 
+import org.dom4j.io.STAXEventReader;
+
+import java.sql.SQLData;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,7 +24,7 @@ public class Building implements OwnName {
     private String name;
     private int capacity;
     private String master;
-    private HashMap<String,Item> items;
+    private HashMap<String,Item> items = new HashMap<>();
 
     public Building(String name, int capacity, String master) {
         this.name = name;
@@ -35,6 +39,16 @@ public class Building implements OwnName {
         return null;
     }
 
+    public static void getBuildingDate() {
+        Cursor iDate = Sql.getCursorAllInformation(Info.BUILDING);
+        if (iDate!=null)
+        while (iDate.moveToNext()){
+            Building building = new Building(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.capacity)),iDate.getString(iDate.getColumnIndex(Info.MASTER)));
+            building.items = Item.getSuperDate(building.getName());
+            buildings.add(building);
+        }
+    }
+
     public String getMaster() {
         return master;
     }
@@ -43,21 +57,6 @@ public class Building implements OwnName {
         return buildings;
     }
 
-    //在GameTime类读取Building数据
-    public void getDate(Cursor iDate) {
-        setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
-        setCapacity(iDate.getInt(iDate.getColumnIndex(Info.capacity)));
-        setMaster(iDate.getString(iDate.getColumnIndex(Info.MASTER)));
-        items = Item.getSuperDate(name);
-        buildings.add(this);
-    }
-
-    public void createBuilding() {
-        Item.createTable(name);
-        Sql.operatingSql(new String[]{
-        "insert into " + Info.BUILDING + "(" + Info.NAME + "," + Info.capacity + ") values(" + name + "," + capacity + ")",
-        });
-    }
 
     public String getName() {
         return name;
@@ -76,13 +75,19 @@ public class Building implements OwnName {
     }
 
     public void saveDate() {
-        createBuilding();
-        for (Item item : getItems())
-            item.saveSuperDate(name + "Item");
+        createNewBuilding(Sql.getDateBase());
+        for (Item item : getItems().values())
+            item.saveSuperDate(name);
     }
 
-    public Collection<Item> getItems() {
-        return items.values();
+    public HashMap<String, Item> getItems() {
+        return items;
+    }
+
+    public void createNewBuilding(SQLiteDatabase db){
+        Item.createTable(name);
+        db.execSQL
+        ("insert into "+Info.BUILDING+" ("+Info.NAME+","+Info.MASTER+","+Info.capacity+") values ('"+name+"','"+master+"',"+capacity+")");
     }
 
     public static void clearSql(String tableName) {

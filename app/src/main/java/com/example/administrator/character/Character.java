@@ -1,11 +1,13 @@
 package com.example.administrator.character;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.example.administrator.buildings.Building;
 import com.example.administrator.item.Item;
 import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;
+import com.example.administrator.item.Mall;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.OwnName;
 import com.example.administrator.buildings.ShowAdapter;
@@ -18,12 +20,14 @@ import java.util.Map;
 
 public abstract class Character implements OwnName,ShowAdapter{
     public static LinkedList<Character> characters = new LinkedList<>();
+    public String name;
     public int money;
     public int prestige;
-    public String name;
     private int x_coordinate;
     private int salary;
     private String workSpace;
+
+
 
 
     @Override
@@ -35,30 +39,39 @@ public abstract class Character implements OwnName,ShowAdapter{
 
 
     public void showMyOwnOnClick(GameUI UI) {
-//Building building
+        new Mall("Employee",0,0,0,"Employee").showMyOwnOnClick(UI);
 
     }
 
     @Override
     public void showOnClick(GameUI gameUI) {
-        if (Character.getFirstMaster(Character.findMaster(workSpace,Building.getBuildings())).getMaster().equals(Info.YOU))
+        if (Character.getFirstMaster(Character.findMaster(workSpace,Building.getBuildings())).getMaster().equals(Player.getPlayerName()))
             showMyOwnOnClick(gameUI);
         else
             showNotMyOwnOnClick(gameUI);
     }
 
     public void showNotMyOwnOnClick(GameUI UI ) {
-//Building building
+        new Mall("Character",0,0,0,"Character").showMyOwnOnClick(UI);
     }
 
     public static void getAllDate(){
-        Cursor iDate = Sql.getCursorAllInformation(Info.BUILDING);
-        if (iDate!=null)
-        while (iDate.moveToNext()){
-            Building building = null;
-            building.getDate(iDate);
-        }
+        Building.getBuildingDate();
         getDate(Sql.getDateBase().rawQuery("select * from "+Info.CHARACTER,null));
+    }
+
+    public static void createNewCharacter(SQLiteDatabase db, String className, String name, int money, int prestige, int x_coordinate, int salary, String workSpace){
+        if (!(GameTime.getType(className) instanceof Character)) return;
+        db.execSQL
+        ("insert into "+Info.CHARACTER+" ("+Info.id+","+Info.NAME+","+Info.MONEY+","+Info.PRESTIGE+","+Info.coordinate+","+Info.salary+","+Info.MASTER+") values ('"+className+"','"+name+"',"+money+","+prestige+","+x_coordinate+","+salary+",'"+workSpace+"')");
+        Character character = GameTime.getType(className);
+        character.setName(name);
+        character.setMoney(money);
+        character.setPrestige(prestige);
+        character.setX_coordinate(x_coordinate);
+        character.setSalary(salary);
+        character.setWorkSpace(workSpace);
+        getCharacters().add(character);
     }
 
     public static void saveBuildingDate(){
@@ -87,7 +100,7 @@ public abstract class Character implements OwnName,ShowAdapter{
 
     public void saveDate(){
         Sql.operatingSql(new String[]{
-        "update "+Info.CHARACTER+" set  "+Info.id+" = "+getClass().getName()+" "+Info.MONEY+" = "+money+" "+Info.PRESTIGE+" = "+prestige+" "+Info.PRESTIGE+" = "+x_coordinate+" "+Info.salary+" = "+salary+" "+Info.MASTER+" = "+ workSpace +" where "+Info.NAME+" = "+ name
+        "update "+Info.CHARACTER+" set "+Info.id+" = '"+getClass().getName()+"',"+Info.MONEY+" = "+money+","+Info.PRESTIGE+" = "+prestige+","+Info.coordinate+" = "+x_coordinate+","+Info.salary+" = "+salary+","+Info.MASTER+" = '"+ workSpace +"' where "+Info.NAME+" = '"+ name +"'"
         });
     }
 
@@ -126,19 +139,7 @@ public abstract class Character implements OwnName,ShowAdapter{
 
     }
 
-    //    @Override
-//    public void work() {
-//        career.behavior(this);
-//    }
 
-////    @Override
-////    public Map<String, String> UIPageAdapter() {
-////        HashMap<String,String> date = new HashMap<>();
-////        date.put("name",name);
-////        date.put("l1","薪酬:"+salary);
-////        date.put("l2","职业:"+career.getClass().getName());
-//        return date;
-//    }
 
 
     public String getName() {
@@ -156,15 +157,6 @@ public abstract class Character implements OwnName,ShowAdapter{
     public void setSalary(int salary) {
         this.salary = salary;
     }
-
-
-//    public Career getCareer() {
-//        return career;
-//    }
-//
-//    public void setCareer(Career career) {
-//        this.career = career;
-//    }
 
     public int getMoney() {
         return money;

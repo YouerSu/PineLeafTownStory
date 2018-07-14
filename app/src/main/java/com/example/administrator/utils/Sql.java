@@ -6,8 +6,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.administrator.buildings.Building;
+import com.example.administrator.character.Character;
+import com.example.administrator.character.Employee;
 import com.example.administrator.character.Player;
+import com.example.administrator.character.StoresEmployee;
 import com.example.administrator.item.Item;
+import com.example.administrator.item.Mall;
+import com.example.administrator.item.SellItem;
 
 public class Sql extends SQLiteOpenHelper{
     //数据
@@ -41,15 +47,13 @@ public class Sql extends SQLiteOpenHelper{
     db.execSQL
     ("create table if not exists "+Info.CHARACTER+"(" +Info.id+" text," +Info.NAME+" text,"+Info.MONEY+" integer,"+Info.PRESTIGE+" integer," +Info.coordinate+" integer,"+Info.salary+" integer,"+Info.MASTER+" text)");
     db.execSQL
-    ("insert into "+Info.CHARACTER+" ("+Info.id +","+Info.NAME +","+Info.MONEY +","+Info.PRESTIGE + ","+Info.coordinate+ ","+Info.salary+ ","+Info.MASTER+ ") values ('"+ Player.class.getName()+"','"+ Info.YOU+"',0,0,0,3000,'"+ Info.YOU+"')");
-    db.execSQL
     ("create table if not exists "+Info.TIME+" ("+Info.MINUTE+ " integer,"+Info.HOUR+" integer,"+Info.DAY+" integer,"+Info.MONTH+" integer,"+Info.YEAR+ " integer)");
     db.execSQL
     ("insert into "+Info.TIME+" ("+Info.MINUTE+"," +Info.HOUR +","+Info.DAY +"," +Info.MONTH +","+Info.YEAR +") values (10,7,3,1,1)");
     db.execSQL
     ("create table if not exists "+Info.BUILDING+" (" +Info.NAME +" text," +Info.MASTER +" text,"+Info.capacity+" integer)");
-    db.execSQL
-    ("create table if not exists "+Info.YOU+Info.INDEX+" (" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)");
+
+
     }
 
     @Override

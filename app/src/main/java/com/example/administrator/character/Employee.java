@@ -7,6 +7,7 @@ public abstract class Employee extends Character {
 
     public abstract boolean work(Item item);
 
+
     @Override
     void initialization() {
 

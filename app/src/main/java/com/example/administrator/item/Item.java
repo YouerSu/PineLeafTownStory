@@ -1,11 +1,13 @@
 package com.example.administrator.item;
 
 import android.database.Cursor;
+import android.util.Xml;
 
 import com.example.administrator.character.Character;
 import com.example.administrator.buildings.Building;
 import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;
+import com.example.administrator.character.Player;
 import com.example.administrator.utils.Info;
 import com.example.administrator.buildings.ShowAdapter;
 import com.example.administrator.utils.OwnName;
@@ -16,10 +18,14 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import java.io.File;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+
 
 public abstract class Item implements ShowAdapter,OwnName{
     private String name;
@@ -35,6 +41,7 @@ public abstract class Item implements ShowAdapter,OwnName{
         this.total = total;
     }
 
+    public Item(){}
 
     public abstract void createItemTable(String name);
 
@@ -50,7 +57,7 @@ public abstract class Item implements ShowAdapter,OwnName{
     public void saveSuperDate(String name){
     //渣渣设计,速度极慢
       Sql.operatingSql(new String[]{
-      "insert into "+name+Info.INDEX+" ("+Info.id+","+Info.NAME+","+Info.total+") values ("+getClass().getName()+","+ this.name +","+total+")"
+      "insert into "+name+Info.INDEX+" ("+Info.id+","+Info.NAME+","+Info.total+") values ('"+getClass().getName()+"','"+ this.name +"',"+total+")"
         });
       createItemTable(workSpace);
       saveDate(name);
@@ -109,16 +116,22 @@ public abstract class Item implements ShowAdapter,OwnName{
 
     @Override
     public void showOnClick(GameUI gameUI) {
-        if (Character.getFirstMaster(Character.findMaster(workSpace,Building.getBuildings())).getMaster().equals(Info.YOU))
+        if (Character.getFirstMaster(Character.findMaster(workSpace,Building.getBuildings())).getMaster().equals(Player.getPlayerName()))
             showMyOwnOnClick(gameUI);
         else
             showNotMyOwnOnClick(gameUI);
     }
 
     public void showNotMyOwnOnClick(GameUI UI) {
+        //****\\
         if (UI.reAmount("输入购买总数")<=0)return;
-            UI.dialogueBox("购买成功");
-        Character.getFirstMaster(Character.findMaster(getWorkSpace(),Building.buildings)).addItems(this);
+        UI.dialogueBox("购买成功");
+//        Character.getFirstMaster(Character.findMaster(getWorkSpace(),Building.buildings)).addItems(this);
+        if ((Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems() == null))
+            Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().put(name, this);
+        else
+            Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().get(name).setTotal(Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().get(name).getTotal() + getTotal());
+
     }
 
     public void setOriginalPrice(int originalPrice) {
@@ -128,22 +141,17 @@ public abstract class Item implements ShowAdapter,OwnName{
     public static HashMap<String,Item> getAllItems(String name) {
         //从XML里读取数据
         HashMap<String,Item> items = new HashMap<>();
-        SAXReader reader = new SAXReader();
-        try {
-            Document doc = reader.read(new File("res\\xml\\"+name+".xml"));
-            Element root =  doc.getRootElement();
-            for (Iterator<Element> it = root.elementIterator("item"); it.hasNext();) {
-                Element item = it.next();
-                Item article = GameTime.getType(item.elementText("type"));
-                article.setName(item.elementText("name"));
-                article.setOriginalPrice(Integer.valueOf(item.elementText("original")));
-                article.setTotal(Integer.valueOf(item.elementText("total")));
-                article.setVolume(Integer.valueOf(item.elementText("volume")));
-                article.getXMLDate(item);
-                items.put(article.name,article);
-            }
-        } catch (DocumentException e) {
-            e.printStackTrace();
+        name = name.toLowerCase();
+        Element root =  MyXml.getXml(name).getRootElement();
+        for (Iterator<Element> it = root.elementIterator("item"); it.hasNext();) {
+            Element item = it.next();
+            Item article = GameTime.getType(item.elementText("type"));
+            article.setName(item.elementText("name"));
+            article.setOriginalPrice(Integer.valueOf(item.elementText("price")));
+            article.setTotal(Integer.valueOf(item.elementText("total")));
+            article.setVolume(Integer.valueOf(item.elementText("volume")));
+            article.getXMLDate(item);
+            //items.put(article.getName(),article);
         }
         return items;
     }
