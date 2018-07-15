@@ -5,8 +5,12 @@ import android.database.Cursor;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.Sql;
 
-import org.dom4j.Element;
 
+import org.w3c.dom.Document;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
 import java.util.HashMap;
 
 public class SellItem extends Item {
@@ -43,10 +47,9 @@ public class SellItem extends Item {
     }
 
     @Override
-    public void getXMLDate(Element element) {
-        this.popular = Integer.valueOf(element.elementText("popular"));
+    public Item[] getInfoDate() {
+        return new Info.SELLITEM().getItems();
     }
-
 
     @Override
     public void saveDate(String name) {

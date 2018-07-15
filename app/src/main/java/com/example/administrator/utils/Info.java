@@ -1,5 +1,13 @@
 package com.example.administrator.utils;
 
+import com.example.administrator.item.Item;
+import com.example.administrator.item.Mall;
+import com.example.administrator.item.SellItem;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 public final class Info {
     public static final int
     VER = 1,
@@ -49,5 +57,33 @@ public final class Info {
     XML = "xml",
     YOU = "You",
     INDEX = "Index";
+
+    public static abstract class ITEM{
+        public abstract Item[] getItems();
+
+    }
+
+    public static class SELLITEM extends ITEM{
+        SellItem[] sellItems = new SellItem[]{
+
+        };
+
+        @Override
+        public Item[] getItems() {
+            return sellItems;
+        }
+    }
+
+    public static final class MALL extends ITEM{
+        Mall[] sellItems = new Mall[]{
+            new Mall("SellItem",0,0,"SELLITEM"),
+
+        };
+
+        @Override
+        public Item[] getItems() {
+            return sellItems;
+        }
+    }
 
 }

@@ -3,21 +3,24 @@ package com.example.administrator.item;
 
 import android.database.Cursor;
 
-import com.example.administrator.buildings.Building;
+import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;
-import com.example.administrator.character.Player;
 import com.example.administrator.utils.Info;
-import org.dom4j.Element;
 import java.util.HashMap;
 import java.util.List;
 
 public class Mall extends Item {
 
-    private String xml;
+    private String itemList;
 
-    public Mall(String name, int volume, int originalPrice, int total, String xml) {
+    public Mall(String name, int volume, int originalPrice, int total, String itemList) {
         super(name, volume, originalPrice, total);
-        this.xml = xml;
+        this.itemList = itemList;
+    }
+
+    public Mall(String name, int volume, int originalPrice, String itemList) {
+        super(name, volume, originalPrice);
+        this.itemList = itemList;
     }
 
     public Mall() {
@@ -28,8 +31,11 @@ public class Mall extends Item {
     }
 
     @Override
-    public void getXMLDate(Element element) {
-        xml = element.elementText(Info.XML);
+    public Item[] getInfoDate(){
+        return new Info.MALL().getItems();
+//        for (Mall item: (Mall[]) new Info.MALL().getItems())
+//            if (name.equals(item.getName()))
+//                setItemList(item.getItemList());
     }
 
     @Override
@@ -44,21 +50,21 @@ public class Mall extends Item {
 
     @Override
     public void getListDate(HashMap<String, Item> articles) {
-        setXml(((Mall)articles.get(getName())).getXml());
+        setItemList(((Mall)articles.get(getName())).getItemList());
     }
 
-    public String getXml() {
-        return xml;
+    public String getItemList() {
+        return itemList;
     }
 
-    public void setXml(String xml) {
-        this.xml = xml;
+    public void setItemList(String itemList) {
+        this.itemList = itemList;
     }
 
 
     @Override
     public void showOnClick(GameUI gameUI) {
-    gameUI.showListDialogue((List<Item>)getAllItems(xml).values());
+    gameUI.showListDialogue((List<Item>)getAllItems(itemList).values());
     }
 
 

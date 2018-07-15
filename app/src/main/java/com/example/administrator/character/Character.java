@@ -45,6 +45,7 @@ public abstract class Character implements OwnName,ShowAdapter{
 
     @Override
     public void showOnClick(GameUI gameUI) {
+        gameUI.dialogueBox("aaa");
         if (Character.getFirstMaster(Character.findMaster(workSpace,Building.getBuildings())).getMaster().equals(Player.getPlayerName()))
             showMyOwnOnClick(gameUI);
         else

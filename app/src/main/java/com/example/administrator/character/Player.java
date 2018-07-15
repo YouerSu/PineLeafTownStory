@@ -8,7 +8,6 @@ import com.example.administrator.item.Mall;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.Response;
 import com.example.administrator.utils.Sql;
-
 import java.util.HashMap;
 import java.util.Timer;
 
@@ -80,16 +79,18 @@ public class Player extends Character {
                 });
                 finalCharacter.initialization();
                 Character.characters.add(finalCharacter);
-                {
-                Character.createNewCharacter(Sql.getDateBase(),StoresEmployee.class.getName(),"蚴牙",1000,200,0,8000,"杂货铺");
-                Building building = new Building("杂货铺",0,"蚴牙");
-                building.getItems().put("SellItem",new Mall("SellItem",0,0,10,"SellItem"));
-                }
+                firstPlayGame();
                 createPlayerDate(gameUI);
                 interrupted();
             }
         }.start();
 
+    }
+
+    public static void firstPlayGame() {
+        Character.createNewCharacter(Sql.getDateBase(),StoresEmployee.class.getName(),"蚴牙",1000,200,0,8000,"杂货铺");
+        Building building = new Building("杂货铺",0,"蚴牙");
+        building.getItems().put("SellItem",new Mall("SellItem",0,0,10,"SellItem"));
     }
 
     public GameTime getTimeDate() {

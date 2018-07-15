@@ -95,7 +95,7 @@ public class Game extends AppCompatActivity implements GameUI{
                 list.add(item.UIPageAdapter());
             getListView(list);
         });
-        setBuiling();
+        setBuilding();
         setText();
     }
 
@@ -119,7 +119,7 @@ public class Game extends AppCompatActivity implements GameUI{
     @Override
     public <T extends ShowAdapter>void showListDialogue(final List<T> items) {
         final GameUI UI = this;
-        changeList(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showOnClick(UI));
+        changeList(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showOnClick(UI));;
 
     }
 
@@ -141,7 +141,7 @@ public class Game extends AppCompatActivity implements GameUI{
         return choose;
     }
 
-    public void setBuiling(){
+    public void setBuilding(){
         for (Building building: Building.getBuildings())
         showBuilding(building.getName(),R.layout.building);
     }

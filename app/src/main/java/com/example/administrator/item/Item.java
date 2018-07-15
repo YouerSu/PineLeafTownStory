@@ -13,11 +13,17 @@ import com.example.administrator.buildings.ShowAdapter;
 import com.example.administrator.utils.OwnName;
 import com.example.administrator.utils.Sql;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
 
 
 public abstract class Item implements ShowAdapter,OwnName{
@@ -41,14 +48,20 @@ public abstract class Item implements ShowAdapter,OwnName{
         this.total = total;
     }
 
+    public Item(String name,int volume, int originalPrice) {
+        this.name = name;
+        this.volume = volume;
+        this.originalPrice = originalPrice;
+    }
+
     public Item(){}
 
     public abstract void createItemTable(String name);
 
-    //从XML读取额外数据
-    public abstract void getXMLDate(Element element);
     //从SQL中读取数据
     public abstract void getSQLDate(Cursor cursor);
+
+    public abstract Item[] getInfoDate();
 
     public abstract void saveDate(String workSpaceName);
     //从数据集合中读取额外数据
@@ -58,7 +71,7 @@ public abstract class Item implements ShowAdapter,OwnName{
     //渣渣设计,速度极慢
       Sql.operatingSql(new String[]{
       "insert into "+name+Info.INDEX+" ("+Info.id+","+Info.NAME+","+Info.total+") values ('"+getClass().getName()+"','"+ this.name +"',"+total+")"
-        });
+      });
       createItemTable(workSpace);
       saveDate(name);
     }
@@ -139,20 +152,10 @@ public abstract class Item implements ShowAdapter,OwnName{
     }
 
     public static HashMap<String,Item> getAllItems(String name) {
-        //从XML里读取数据
+        //从Info里读取数据
         HashMap<String,Item> items = new HashMap<>();
-        name = name.toLowerCase();
-        Element root =  MyXml.getXml(name).getRootElement();
-        for (Iterator<Element> it = root.elementIterator("item"); it.hasNext();) {
-            Element item = it.next();
-            Item article = GameTime.getType(item.elementText("type"));
-            article.setName(item.elementText("name"));
-            article.setOriginalPrice(Integer.valueOf(item.elementText("price")));
-            article.setTotal(Integer.valueOf(item.elementText("total")));
-            article.setVolume(Integer.valueOf(item.elementText("volume")));
-            article.getXMLDate(item);
-            //items.put(article.getName(),article);
-        }
+       for (Item item:((Info.ITEM)GameTime.getType("com.example.administrator.utils."+(name.substring(name.lastIndexOf(".")+1).toUpperCase()))).getItems())
+            items.put(item.getName(),item);
         return items;
     }
 
@@ -162,13 +165,17 @@ public abstract class Item implements ShowAdapter,OwnName{
         Cursor iDate = Sql.getCursorAllInformation(name+Info.INDEX);
         while (iDate.moveToNext()){
         Item article = GameTime.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
-        HashMap<String,Item> articles = getAllItems(iDate.getString(iDate.getColumnIndex(Info.id)).substring(iDate.getString(iDate.getColumnIndex(Info.id)).lastIndexOf(".")+1));
+        HashMap<String,Item> articles = new HashMap<>();
+            for (Item item:article.getInfoDate())
+               articles.put(item.getName(),item);//getAllItems(iDate.getString(iDate.getColumnIndex(Info.id)));
         article.setWorkSpace(name);
         article.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
         article.setTotal(iDate.getInt(iDate.getColumnIndex(Info.total)));
         article.setVolume(articles.get(article.getName()).getVolume());
         article.setOriginalPrice(articles.get(article.getName()).getOriginalPrice());
-        article.getSQLDate(Sql.getCursor(name+article.getClass().getName().substring(article.getClass().getName().lastIndexOf("."+1)),Info.sellPrice,Info.NAME,new String[]{article.getName()}));
+        try {
+            article.getSQLDate(Sql.getCursor(name+article.getClass().getName().substring(article.getClass().getName().lastIndexOf(".")+1),Info.sellPrice,Info.NAME,new String[]{article.getName()}));
+        }catch (RuntimeException noSuchTable){}
         article.getListDate(articles);
         map.put(article.getName(),article);
         }

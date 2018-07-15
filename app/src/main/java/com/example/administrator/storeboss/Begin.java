@@ -10,7 +10,8 @@ public class Begin extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_begin);}
+        setContentView(R.layout.activity_begin);
+    }
 
     public void begin(View view){
         Intent it = new Intent();

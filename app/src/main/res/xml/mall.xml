@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <items>
+
     <item>
         <name>SellItem</name>
-        <voulme>0</voulme>
+        <volume>0</volume>
         <price>0</price>
         <xml>SellItem</xml>
     </item>
+
     <item>
         <name>Character</name>
-        <voulme>0</voulme>
+        <volume>0</volume>
         <price>0</price>
         <xml>Character</xml>
     </item>
+
 </items>
