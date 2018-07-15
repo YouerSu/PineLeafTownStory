@@ -65,7 +65,7 @@ public class Player extends Character {
 
      else   character = new Player();
         String[]name =new String[1];
-        gameUI.reName("输入你的名字",name);
+        gameUI.reText("输入你的名字",name);
         //判断是否重复
         Character finalCharacter = character;
         new Response<String>(name){

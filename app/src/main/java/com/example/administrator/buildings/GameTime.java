@@ -96,10 +96,6 @@ public class GameTime extends TimerTask {
     //投资
     }
 
-    public static void politicalChanges(){
-    //时局变化
-    }
-
     public int getHour() {
         return hour;
     }

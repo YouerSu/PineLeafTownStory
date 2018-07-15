@@ -21,13 +21,11 @@ public interface GameUI{
 
     void dayHarvest();
 
-    <T> void reName(String message,T[] list);
-
-    int reAmount(String message);
+    <T> void reText(String message,T[] list);
 
     void dialogueBox(String message);
 
-    boolean trueOrFalseDialogue(String message);
+    <T> void chooseDialogue(T[] messages, T[] choose);
 
     <T extends ShowAdapter> void showListDialogue(List<T> items);
 

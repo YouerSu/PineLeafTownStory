@@ -41,7 +41,6 @@ public class Building implements OwnName {
         while (iDate.moveToNext()){
             Building building = new Building(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.capacity)),iDate.getString(iDate.getColumnIndex(Info.MASTER)));
             building.items = Item.getSuperDate(building.getName());
-            buildings.add(building);
         }
     }
 
@@ -102,9 +101,5 @@ public class Building implements OwnName {
         this.master = master;
     }
 
-    public void removeItem(Item item){
-        if (item.getTotal()<=0)
-        items.remove(item);
-    }
 
 }

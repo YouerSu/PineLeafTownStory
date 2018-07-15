@@ -1,7 +1,6 @@
 package com.example.administrator.item;
 
 import android.database.Cursor;
-import android.util.Xml;
 
 import com.example.administrator.character.Character;
 import com.example.administrator.buildings.Building;
@@ -11,27 +10,11 @@ import com.example.administrator.character.Player;
 import com.example.administrator.utils.Info;
 import com.example.administrator.buildings.ShowAdapter;
 import com.example.administrator.utils.OwnName;
+import com.example.administrator.utils.Response;
 import com.example.administrator.utils.Sql;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
 
 
 public abstract class Item implements ShowAdapter,OwnName{
@@ -119,12 +102,23 @@ public abstract class Item implements ShowAdapter,OwnName{
     }
 
     public void showMyOwnOnClick(GameUI UI) {
-        if (!UI.trueOrFalseDialogue("将"+name+"从你的仓库移除"))return;
-            int amount = UI.reAmount("输入移除的数量");
-            if (amount<=0) return;
-            setTotal(getTotal() - amount);
-            Character.getFirstMaster(Character.findMaster(getWorkSpace(), Building.buildings)).removeItem(this);
-            UI.dialogueBox("移除成功");
+        Integer[] amount = new Integer[]{-1};
+        final String master = name;
+        UI.reText("Enter the number of removals",amount);
+        new Response<Integer>(amount){
+            @Override
+            public void run() {
+                try {
+                    wait(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                setTotal(getTotal() - amount[0]);
+                Character.getFirstMaster(Character.findMaster(getWorkSpace(), Building.buildings)).getItems().get(master).setTotal(-Math.abs(amount[0]));
+                UI.dialogueBox("移除成功");
+                interrupted();
+            }
+        }.start();
     }
 
     @Override
@@ -136,25 +130,41 @@ public abstract class Item implements ShowAdapter,OwnName{
     }
 
     public void showNotMyOwnOnClick(GameUI UI) {
-        //****\\
-        if (UI.reAmount("输入购买总数")<=0)return;
-        UI.dialogueBox("购买成功");
-//        Character.getFirstMaster(Character.findMaster(getWorkSpace(),Building.buildings)).addItems(this);
-        if ((Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems() == null))
-            Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().put(name, this);
-        else
-            Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().get(name).setTotal(Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().get(name).getTotal() + getTotal());
-
+        Integer[] amount = new Integer[]{-1};
+        final Item item = this;
+        UI.reText("Enter the number of buy",amount);
+        new Response<Integer>(amount){
+            @Override
+            public void run() {
+                try {
+                    wait(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                setTotal(getTotal() - amount[0]);
+                Player.getPlayerDate().getBag().put(item.getName(),item);
+                UI.dialogueBox("购买成功");
+                interrupted();
+            }
+        }.start();
     }
+//        if (UI.reAmount("输入购买总数")<=0)return;
+//        UI.dialogueBox("购买成功");
+//        Character.getFirstMaster(Character.findMaster(getWorkSpace(),Building.buildings)).addItems(this);
+//        if ((Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems() == null))
+//            Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().put(name, this);
+//        else
+//            Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().get(name).setTotal(Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().get(name).getTotal() + getTotal());
+
+
 
     public void setOriginalPrice(int originalPrice) {
         this.originalPrice = originalPrice;
     }
 
     public static HashMap<String,Item> getAllItems(String name) {
-        //从Info里读取数据
         HashMap<String,Item> items = new HashMap<>();
-       for (Item item:((Info.ITEM)GameTime.getType("com.example.administrator.utils."+(name.substring(name.lastIndexOf(".")+1).toUpperCase()))).getItems())
+       for (Item item:((Item)GameTime.getType(name)).getInfoDate())
             items.put(item.getName(),item);
         return items;
     }
@@ -165,9 +175,7 @@ public abstract class Item implements ShowAdapter,OwnName{
         Cursor iDate = Sql.getCursorAllInformation(name+Info.INDEX);
         while (iDate.moveToNext()){
         Item article = GameTime.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
-        HashMap<String,Item> articles = new HashMap<>();
-            for (Item item:article.getInfoDate())
-               articles.put(item.getName(),item);//getAllItems(iDate.getString(iDate.getColumnIndex(Info.id)));
+        HashMap<String,Item> articles = getAllItems(iDate.getString(iDate.getColumnIndex(Info.id)));
         article.setWorkSpace(name);
         article.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
         article.setTotal(iDate.getInt(iDate.getColumnIndex(Info.total)));

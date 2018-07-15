@@ -2,6 +2,7 @@ package com.example.administrator.item;
 
 
 import android.database.Cursor;
+import android.util.Log;
 
 import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;

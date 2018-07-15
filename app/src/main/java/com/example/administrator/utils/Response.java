@@ -12,7 +12,11 @@ public class Response<T> extends Thread {
         this.list = list;
     }
 
-//    @Override
+    public T[] getList() {
+        return list;
+    }
+
+    //    @Override
 //    public void run() {
 //        if (list!=null)
 //        ...doSomeThings...

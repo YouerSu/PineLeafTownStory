@@ -63,8 +63,8 @@ public final class Info {
 
     }
 
-    public static class SELLITEM extends ITEM{
-        SellItem[] sellItems = new SellItem[]{
+    public static final class SELLITEM extends ITEM{
+        static SellItem[] sellItems = new SellItem[]{
 
         };
 
@@ -75,7 +75,7 @@ public final class Info {
     }
 
     public static final class MALL extends ITEM{
-        Mall[] sellItems = new Mall[]{
+        static Mall[] sellItems = new Mall[]{
             new Mall("SellItem",0,0,"SELLITEM"),
 
         };

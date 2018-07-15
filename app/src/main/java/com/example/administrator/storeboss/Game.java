@@ -11,6 +11,7 @@ import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -29,6 +30,7 @@ import com.example.administrator.buildings.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.MyPagerAdapter;
 import com.example.administrator.buildings.ShowAdapter;
+import com.example.administrator.utils.Response;
 import com.example.administrator.utils.Sql;
 import com.example.administrator.character.Character;
 import java.util.ArrayList;
@@ -43,8 +45,6 @@ public class Game extends AppCompatActivity implements GameUI{
     TextView timeView;
     TextView playerView;
     private static long mExitTime;
-    boolean ok = false;
-    boolean choose = false;
     class MyHandler extends Handler{
         @Override
         public void handleMessage(Message msg) {
@@ -125,20 +125,15 @@ public class Game extends AppCompatActivity implements GameUI{
 
 
     @Override
-    public boolean trueOrFalseDialogue(String message) {
+    public <T> void chooseDialogue(T[] messages,T[] choose) {
         AlertDialog alertDialog = getDialog(R.layout.crystal);
-        alertDialog.setTitle(message);
-        alertDialog.setButton(Dialog.BUTTON_POSITIVE, "是", (dialogInterface, i) -> {
-            choose = true;
-            ok();
-        });
-        alertDialog.setButton(Dialog.BUTTON_POSITIVE, "否", (dialogInterface, i) -> {
-            choose = false;
-            ok();
-        });
-
-        waitOk();
-        return choose;
+        for (int count = 0;count<messages.length;count++) {
+            int finalCount = count;
+            alertDialog.setButton(Dialog.BUTTON_POSITIVE, messages[count].toString(), (dialogInterface, i) -> {
+               int now = finalCount;
+               choose[0] = messages[now];
+            });
+        }
     }
 
     public void setBuilding(){
@@ -152,7 +147,7 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     @Override
-    public<T> void reName(String messages,T[] name) {
+    public<T> void reText(String messages,T[] name) {
         AlertDialog alertDialog = getInputDialog(messages);
         alertDialog.findViewById(R.id.ok).setOnClickListener((view)->{
             try {
@@ -165,22 +160,7 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
 
-    @Override
-    public int reAmount(String message) {
-        AlertDialog alertDialog = getInputDialog(message);
-        ((EditText)(alertDialog.findViewById(R.id.tname))).setRawInputType(InputType.TYPE_CLASS_NUMBER|InputType.TYPE_NUMBER_VARIATION_NORMAL);
-        waitOk();
-        return Integer.valueOf(((EditText)(alertDialog.findViewById(R.id.tname))).getText().toString());
-    }
 
-    private void ok() {
-        ok = true;
-    }
-
-    private synchronized void waitOk() {
-        while (!ok);
-        ok = false;
-    }
 
     @Override
     public void dialogueBox(String message) {
@@ -230,17 +210,18 @@ public class Game extends AppCompatActivity implements GameUI{
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if ((System.currentTimeMillis() - mExitTime) > 1500) {
-                Toast.makeText(this, "你...确定要离去吗?", Toast.LENGTH_SHORT).show();
-                mExitTime = System.currentTimeMillis();
-            } else {
-                finish();
+        String[] choose = new String[1];
+        chooseDialogue(new String[]{"离开","留下"},choose);
+        new Response<String>(choose){
+            @Override
+            public void run() {
+                while (getList()[0]==null);
+                if (!getList()[0].equals("离开")) return;
                 saveDate();
+                onDestroy();
             }
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
+        };
+        return true;
     }
 
 
@@ -271,11 +252,12 @@ public class Game extends AppCompatActivity implements GameUI{
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                Log.i("la", "onPageScrolled: XD");
             }
 
             @Override
             public void onPageSelected(int position) {
+                Log.i("la", "onPageSelected: XD");
                 Player.getPlayerDate().setX_coordinate(position);
             }
 
