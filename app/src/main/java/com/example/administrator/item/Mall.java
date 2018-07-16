@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;
+import com.example.administrator.storeboss.Game;
 import com.example.administrator.utils.Info;
 import java.util.HashMap;
 import java.util.List;
@@ -34,9 +35,6 @@ public class Mall extends Item {
     @Override
     public Item[] getInfoDate(){
         return new Info.MALL().getItems();
-//        for (Mall item: (Mall[]) new Info.MALL().getItems())
-//            if (name.equals(item.getName()))
-//                setItemList(item.getItemList());
     }
 
     @Override
@@ -65,7 +63,7 @@ public class Mall extends Item {
 
     @Override
     public void showOnClick(GameUI gameUI) {
-    gameUI.showListDialogue((List<Item>)getAllItems(itemList).values());
+    gameUI.showListDialogue(Game.toList(getAllItems(itemList).values()));
     }
 
 

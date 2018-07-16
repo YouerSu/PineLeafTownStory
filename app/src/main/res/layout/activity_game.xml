@@ -34,10 +34,10 @@
         </LinearLayout>
 
         <ImageButton
-            android:id="@+id/showItem"
+            android:id="@+id/showCharacter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@mipmap/item"
+            android:background="@mipmap/character"
             />
         
         <ImageButton
@@ -45,6 +45,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@mipmap/bag"/>
+
+        <ImageButton
+            android:id="@+id/showItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/item"
+            />
 
 
     </LinearLayout>

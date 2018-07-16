@@ -38,23 +38,24 @@ public abstract class Character implements OwnName,ShowAdapter{
     abstract void initialization();
 
 
-    public void showMyOwnOnClick(GameUI UI) {
-        new Mall("Employee",0,0,0,"Employee").showMyOwnOnClick(UI);
-
-    }
+//    public void showMyOwnOnClick(GameUI UI) {
+//        new Mall("Employee",0,0,0,"Employee").showMyOwnOnClick(UI);
+//
+//    }
 
     @Override
     public void showOnClick(GameUI gameUI) {
-        gameUI.dialogueBox("aaa");
-        if (Character.getFirstMaster(Character.findMaster(workSpace,Building.getBuildings())).getMaster().equals(Player.getPlayerName()))
-            showMyOwnOnClick(gameUI);
-        else
-            showNotMyOwnOnClick(gameUI);
+        gameUI.dialogueBox(name+":你好,"+Player.getPlayerName());
+//        if (Character.getFirstMaster(Character.findMaster(workSpace,Building.getBuildings())).getMaster().equals(Player.getPlayerName()))
+//            showMyOwnOnClick(gameUI);
+//        else
+//            showNotMyOwnOnClick(gameUI);
+        /**招聘改为在商店放入一个招聘品XD*/
     }
 
-    public void showNotMyOwnOnClick(GameUI UI ) {
-        new Mall("Character",0,0,0,"Character").showMyOwnOnClick(UI);
-    }
+//    public void showNotMyOwnOnClick(GameUI UI ) {
+//        new Mall("Character",0,0,0,"Character").showMyOwnOnClick(UI);
+//    }
 
     public static void getAllDate(){
         Building.getBuildingDate();

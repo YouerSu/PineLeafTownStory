@@ -4,10 +4,6 @@ import com.example.administrator.item.Item;
 import com.example.administrator.item.Mall;
 import com.example.administrator.item.SellItem;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 public final class Info {
     public static final int
     VER = 1,
@@ -64,25 +60,25 @@ public final class Info {
     }
 
     public static final class SELLITEM extends ITEM{
-        static SellItem[] sellItems = new SellItem[]{
+        static SellItem[] items = new SellItem[]{
 
         };
 
         @Override
         public Item[] getItems() {
-            return sellItems;
+            return items;
         }
     }
 
     public static final class MALL extends ITEM{
-        static Mall[] sellItems = new Mall[]{
-            new Mall("SellItem",0,0,"SELLITEM"),
+        static Mall[] items = new Mall[]{
+            new Mall("SellItem",0,0,SellItem.class.getName()),
 
         };
 
         @Override
         public Item[] getItems() {
-            return sellItems;
+            return items;
         }
     }
 

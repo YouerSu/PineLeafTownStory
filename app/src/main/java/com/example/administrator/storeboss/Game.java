@@ -1,17 +1,14 @@
 package com.example.administrator.storeboss;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.InputType;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,17 +20,19 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.administrator.buildings.Building;
-import com.example.administrator.item.Item;
-import com.example.administrator.character.Player;
 import com.example.administrator.buildings.GameUI;
+import com.example.administrator.buildings.ShowAdapter;
+import com.example.administrator.character.Character;
+import com.example.administrator.character.Player;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.MyPagerAdapter;
-import com.example.administrator.buildings.ShowAdapter;
 import com.example.administrator.utils.Response;
 import com.example.administrator.utils.Sql;
-import com.example.administrator.character.Character;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +43,6 @@ public class Game extends AppCompatActivity implements GameUI{
     private static List<String> titleList = new ArrayList<>();
     TextView timeView;
     TextView playerView;
-    private static long mExitTime;
     class MyHandler extends Handler{
         @Override
         public void handleMessage(Message msg) {
@@ -78,23 +76,9 @@ public class Game extends AppCompatActivity implements GameUI{
         Player.createPlayerDate(this);
         timeView = findViewById(R.id.clock);
         playerView = findViewById(R.id.playerDate);
-        findViewById(R.id.showItem).setOnClickListener((view) ->{
-            List<Map<String ,String >> list = new ArrayList<>();
-            try {
-                for (Character character:Character.getCharacters())
-                    list.add(character.UIPageAdapter());
-                for (Item item:Building.getBuildings().get(pager.getCurrentItem()).getItems().values())
-                    list.add(item.UIPageAdapter()) ;
-            }catch (IndexOutOfBoundsException ignored){
-            }
-            getListView(list);
-        });
-        findViewById(R.id.showBag).setOnClickListener((view)->{
-            List<Map<String,String>> list = new ArrayList<>();
-            for (Item item:Player.getPlayerDate().getBag().values())
-                list.add(item.UIPageAdapter());
-            getListView(list);
-        });
+        findViewById(R.id.showCharacter).setOnClickListener((view) -> showListDialogue(Character.getCharacters()));
+        findViewById(R.id.showBag).setOnClickListener((view)-> showListDialogue(toList(Player.getPlayerDate().getBag().values())));
+        findViewById(R.id.showItem).setOnClickListener((view)-> showListDialogue(toList(Building.getBuildings().get(pager.getCurrentItem()).getItems().values())));
         setBuilding();
         setText();
     }
@@ -107,6 +91,12 @@ public class Game extends AppCompatActivity implements GameUI{
         return getListView(listItem);
     }
 
+    public static <T> List<T> toList(Collection<T> collection){
+        List<T> list = new ArrayList<>();
+        for (T item:collection)
+            list.add(item);
+        return list;
+    }
 
     public ListView getListView(List<Map<String, String>> listItem) {
         SimpleAdapter sa = new SimpleAdapter(this,listItem, R.layout.item_list,new String[]{Info.NAME,Info.LT1,Info.LT2,Info.LT3},new int[]{R.id.name,R.id.lt1,R.id.lt2,R.id.lt3});
@@ -119,31 +109,21 @@ public class Game extends AppCompatActivity implements GameUI{
     @Override
     public <T extends ShowAdapter>void showListDialogue(final List<T> items) {
         final GameUI UI = this;
-        changeList(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showOnClick(UI));;
-
+        changeList(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showOnClick(UI));
     }
 
 
     @Override
-    public <T> void chooseDialogue(T[] messages,T[] choose) {
-        AlertDialog alertDialog = getDialog(R.layout.crystal);
-        for (int count = 0;count<messages.length;count++) {
-            int finalCount = count;
-            alertDialog.setButton(Dialog.BUTTON_POSITIVE, messages[count].toString(), (dialogInterface, i) -> {
-               int now = finalCount;
-               choose[0] = messages[now];
-            });
-        }
+    public <T> void chooseDialogue(String message,T[] messages,T[] choose) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+        .setTitle(message)
+        .setItems((String[])messages, (dialog, which) -> choose[0] = messages[which]);
+        builder.create().show();
     }
 
     public void setBuilding(){
         for (Building building: Building.getBuildings())
         showBuilding(building.getName(),R.layout.building);
-    }
-
-    public void dayHarvest() {
-        //昼夜交替,显示一天的收获
-
     }
 
     @Override
@@ -164,45 +144,34 @@ public class Game extends AppCompatActivity implements GameUI{
 
     @Override
     public void dialogueBox(String message) {
-        final AlertDialog alertDialog = getDialog(R.layout.crystal);
+        final AlertDialog alertDialog = getDialog(R.layout.dialoguebox);
         Window window = alertDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         window.setGravity(Gravity.BOTTOM);
-        TextView next;
-        if (message.substring(0,message.indexOf(":")).equals(Player.getPlayerName())) {
-            //玩家对话框
-            next = window.findViewById(R.id.pmessage);
-            ImageView npc = window.findViewById(R.id.playerDate);
-            npc.setImageResource(R.drawable.ic_launcher_background);
-        } else {
-            //NPC对话框
-            next = window.findViewById(R.id.message);
-            ImageView npc = window.findViewById(R.id.NPC);
-            switch (message.substring(0,message.indexOf(":"))) {
-                case "banker":
-                    npc.setImageResource(R.mipmap.banker);
-                    break;
-                case "dd":
-                    npc.setImageResource(R.drawable.ic_launcher_background);
-                    break;
-                case "ss":
-                    npc.setImageResource(R.drawable.ic_launcher_background);
-                    break;
-                default:
-                    npc.setImageResource(R.drawable.ic_launcher_background);
-            }
+        //对话框
+        TextView next = window.findViewById(R.id.message);
+        ImageView ima = window.findViewById(R.id.ima);
+        switch (message.substring(0,message.indexOf(":"))) {
+            case "banker":
+                ima.setImageResource(R.mipmap.banker);
+                break;
+            case "dd":
+                ima.setImageResource(R.drawable.ic_launcher_background);
+                break;
+            case "ss":
+                ima.setImageResource(R.drawable.ic_launcher_background);
+                break;
+            default:
+                ima.setImageResource(R.mipmap.player);
         }
+
 
         next.setText(message);
         next.setOnClickListener((View view)-> alertDialog.dismiss());
 
     }
 
-    @Override
-    protected void onDestroy() {
-        saveDate();
-        super.onDestroy();
-    }
+
 
     private static void saveDate(){
         Character.saveAllDate();
@@ -211,16 +180,18 @@ public class Game extends AppCompatActivity implements GameUI{
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         String[] choose = new String[1];
-        chooseDialogue(new String[]{"离开","留下"},choose);
+        chooseDialogue("你...确定要离去吗？",new String[]{"离开","留下"},choose);
         new Response<String>(choose){
             @Override
             public void run() {
                 while (getList()[0]==null);
-                if (!getList()[0].equals("离开")) return;
+                if (getList()[0].equals("离开")){
                 saveDate();
-                onDestroy();
+                finish();
+                }
+                interrupted();
             }
-        };
+        }.start();
         return true;
     }
 
@@ -252,12 +223,10 @@ public class Game extends AppCompatActivity implements GameUI{
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Log.i("la", "onPageScrolled: XD");
             }
 
             @Override
             public void onPageSelected(int position) {
-                Log.i("la", "onPageSelected: XD");
                 Player.getPlayerDate().setX_coordinate(position);
             }
 

@@ -29,11 +29,7 @@ public class GameTime extends TimerTask {
             Class type = Class.forName(className);
             //newInstance回调用构造器
             article = (T) type.newInstance();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
         return article;
@@ -48,9 +44,9 @@ public class GameTime extends TimerTask {
         });
     }
 
-    public boolean getTimeDate() {
+    public void getTimeDate() {
         Cursor iDate = Sql.getCursorAllInformation(Info.TIME);
-        if (iDate==null) return false;
+        if (iDate!=null)
         while (iDate.moveToNext()){
         //事实证明Cursor的指针是从第一条数据的前一个开始的
         setMinute(iDate.getInt(iDate.getColumnIndex(Info.MINUTE)));
@@ -59,7 +55,6 @@ public class GameTime extends TimerTask {
         setMonth(iDate.getInt(iDate.getColumnIndex(Info.MONTH)));
         setYear(iDate.getInt(iDate.getColumnIndex(Info.YEAR)));
         }
-        return true;
     }
 
 
@@ -74,7 +69,6 @@ public class GameTime extends TimerTask {
                 setDay(getDay()+1);
                 if (getDay() > 25) {
                     setDay(1);
-                    investment();
                     setMonth(getMonth()+1);
                     if (getMonth()> 4) {
                         setMonth(1);
@@ -84,16 +78,6 @@ public class GameTime extends TimerTask {
             }
         }
         gameUI.refreshUI();
-    }
-
-    public void setTime(){
-
-    }
-
-
-
-    public static void investment(){
-    //投资
     }
 
     public int getHour() {

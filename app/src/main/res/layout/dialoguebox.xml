@@ -5,7 +5,7 @@
     android:id="@+id/crystal">
 
     <ImageView
-        android:id="@+id/NPC"
+        android:id="@+id/ima"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="2"/>

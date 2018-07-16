@@ -39,6 +39,12 @@ public abstract class Item implements ShowAdapter,OwnName{
 
     public Item(){}
 
+    public static void addItem(String key, Item values, HashMap<String,Item> items){
+        if (items.get(key)!=null)
+            items.get(key).setTotal(items.get(key).getTotal()+values.getTotal());
+        else items.put(key,values);
+    }
+
     public abstract void createItemTable(String name);
 
     //从SQL中读取数据
@@ -114,7 +120,7 @@ public abstract class Item implements ShowAdapter,OwnName{
                     e.printStackTrace();
                 }
                 setTotal(getTotal() - amount[0]);
-                Character.getFirstMaster(Character.findMaster(getWorkSpace(), Building.buildings)).getItems().get(master).setTotal(-Math.abs(amount[0]));
+                Character.getFirstMaster(Character.findMaster(getWorkSpace(), Building.buildings)).getItems().get(master).setTotal((amount[0]>0)?-amount[0]:amount[0]);
                 UI.dialogueBox("移除成功");
                 interrupted();
             }
@@ -142,21 +148,12 @@ public abstract class Item implements ShowAdapter,OwnName{
                     e.printStackTrace();
                 }
                 setTotal(getTotal() - amount[0]);
-                Player.getPlayerDate().getBag().put(item.getName(),item);
+                Item.addItem(item.getName(),item,Player.getPlayerDate().getBag());
                 UI.dialogueBox("购买成功");
                 interrupted();
             }
         }.start();
     }
-//        if (UI.reAmount("输入购买总数")<=0)return;
-//        UI.dialogueBox("购买成功");
-//        Character.getFirstMaster(Character.findMaster(getWorkSpace(),Building.buildings)).addItems(this);
-//        if ((Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems() == null))
-//            Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().put(name, this);
-//        else
-//            Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().get(name).setTotal(Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().get(name).getTotal() + getTotal());
-
-
 
     public void setOriginalPrice(int originalPrice) {
         this.originalPrice = originalPrice;

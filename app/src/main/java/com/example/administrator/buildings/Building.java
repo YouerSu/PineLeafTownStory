@@ -85,16 +85,8 @@ public class Building implements OwnName {
         ("insert into "+Info.BUILDING+" ("+Info.NAME+","+Info.MASTER+","+Info.capacity+") values ('"+name+"','"+master+"',"+capacity+")");
     }
 
-    public static void clearSql(String tableName) {
-        Sql.getDateBase().execSQL("DELETE FROM " + tableName);
-    }
-
     public void setCapacity(int capacity) {
         this.capacity = capacity;
-    }
-
-    public void addItems(Item item) {
-        this.items.put(item.getName(),item);
     }
 
     public void setMaster(String master) {

@@ -19,13 +19,11 @@ public interface GameUI{
 
     void refreshUI();
 
-    void dayHarvest();
-
     <T> void reText(String message,T[] list);
 
     void dialogueBox(String message);
 
-    <T> void chooseDialogue(T[] messages, T[] choose);
+    <T> void chooseDialogue(String message,T[] messages, T[] choose);
 
     <T extends ShowAdapter> void showListDialogue(List<T> items);
 
