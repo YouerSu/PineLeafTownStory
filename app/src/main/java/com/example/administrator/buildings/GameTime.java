@@ -1,8 +1,8 @@
 package com.example.administrator.buildings;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
+import com.example.administrator.character.Character;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.Sql;
 
@@ -22,20 +22,6 @@ public class GameTime extends TimerTask {
     public GameTime(GameUI gameUI) {
         this.gameUI = gameUI;
     }
-
-    public static<T> T getType(String className) {
-        T article = null;
-        try {
-            Class type = Class.forName(className);
-            //newInstance回调用构造器
-            article = (T) type.newInstance();
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
-        }
-        return article;
-    }
-
-
 
 
     public void saveDate(){
@@ -70,6 +56,8 @@ public class GameTime extends TimerTask {
                 if (getDay() > 25) {
                     setDay(1);
                     setMonth(getMonth()+1);
+                    for (Character character:Character.getCharacters())
+                        character.wages();
                     if (getMonth()> 4) {
                         setMonth(1);
                         setYear(getYear()+1);

@@ -30,9 +30,9 @@ import com.example.administrator.utils.Info;
 import com.example.administrator.utils.MyPagerAdapter;
 import com.example.administrator.utils.Response;
 import com.example.administrator.utils.Sql;
+import com.example.administrator.utils.Tools;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -77,8 +77,8 @@ public class Game extends AppCompatActivity implements GameUI{
         timeView = findViewById(R.id.clock);
         playerView = findViewById(R.id.playerDate);
         findViewById(R.id.showCharacter).setOnClickListener((view) -> showListDialogue(Character.getCharacters()));
-        findViewById(R.id.showBag).setOnClickListener((view)-> showListDialogue(toList(Player.getPlayerDate().getBag().values())));
-        findViewById(R.id.showItem).setOnClickListener((view)-> showListDialogue(toList(Building.getBuildings().get(pager.getCurrentItem()).getItems().values())));
+        findViewById(R.id.showBag).setOnClickListener((view)-> showListDialogue(Tools.toList(Player.getPlayerDate().getBag().values())));
+        findViewById(R.id.showItem).setOnClickListener((view)-> showListDialogue(Tools.toList(Building.getBuildings().get(pager.getCurrentItem()).getItems().values())));
         setBuilding();
         setText();
     }
@@ -91,17 +91,10 @@ public class Game extends AppCompatActivity implements GameUI{
         return getListView(listItem);
     }
 
-    public static <T> List<T> toList(Collection<T> collection){
-        List<T> list = new ArrayList<>();
-        for (T item:collection)
-            list.add(item);
-        return list;
-    }
-
     public ListView getListView(List<Map<String, String>> listItem) {
         SimpleAdapter sa = new SimpleAdapter(this,listItem, R.layout.item_list,new String[]{Info.NAME,Info.LT1,Info.LT2,Info.LT3},new int[]{R.id.name,R.id.lt1,R.id.lt2,R.id.lt3});
         AlertDialog alertDialog = getDialog(R.layout.show_list);
-        ListView list = alertDialog.getWindow().findViewById(R.id.stockList);
+        ListView list = alertDialog.getWindow().findViewById(R.id.list);
         list.setAdapter(sa);
         return list;
     }
@@ -109,7 +102,7 @@ public class Game extends AppCompatActivity implements GameUI{
     @Override
     public <T extends ShowAdapter>void showListDialogue(final List<T> items) {
         final GameUI UI = this;
-        changeList(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).showOnClick(UI));
+        changeList(items).setOnItemClickListener((adapterView, view, i, l) -> items.get(i).onClick(UI));
     }
 
 
@@ -128,10 +121,11 @@ public class Game extends AppCompatActivity implements GameUI{
 
     @Override
     public<T> void reText(String messages,T[] name) {
+        //强行转换如同虚设XD
         AlertDialog alertDialog = getInputDialog(messages);
         alertDialog.findViewById(R.id.ok).setOnClickListener((view)->{
             try {
-                name[0] = (T)((EditText)(alertDialog.findViewById(R.id.tname))).getText().toString();
+                name[0] = (T)((EditText)(alertDialog.findViewById(R.id.text))).getText().toString();
                 alertDialog.dismiss();
             }catch (ClassCastException e){
                 Toast.makeText(this,"您输入的字符不符合格式",Toast.LENGTH_SHORT).show();
@@ -203,11 +197,11 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     private AlertDialog getInputDialog(String text) {
-        AlertDialog alertDialog = getDialog(R.layout.textin);
+        AlertDialog alertDialog = getDialog(R.layout.input_dialogue);
         Window window = alertDialog.getWindow();
         window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
         window.setGravity(Gravity.CENTER);
-        final EditText editText = window.findViewById(R.id.tname);
+        final EditText editText = window.findViewById(R.id.text);
         SpannableString ss = new SpannableString(text);
         AbsoluteSizeSpan ass = new AbsoluteSizeSpan(15,true);
         ss.setSpan(ass,0,ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

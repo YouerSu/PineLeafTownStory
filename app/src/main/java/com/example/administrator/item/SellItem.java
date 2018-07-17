@@ -2,7 +2,9 @@ package com.example.administrator.item;
 
 import android.database.Cursor;
 
+import com.example.administrator.buildings.GameUI;
 import com.example.administrator.utils.Info;
+import com.example.administrator.utils.Response;
 import com.example.administrator.utils.Sql;
 
 
@@ -17,10 +19,12 @@ public class SellItem extends Item {
 
     private int sellPrice;
     private int popular;
+    public static Item[] items = new SellItem[]{
+    new SellItem("杨梅",2,6,10),
+    };
 
-    public SellItem(String name, int volume, int originalPrice, int total, int sellPrice, int popular) {
-        super(name, volume, originalPrice, total);
-        this.sellPrice = sellPrice;
+    public SellItem(String name, int volume, int originalPrice, int popular) {
+        super(name, volume, originalPrice);
         this.popular = popular;
     }
 
@@ -42,13 +46,29 @@ public class SellItem extends Item {
     }
 
     @Override
+    public void showNotMyOwnOnClick(GameUI UI) {
+        super.showNotMyOwnOnClick(UI);
+        if (getTotal()<=0) return;
+        String[] price = new String[1];
+        UI.reText("输入销售价格",price);
+        new Response<String>(price){
+            @Override
+            public void run() {
+                while (price[0]==null);
+                setSellPrice(Integer.valueOf(price[0]));
+                interrupted();
+            }
+        }.start();
+    }
+
+    @Override
     public void getSQLDate(Cursor cursor) {
         sellPrice = cursor.getInt(cursor.getColumnIndex(Info.sellPrice));
     }
 
     @Override
-    public Item[] getInfoDate() {
-        return new Info.SELLITEM().getItems();
+    public Item[] getAllDate() {
+        return items;
     }
 
     @Override

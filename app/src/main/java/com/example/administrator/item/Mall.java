@@ -2,69 +2,60 @@ package com.example.administrator.item;
 
 
 import android.database.Cursor;
-import android.util.Log;
 
-import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;
-import com.example.administrator.storeboss.Game;
 import com.example.administrator.utils.Info;
+import com.example.administrator.utils.Tools;
+
 import java.util.HashMap;
 import java.util.List;
 
 public class Mall extends Item {
 
-    private String itemList;
+    public static Item[] items = new Mall[]{
+    new Mall("SellItem",0,0,SellItem.items),
+    };
 
-    public Mall(String name, int volume, int originalPrice, int total, String itemList) {
-        super(name, volume, originalPrice, total);
-        this.itemList = itemList;
-    }
+    private Item[] list;
 
-    public Mall(String name, int volume, int originalPrice, String itemList) {
+
+
+    public Mall(String name, int volume, int originalPrice, Item[] itemList) {
         super(name, volume, originalPrice);
-        this.itemList = itemList;
+        list = itemList;
     }
 
-    public Mall() {
+    public Mall() {}
+
+    @Override
+    public void createItemTable(String name) {}
+
+    @Override
+    public Item[] getAllDate(){
+        return items;
     }
 
     @Override
-    public void createItemTable(String name) {
-    }
+    public void getSQLDate(Cursor cursor) {}
 
     @Override
-    public Item[] getInfoDate(){
-        return new Info.MALL().getItems();
-    }
-
-    @Override
-    public void getSQLDate(Cursor cursor) {
-
-    }
-
-    @Override
-    public void saveDate(String tableName) {
-
-    }
+    public void saveDate(String tableName) {}
 
     @Override
     public void getListDate(HashMap<String, Item> articles) {
-        setItemList(((Mall)articles.get(getName())).getItemList());
+        setList(((Mall)articles.get(getName())).getList());
     }
 
-    public String getItemList() {
-        return itemList;
+    public Item[] getList() {
+        return list;
     }
 
-    public void setItemList(String itemList) {
-        this.itemList = itemList;
+    public void setList(Item[] list) {
+        this.list = list;
     }
-
 
     @Override
-    public void showOnClick(GameUI gameUI) {
-    gameUI.showListDialogue(Game.toList(getAllItems(itemList).values()));
+    public void showMyOwnOnClick(GameUI UI) {
+        UI.showListDialogue(Tools.toList(list));
     }
-
-
 }

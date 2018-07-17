@@ -54,32 +54,4 @@ public final class Info {
     YOU = "You",
     INDEX = "Index";
 
-    public static abstract class ITEM{
-        public abstract Item[] getItems();
-
-    }
-
-    public static final class SELLITEM extends ITEM{
-        static SellItem[] items = new SellItem[]{
-
-        };
-
-        @Override
-        public Item[] getItems() {
-            return items;
-        }
-    }
-
-    public static final class MALL extends ITEM{
-        static Mall[] items = new Mall[]{
-            new Mall("SellItem",0,0,SellItem.class.getName()),
-
-        };
-
-        @Override
-        public Item[] getItems() {
-            return items;
-        }
-    }
-
 }

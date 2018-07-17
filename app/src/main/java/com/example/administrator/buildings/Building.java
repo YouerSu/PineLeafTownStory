@@ -10,6 +10,7 @@ import com.example.administrator.item.Item;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.OwnName;
 import com.example.administrator.utils.Sql;
+import com.example.administrator.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class Building implements OwnName {
     public static List<Building> buildings = new ArrayList<>();
     private String name;
     private int capacity;
-    private String master;
+    private String master = "YouerSu";
     private HashMap<String,Item> items = new HashMap<>();
 
     public Building(String name, int capacity, String master) {
@@ -30,18 +31,19 @@ public class Building implements OwnName {
     }
 
     public static Building findWorkSpace(String workSpace){
-        for (Building building: Character.findMaster(workSpace,buildings))
+        for (Building building: Tools.findMaster(workSpace,buildings))
             return building;
         return null;
     }
 
     public static void getBuildingDate() {
         Cursor iDate = Sql.getCursorAllInformation(Info.BUILDING);
-        if (iDate!=null)
+        if (iDate==null) return;
         while (iDate.moveToNext()){
             Building building = new Building(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.capacity)),iDate.getString(iDate.getColumnIndex(Info.MASTER)));
             building.items = Item.getSuperDate(building.getName());
         }
+        iDate.close();
     }
 
     public String getMaster() {
@@ -79,7 +81,7 @@ public class Building implements OwnName {
         return items;
     }
 
-    public void createNewBuilding(SQLiteDatabase db){
+    private void createNewBuilding(SQLiteDatabase db){
         Item.createTable(name);
         db.execSQL
         ("insert into "+Info.BUILDING+" ("+Info.NAME+","+Info.MASTER+","+Info.capacity+") values ('"+name+"','"+master+"',"+capacity+")");
@@ -93,5 +95,7 @@ public class Building implements OwnName {
         this.master = master;
     }
 
-
+    public void setItems(HashMap<String, Item> items) {
+        this.items = items;
+    }
 }

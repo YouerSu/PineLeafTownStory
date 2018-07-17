@@ -6,7 +6,5 @@ public interface ShowAdapter {
 
      Map<String,String> UIPageAdapter();
 
-     void showOnClick(GameUI gameUI);
-
-
+     void onClick(GameUI gameUI);
 }

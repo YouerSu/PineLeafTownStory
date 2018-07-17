@@ -2,9 +2,7 @@ package com.example.administrator.item;
 
 import android.database.Cursor;
 
-import com.example.administrator.character.Character;
 import com.example.administrator.buildings.Building;
-import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;
 import com.example.administrator.character.Player;
 import com.example.administrator.utils.Info;
@@ -12,9 +10,12 @@ import com.example.administrator.buildings.ShowAdapter;
 import com.example.administrator.utils.OwnName;
 import com.example.administrator.utils.Response;
 import com.example.administrator.utils.Sql;
+import com.example.administrator.utils.Tools;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.example.administrator.utils.Tools.findMaster;
 
 
 public abstract class Item implements ShowAdapter,OwnName{
@@ -39,10 +40,10 @@ public abstract class Item implements ShowAdapter,OwnName{
 
     public Item(){}
 
-    public static void addItem(String key, Item values, HashMap<String,Item> items){
-        if (items.get(key)!=null)
-            items.get(key).setTotal(items.get(key).getTotal()+values.getTotal());
-        else items.put(key,values);
+    public static void addItem(Item values, HashMap<String,Item> items){
+        if (items.get(values.name)!=null)
+            items.get(values.name).setTotal(items.get(values.name).getTotal()+values.getTotal());
+        else items.put(values.name,values);
     }
 
     public abstract void createItemTable(String name);
@@ -50,7 +51,7 @@ public abstract class Item implements ShowAdapter,OwnName{
     //从SQL中读取数据
     public abstract void getSQLDate(Cursor cursor);
 
-    public abstract Item[] getInfoDate();
+    public abstract Item[] getAllDate();
 
     public abstract void saveDate(String workSpaceName);
     //从数据集合中读取额外数据
@@ -108,10 +109,10 @@ public abstract class Item implements ShowAdapter,OwnName{
     }
 
     public void showMyOwnOnClick(GameUI UI) {
-        Integer[] amount = new Integer[]{-1};
-        final String master = name;
-        UI.reText("Enter the number of removals",amount);
-        new Response<Integer>(amount){
+        String[] choose = new String[1];
+        final Item copy = this;
+        UI.chooseDialogue("move "+name+" to ...",new String[]{"背包","垃圾桶",Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getName()},choose);
+        new Response<String>(choose){
             @Override
             public void run() {
                 try {
@@ -119,37 +120,42 @@ public abstract class Item implements ShowAdapter,OwnName{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                setTotal(getTotal() - amount[0]);
-                Character.getFirstMaster(Character.findMaster(getWorkSpace(), Building.buildings)).getItems().get(master).setTotal((amount[0]>0)?-amount[0]:amount[0]);
-                UI.dialogueBox("移除成功");
+                if (choose[0].equals("背包")){
+                    setWorkSpace(Player.getPlayerName());
+                    Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().remove(name);
+                    addItem(copy,Player.getPlayerDate().getBag());
+                }
+                else if (choose[0].equals(Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getName())&&workSpace.equals(Player.getPlayerName())){
+                    setWorkSpace(choose[0]);
+                    Player.getPlayerDate().getBag().remove(name);
+                    addItem(copy,Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems());
+                }
+                else if (choose[0].equals("垃圾桶"))
+                    Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().remove(name);
+                UI.dialogueBox("移动成功");
                 interrupted();
             }
         }.start();
     }
 
     @Override
-    public void showOnClick(GameUI gameUI) {
-        if (Character.getFirstMaster(Character.findMaster(workSpace,Building.getBuildings())).getMaster().equals(Player.getPlayerName()))
+    public void onClick(GameUI gameUI) {
+        if (Tools.getFirstMaster(findMaster(workSpace,Building.getBuildings())).getMaster().equals(Player.getPlayerName()))
             showMyOwnOnClick(gameUI);
         else
             showNotMyOwnOnClick(gameUI);
     }
 
     public void showNotMyOwnOnClick(GameUI UI) {
-        Integer[] amount = new Integer[]{-1};
+        String[] amount = new String[1];
         final Item item = this;
         UI.reText("Enter the number of buy",amount);
-        new Response<Integer>(amount){
+        new Response<String>(amount){
             @Override
             public void run() {
-                try {
-                    wait(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                setTotal(getTotal() - amount[0]);
-                Item.addItem(item.getName(),item,Player.getPlayerDate().getBag());
-                UI.dialogueBox("购买成功");
+                while (amount[0]==null);
+                item.setTotal(Integer.valueOf(amount[0]));
+                Item.addItem(item,Player.getPlayerDate().getBag());
                 interrupted();
             }
         }.start();
@@ -161,7 +167,7 @@ public abstract class Item implements ShowAdapter,OwnName{
 
     public static HashMap<String,Item> getAllItems(String name) {
         HashMap<String,Item> items = new HashMap<>();
-       for (Item item:((Item)GameTime.getType(name)).getInfoDate())
+       for (Item item:((Item) Tools.getType(name)).getAllDate())
             items.put(item.getName(),item);
         return items;
     }
@@ -171,7 +177,7 @@ public abstract class Item implements ShowAdapter,OwnName{
         HashMap<String,Item> map = new HashMap<>();
         Cursor iDate = Sql.getCursorAllInformation(name+Info.INDEX);
         while (iDate.moveToNext()){
-        Item article = GameTime.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
+        Item article = Tools.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
         HashMap<String,Item> articles = getAllItems(iDate.getString(iDate.getColumnIndex(Info.id)));
         article.setWorkSpace(name);
         article.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));

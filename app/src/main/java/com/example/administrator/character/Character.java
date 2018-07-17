@@ -5,30 +5,24 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.administrator.buildings.Building;
 import com.example.administrator.item.Item;
-import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;
-import com.example.administrator.item.Mall;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.OwnName;
 import com.example.administrator.buildings.ShowAdapter;
 import com.example.administrator.utils.Sql;
+import com.example.administrator.utils.Tools;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 public abstract class Character implements OwnName,ShowAdapter{
     public static LinkedList<Character> characters = new LinkedList<>();
-    public String name;
-    public int money;
-    public int prestige;
+    private String name;
+    private int money;
+    private int prestige;
     private int x_coordinate;
     private int salary;
     private String workSpace;
-
-
-
 
     @Override
     public Map<String, String> UIPageAdapter() {
@@ -44,13 +38,13 @@ public abstract class Character implements OwnName,ShowAdapter{
 //    }
 
     @Override
-    public void showOnClick(GameUI gameUI) {
+    public void onClick(GameUI gameUI) {
         gameUI.dialogueBox(name+":你好,"+Player.getPlayerName());
 //        if (Character.getFirstMaster(Character.findMaster(workSpace,Building.getBuildings())).getMaster().equals(Player.getPlayerName()))
 //            showMyOwnOnClick(gameUI);
 //        else
 //            showNotMyOwnOnClick(gameUI);
-        /**招聘改为在商店放入一个招聘品XD*/
+        /*招聘改为在商店放入一个招聘品XD*/
     }
 
 //    public void showNotMyOwnOnClick(GameUI UI ) {
@@ -63,10 +57,10 @@ public abstract class Character implements OwnName,ShowAdapter{
     }
 
     public static void createNewCharacter(SQLiteDatabase db, String className, String name, int money, int prestige, int x_coordinate, int salary, String workSpace){
-        if (!(GameTime.getType(className) instanceof Character)) return;
+        if (!(Tools.getType(className) instanceof Character)) return;
         db.execSQL
         ("insert into "+Info.CHARACTER+" ("+Info.id+","+Info.NAME+","+Info.MONEY+","+Info.PRESTIGE+","+Info.coordinate+","+Info.salary+","+Info.MASTER+") values ('"+className+"','"+name+"',"+money+","+prestige+","+x_coordinate+","+salary+",'"+workSpace+"')");
-        Character character = GameTime.getType(className);
+        Character character = Tools.getType(className);
         character.setName(name);
         character.setMoney(money);
         character.setPrestige(prestige);
@@ -80,12 +74,6 @@ public abstract class Character implements OwnName,ShowAdapter{
         Sql.operatingSql(new String[]{"DELETE FROM "+Info.BUILDING});
         for (Building building: Building.getBuildings())
             building.saveDate();
-    }
-
-    public static<T> T getFirstMaster(List<T> list){
-        for (T master:list)
-            return master;
-        return null;
     }
 
 
@@ -108,7 +96,7 @@ public abstract class Character implements OwnName,ShowAdapter{
 
     public static void getDate(Cursor iDate) {
         while (iDate.moveToNext()){
-        Character character = GameTime.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
+        Character character = Tools.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
         character.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
         character.setMoney(iDate.getInt(iDate.getColumnIndex(Info.MONEY)));
         character.setPrestige(iDate.getInt(iDate.getColumnIndex(Info.PRESTIGE)));
@@ -118,24 +106,17 @@ public abstract class Character implements OwnName,ShowAdapter{
         character.initialization();
         characters.add(character);
         }
+        iDate.close();
     }
 
     public void wages(){
-        for (Character character:findMaster(Building.findWorkSpace(workSpace).getMaster(),characters))
+        for (Character character: Tools.findMaster(Building.findWorkSpace(workSpace).getMaster(),characters))
             character.setMoney(character.getMoney()-getSalary());
         setMoney(getMoney()+getSalary());
     }
 
-    public static<T extends OwnName> List<T> findMaster(String master,List<T> list) {
-        List<T> things = new ArrayList();
-        for (T thing:list)
-            if (thing.getName()!=null&&master!=null&&master.equals(thing.getName()))
-                things.add(thing);
-        return things;
-    }
-
     public static void findWorker(String buildingName,Item item){
-        for (Character employee:findMaster(buildingName,characters))
+        for (Character employee: Tools.findMaster(buildingName,characters))
             if (employee instanceof Employee &&((Employee) employee).work(item))
                 return;
 
