@@ -74,21 +74,18 @@ public class Player extends Character {
         Character finalCharacter = character;
         new Response<String>(name){
             @Override
-            public void run() {
-                while (name[0] == null);
+            public void doThings() {
                 finalCharacter.setName(name[0]);
                 Sql.operatingSql(new String[]{
-                "insert into "+Info.CHARACTER+" ("+Info.id +","+Info.NAME +","+Info.MONEY +","+Info.PRESTIGE + ","+Info.coordinate+ ","+Info.salary+ ","+Info.MASTER+ ") values ('"+ Player.class.getName()+"','"+name[0]+"',0,0,0,3000,'"+ null+"')",
-                "create table if not exists "+name[0]+Info.INDEX+" (" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)"
+                        "insert into "+Info.CHARACTER+" ("+Info.id +","+Info.NAME +","+Info.MONEY +","+Info.PRESTIGE + ","+Info.coordinate+ ","+Info.salary+ ","+Info.MASTER+ ") values ('"+ Player.class.getName()+"','"+name[0]+"',0,0,0,3000,'"+ null+"')",
+                        "create table if not exists "+name[0]+Info.INDEX+" (" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)"
                 });
                 finalCharacter.initialization();
                 Character.characters.add(finalCharacter);
                 firstPlayGame();
                 createPlayerDate(gameUI);
-                interrupted();
-                Log.i("lalala", "run: aada");
             }
-        }.start();
+        };
 
     }
 

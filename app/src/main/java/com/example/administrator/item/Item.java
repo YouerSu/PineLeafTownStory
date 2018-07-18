@@ -113,13 +113,9 @@ public abstract class Item implements ShowAdapter,OwnName{
         final Item copy = this;
         UI.chooseDialogue("move "+name+" to ...",new String[]{"背包","垃圾桶",Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getName()},choose);
         new Response<String>(choose){
+
             @Override
-            public void run() {
-                try {
-                    wait(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            public void doThings() {
                 if (choose[0].equals("背包")){
                     setWorkSpace(Player.getPlayerName());
                     Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().remove(name);
@@ -132,10 +128,8 @@ public abstract class Item implements ShowAdapter,OwnName{
                 }
                 else if (choose[0].equals("垃圾桶"))
                     Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().remove(name);
-                UI.dialogueBox("移动成功");
-                interrupted();
             }
-        }.start();
+        };
     }
 
     @Override
@@ -152,13 +146,11 @@ public abstract class Item implements ShowAdapter,OwnName{
         UI.reText("Enter the number of buy",amount);
         new Response<String>(amount){
             @Override
-            public void run() {
-                while (amount[0]==null);
+            public void doThings() {
                 item.setTotal(Integer.valueOf(amount[0]));
                 Item.addItem(item,Player.getPlayerDate().getBag());
-                interrupted();
             }
-        }.start();
+        };
     }
 
     public void setOriginalPrice(int originalPrice) {

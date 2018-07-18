@@ -177,15 +177,12 @@ public class Game extends AppCompatActivity implements GameUI{
         chooseDialogue("你...确定要离去吗？",new String[]{"离开","留下"},choose);
         new Response<String>(choose){
             @Override
-            public void run() {
-                while (getList()[0]==null);
-                if (getList()[0].equals("离开")){
+            public void doThings() {
+                if (getResult().equals("离开"))
                 saveDate();
                 finish();
-                }
-                interrupted();
             }
-        }.start();
+        };
         return true;
     }
 

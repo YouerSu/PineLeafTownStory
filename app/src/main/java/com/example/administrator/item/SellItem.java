@@ -48,17 +48,15 @@ public class SellItem extends Item {
     @Override
     public void showNotMyOwnOnClick(GameUI UI) {
         super.showNotMyOwnOnClick(UI);
-        if (getTotal()<=0) return;
+        while (getTotal()<=0);
         String[] price = new String[1];
         UI.reText("输入销售价格",price);
         new Response<String>(price){
             @Override
-            public void run() {
-                while (price[0]==null);
+            public void doThings() {
                 setSellPrice(Integer.valueOf(price[0]));
-                interrupted();
             }
-        }.start();
+        };
     }
 
     @Override

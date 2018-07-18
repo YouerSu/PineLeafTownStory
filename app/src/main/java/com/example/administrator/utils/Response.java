@@ -8,18 +8,23 @@ public class Response<T> extends Thread {
 
     T[] list;
 
-    public Response(T[] list) {
+    public Response(T[] list){
         this.list = list;
+        start();
     }
 
-    public T[] getList() {
-        return list;
+        @Override
+    public void run() {
+        if (judgment()) return;
+        doThings();
+        interrupted();
     }
 
-    //    @Override
-//    public void run() {
-//        if (list!=null)
-//        ...doSomeThings...
-//        end
-//    }
+    public void doThings(){}
+
+    public boolean judgment(){ return list[0]==null;}
+
+    public T getResult() {
+        return list[0];
+    }
 }
