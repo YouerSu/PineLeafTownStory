@@ -6,7 +6,7 @@ package com.example.administrator.utils;
 
 public class Response<T> extends Thread {
 
-    T[] list;
+    private T[] list;
 
     public Response(T[] list){
         this.list = list;

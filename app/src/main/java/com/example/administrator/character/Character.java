@@ -22,7 +22,7 @@ public abstract class Character implements OwnName,ShowAdapter{
     private int prestige;
     private int x_coordinate;
     private int salary;
-    private String workSpace;
+    private String workSpace = "PineTower";
 
     @Override
     public Map<String, String> UIPageAdapter() {
@@ -31,25 +31,11 @@ public abstract class Character implements OwnName,ShowAdapter{
 
     abstract void initialization();
 
-
-//    public void showMyOwnOnClick(GameUI UI) {
-//        new Mall("Employee",0,0,0,"Employee").showMyOwnOnClick(UI);
-//
-//    }
-
     @Override
     public void onClick(GameUI gameUI) {
         gameUI.dialogueBox(name+":你好,"+Player.getPlayerName());
-//        if (Character.getFirstMaster(Character.findMaster(workSpace,Building.getBuildings())).getMaster().equals(Player.getPlayerName()))
-//            showMyOwnOnClick(gameUI);
-//        else
-//            showNotMyOwnOnClick(gameUI);
-        /*招聘改为在商店放入一个招聘品XD*/
     }
 
-//    public void showNotMyOwnOnClick(GameUI UI ) {
-//        new Mall("Character",0,0,0,"Character").showMyOwnOnClick(UI);
-//    }
 
     public static void getAllDate(){
         Building.getBuildingDate();
@@ -110,15 +96,18 @@ public abstract class Character implements OwnName,ShowAdapter{
     }
 
     public void wages(){
-        for (Character character: Tools.findMaster(Building.findWorkSpace(workSpace).getMaster(),characters))
-            character.setMoney(character.getMoney()-getSalary());
+        String masterName = Tools.findMaster(workSpace,Building.getBuildings()).getMaster();
+        Character master = Tools.findMaster(masterName,characters);
+        master.setMoney(master.getMoney()-getSalary());
         setMoney(getMoney()+getSalary());
     }
 
     public static void findWorker(String buildingName,Item item){
-        for (Character employee: Tools.findMaster(buildingName,characters))
-            if (employee instanceof Employee &&((Employee) employee).work(item))
-                return;
+        for (Character character: characters) {
+            if (character.getWorkSpace().equals(buildingName) &&
+                character instanceof Employee &&
+                ((Employee) character).work(item));
+        }
 
     }
 

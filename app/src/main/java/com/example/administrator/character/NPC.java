@@ -1,4 +1,4 @@
-package com.example.administrator.utils;
+package com.example.administrator.character;
 
 
 import com.example.administrator.buildings.ShowAdapter;

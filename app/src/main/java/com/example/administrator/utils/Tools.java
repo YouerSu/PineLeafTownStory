@@ -1,52 +1,45 @@
 package com.example.administrator.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 public class Tools {
 
     public static<T> T getType(String className) {
-        T article = null;
+        T article;
         try {
             Class type = Class.forName(className);
             //newInstance会调用构造器
             article = (T) type.newInstance();
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
+            throw new Error("Can't found class "+className);
         }
         return article;
     }
 
 
-    public static<T extends OwnName> List<T> findMaster(String master, List<T> list) {
-        List<T> things = new ArrayList<>();
-        for (T thing:list)
-            if (thing.getName()!=null&&master!=null&&master.equals(thing.getName()))
-                things.add(thing);
-        return things;
+    public static<T extends OwnName> T findMaster(String master, List<T> list) {
+        T var = null;
+        for (T thing:list){
+            if (master.equals(thing.getName())) {
+                var = thing;
+            }
+        }
+        if (var!=null) {
+            return var;
+        }else {
+            throw new Error("Didn't find master!");
+        }
     }
 
     public static <T> List<T> toList(Collection<T> collection){
-        List<T> list = new ArrayList<>();
-        for (T item:collection)
-            list.add(item);
-        return list;
+        return new ArrayList<>(collection);
     }
 
     public static <T> List<T> toList(T[] array){
-        List<T> list = new ArrayList<>();
-        for (T item:array)
-            list.add(item);
-        return list;
+        return new ArrayList<>(Arrays.asList(array));
     }
-
-    public static<T> T getFirstMaster(List<T> list){
-        for (T master:list)
-            return master;
-        return null;
-    }
-
-
 
 }

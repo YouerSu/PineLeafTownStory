@@ -3,13 +3,10 @@ package com.example.administrator.character;
 import com.example.administrator.buildings.Building;
 import com.example.administrator.item.Item;
 import com.example.administrator.item.SellItem;
-import com.example.administrator.utils.NPC;
 
 import java.util.Random;
 
 public class Customer extends Character implements NPC{
-
-
 
     @Override
     void initialization() {

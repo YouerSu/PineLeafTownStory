@@ -12,9 +12,9 @@ public class StoresEmployee extends Employee {
     public boolean work(Item item) {
         if (!(item instanceof SellItem)) return false;
         item.setTotal(item.getTotal()-1);
-        for (Character character: Tools.findMaster(Building.findWorkSpace(getWorkSpace()).getMaster(),characters))
-            if (character!=null)
-            character.setMoney(character.getMoney() + ((SellItem)item).getSellPrice());
+        Building workSpace = Building.findWorkSpace(getWorkSpace());
+        Character master = Tools.findMaster(workSpace.getMaster(),getCharacters());
+        master.setMoney(master.getMoney() + ((SellItem)item).getSellPrice());
         return true;
     }
 

@@ -1,23 +1,11 @@
 package com.example.administrator.utils;
 
-
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.example.administrator.buildings.Building;
-import com.example.administrator.character.Character;
-import com.example.administrator.character.Employee;
-import com.example.administrator.character.Player;
-import com.example.administrator.character.StoresEmployee;
-import com.example.administrator.item.Item;
-import com.example.administrator.item.Mall;
-import com.example.administrator.item.SellItem;
-
 public class Sql extends SQLiteOpenHelper{
-    //数据
-    private static Sql info;
     private static SQLiteDatabase db;
 
     public Sql(Context context) {
@@ -62,7 +50,7 @@ public class Sql extends SQLiteOpenHelper{
     }
 
     public static void setInfo(Sql sql) {
-        info = sql;
+        Sql info = sql;
         db = info.getWritableDatabase();
     }
 }

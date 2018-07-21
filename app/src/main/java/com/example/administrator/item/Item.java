@@ -4,6 +4,7 @@ import android.database.Cursor;
 
 import com.example.administrator.buildings.Building;
 import com.example.administrator.buildings.GameUI;
+import com.example.administrator.character.Character;
 import com.example.administrator.character.Player;
 import com.example.administrator.utils.Info;
 import com.example.administrator.buildings.ShowAdapter;
@@ -134,10 +135,12 @@ public abstract class Item implements ShowAdapter,OwnName{
 
     @Override
     public void onClick(GameUI gameUI) {
-        if (Tools.getFirstMaster(findMaster(workSpace,Building.getBuildings())).getMaster().equals(Player.getPlayerName()))
+        if (Tools.findMaster(Building.findWorkSpace(getWorkSpace()).getMaster(), Character.getCharacters())
+            .getName().equals(Player.getPlayerName())) {
             showMyOwnOnClick(gameUI);
-        else
+        } else {
             showNotMyOwnOnClick(gameUI);
+        }
     }
 
     public void showNotMyOwnOnClick(GameUI UI) {
@@ -178,7 +181,7 @@ public abstract class Item implements ShowAdapter,OwnName{
         article.setOriginalPrice(articles.get(article.getName()).getOriginalPrice());
         try {
             article.getSQLDate(Sql.getCursor(name+article.getClass().getName().substring(article.getClass().getName().lastIndexOf(".")+1),Info.sellPrice,Info.NAME,new String[]{article.getName()}));
-        }catch (RuntimeException noSuchTable){}
+        }catch (RuntimeException ignored){}
         article.getListDate(articles);
         map.put(article.getName(),article);
         }

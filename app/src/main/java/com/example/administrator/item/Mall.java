@@ -4,11 +4,9 @@ package com.example.administrator.item;
 import android.database.Cursor;
 
 import com.example.administrator.buildings.GameUI;
-import com.example.administrator.utils.Info;
 import com.example.administrator.utils.Tools;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class Mall extends Item {
 

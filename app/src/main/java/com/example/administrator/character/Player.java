@@ -1,7 +1,5 @@
 package com.example.administrator.character;
 
-import android.util.Log;
-
 import com.example.administrator.buildings.Building;
 import com.example.administrator.buildings.GameTime;
 import com.example.administrator.buildings.GameUI;
@@ -56,18 +54,19 @@ public class Player extends Character {
     }
 
     public static Player getPlayerDate() {
-        Character character = Tools.getFirstMaster(Tools.findMaster(playerName,characters));
+        Character character = Tools.findMaster(playerName,characters);
         return (Player)character;
 
     }
 
     public static void createPlayerDate(GameUI gameUI) {
-        Character character = Tools.getFirstMaster(Tools.findMaster(playerName,characters));
-        if (character instanceof Player){
-        ((Player)character).setTimeDate(gameUI);
-        return;}
-
-     else   character = new Player();
+        Character character = getPlayerDate();
+        if (character != null){
+            ((Player)character).setTimeDate(gameUI);
+            return;
+        } else{
+            character = new Player();
+        }
         String[]name =new String[1];
         gameUI.reText("输入你的名字",name);
         //判断是否重复

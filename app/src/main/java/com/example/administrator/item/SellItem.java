@@ -7,12 +7,6 @@ import com.example.administrator.utils.Info;
 import com.example.administrator.utils.Response;
 import com.example.administrator.utils.Sql;
 
-
-import org.w3c.dom.Document;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 import java.util.HashMap;
 
 public class SellItem extends Item {

@@ -31,9 +31,7 @@ public class Building implements OwnName {
     }
 
     public static Building findWorkSpace(String workSpace){
-        for (Building building: Tools.findMaster(workSpace,buildings))
-            return building;
-        return null;
+        return Tools.findMaster(workSpace,buildings);
     }
 
     public static void getBuildingDate() {
