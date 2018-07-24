@@ -47,16 +47,16 @@ public abstract class Item implements ShowAdapter,OwnName{
         else items.put(values.name,values);
     }
 
-    public abstract void createItemTable(String name);
+     public abstract void createItemTable(String name);
 
     //从SQL中读取数据
     public abstract void getSQLDate(Cursor cursor);
 
-    public abstract Item[] getAllDate();
-
     public abstract void saveDate(String workSpaceName);
     //从数据集合中读取额外数据
     public abstract void getListDate(HashMap<String,Item> articles);
+
+    public abstract Item[] getAllDate();
 
     public void saveSuperDate(String name){
     //渣渣设计,速度极慢
@@ -65,6 +65,96 @@ public abstract class Item implements ShowAdapter,OwnName{
       });
       createItemTable(workSpace);
       saveDate(name);
+    }
+
+    public static HashMap<String,Item> getSuperDate(String name) {
+        //从XML与SQL中获取数据
+        HashMap<String,Item> map = new HashMap<>();
+        Cursor iDate = Sql.getCursorAllInformation(name+Info.INDEX);
+        while (iDate.moveToNext()){
+            Item article = Tools.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
+            HashMap<String,Item> articles = getAllItems(iDate.getString(iDate.getColumnIndex(Info.id)));
+            article.setWorkSpace(name);
+            article.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
+            article.setTotal(iDate.getInt(iDate.getColumnIndex(Info.total)));
+            article.setVolume(articles.get(article.getName()).getVolume());
+            article.setOriginalPrice(articles.get(article.getName()).getOriginalPrice());
+            try {
+                article.getSQLDate(Sql.getCursor(name+article.getClass().getName().substring(article.getClass().getName().lastIndexOf(".")+1),Info.sellPrice,Info.NAME,new String[]{article.getName()}));
+            }catch (RuntimeException ignored){}
+            article.getListDate(articles);
+            map.put(article.getName(),article);
+        }
+        iDate.close();
+        return map;
+    }
+
+    public static HashMap<String,Item> getAllItems(String name) {
+        HashMap<String,Item> items = new HashMap<>();
+        for (Item item:((Item) Tools.getType(name)).getAllDate())
+            items.put(item.getName(),item);
+        return items;
+    }
+
+    @Override
+    public Map<String, String> UIPageAdapter() {
+        return GameUI.getAdapterMap(getName(),"体积:"+ getVolume(),"价格" + getOriginalPrice(),"总量:"+ getTotal());
+    }
+
+    public void showMyOwnOnClick(GameUI UI) {
+        String[] choose = new String[1];
+        final Item copy = this;
+        UI.chooseDialogue("move "+name+" to ...",new String[]{"背包","垃圾桶",Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getName()},choose);
+        new Response<String>(choose){
+
+            @Override
+            public void doThings() {
+                if (choose[0].equals("背包")){
+                    setWorkSpace(Player.getPlayerName());
+                    Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().remove(name);
+                    addItem(copy,Player.getPlayerDate().getBag());
+                } else if (choose[0].equals(Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getName())&&
+                                workSpace.equals(Player.getPlayerName())){
+                    setWorkSpace(choose[0]);
+                    Player.getPlayerDate().getBag().remove(name);
+                    addItem(copy,Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems());
+                } else if (choose[0].equals("垃圾桶")){
+                    Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().remove(name);
+                }
+            }
+        };
+    }
+
+    @Override
+    public void onClick(GameUI gameUI) {
+        if (Tools.findMaster(Building.findWorkSpace(getWorkSpace()).getMaster(), Character.getCharacters())
+            .getName().equals(Player.getPlayerName())) {
+            showMyOwnOnClick(gameUI);
+        } else {
+            showNotMyOwnOnClick(gameUI);
+        }
+    }
+
+    public void showNotMyOwnOnClick(GameUI UI) {
+        String[] amount = new String[1];
+        final Item item = this;
+        UI.reText("Enter the number of buy",amount);
+        new Response<String>(amount){
+            @Override
+            public void doThings() {
+                item.setTotal(Integer.valueOf(amount[0]));
+                Item.addItem(item,Player.getPlayerDate().getBag());
+            }
+        };
+    }
+
+    public static void createTable(String name) {
+        Sql.operatingSql(
+        new String[]{
+        "create table if not exists " + name + Info.INDEX+" (" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)",
+        "DELETE FROM " + name + Info.INDEX+""
+        }
+        );
     }
 
     public String getName() {
@@ -96,105 +186,15 @@ public abstract class Item implements ShowAdapter,OwnName{
         this.total = total;
     }
 
+    public void setOriginalPrice(int originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
     public String getWorkSpace() {
         return workSpace;
     }
 
     public void setWorkSpace(String workSpace) {
         this.workSpace = workSpace;
-    }
-
-    @Override
-    public Map<String, String> UIPageAdapter() {
-        return GameUI.getAdapterMap(getName(),"体积:"+ getVolume(),"价格" + getOriginalPrice(),"总量:"+ getTotal());
-    }
-
-    public void showMyOwnOnClick(GameUI UI) {
-        String[] choose = new String[1];
-        final Item copy = this;
-        UI.chooseDialogue("move "+name+" to ...",new String[]{"背包","垃圾桶",Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getName()},choose);
-        new Response<String>(choose){
-
-            @Override
-            public void doThings() {
-                if (choose[0].equals("背包")){
-                    setWorkSpace(Player.getPlayerName());
-                    Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().remove(name);
-                    addItem(copy,Player.getPlayerDate().getBag());
-                }
-                else if (choose[0].equals(Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getName())&&workSpace.equals(Player.getPlayerName())){
-                    setWorkSpace(choose[0]);
-                    Player.getPlayerDate().getBag().remove(name);
-                    addItem(copy,Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems());
-                }
-                else if (choose[0].equals("垃圾桶"))
-                    Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().remove(name);
-            }
-        };
-    }
-
-    @Override
-    public void onClick(GameUI gameUI) {
-        if (Tools.findMaster(Building.findWorkSpace(getWorkSpace()).getMaster(), Character.getCharacters())
-            .getName().equals(Player.getPlayerName())) {
-            showMyOwnOnClick(gameUI);
-        } else {
-            showNotMyOwnOnClick(gameUI);
-        }
-    }
-
-    public void showNotMyOwnOnClick(GameUI UI) {
-        String[] amount = new String[1];
-        final Item item = this;
-        UI.reText("Enter the number of buy",amount);
-        new Response<String>(amount){
-            @Override
-            public void doThings() {
-                item.setTotal(Integer.valueOf(amount[0]));
-                Item.addItem(item,Player.getPlayerDate().getBag());
-            }
-        };
-    }
-
-    public void setOriginalPrice(int originalPrice) {
-        this.originalPrice = originalPrice;
-    }
-
-    public static HashMap<String,Item> getAllItems(String name) {
-        HashMap<String,Item> items = new HashMap<>();
-       for (Item item:((Item) Tools.getType(name)).getAllDate())
-            items.put(item.getName(),item);
-        return items;
-    }
-
-    public static HashMap<String,Item> getSuperDate(String name) {
-        //从XML与SQL中获取数据
-        HashMap<String,Item> map = new HashMap<>();
-        Cursor iDate = Sql.getCursorAllInformation(name+Info.INDEX);
-        while (iDate.moveToNext()){
-        Item article = Tools.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
-        HashMap<String,Item> articles = getAllItems(iDate.getString(iDate.getColumnIndex(Info.id)));
-        article.setWorkSpace(name);
-        article.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
-        article.setTotal(iDate.getInt(iDate.getColumnIndex(Info.total)));
-        article.setVolume(articles.get(article.getName()).getVolume());
-        article.setOriginalPrice(articles.get(article.getName()).getOriginalPrice());
-        try {
-            article.getSQLDate(Sql.getCursor(name+article.getClass().getName().substring(article.getClass().getName().lastIndexOf(".")+1),Info.sellPrice,Info.NAME,new String[]{article.getName()}));
-        }catch (RuntimeException ignored){}
-        article.getListDate(articles);
-        map.put(article.getName(),article);
-        }
-        iDate.close();
-        return map;
-    }
-
-    public static void createTable(String name) {
-        Sql.operatingSql(
-        new String[]{
-        "create table if not exists " + name + Info.INDEX+" (" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)",
-        "DELETE FROM " + name + Info.INDEX+""
-        }
-        );
     }
 }
