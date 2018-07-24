@@ -10,14 +10,12 @@ import java.util.HashMap;
 
 public class Mall extends Item {
 
+   private Item[] list;
+    
     public static Item[] items = new Mall[]{
     new Mall("SellItem",0,0,SellItem.items),
     };
-
-    private Item[] list;
-
-
-
+    
     public Mall(String name, int volume, int originalPrice, Item[] itemList) {
         super(name, volume, originalPrice);
         list = itemList;
@@ -44,6 +42,11 @@ public class Mall extends Item {
         setList(((Mall)articles.get(getName())).getList());
     }
 
+    @Override
+    public void showMyOwnOnClick(GameUI UI) {
+        UI.showListDialogue(Tools.toList(list));
+    }
+
     public Item[] getList() {
         return list;
     }
@@ -52,8 +55,3 @@ public class Mall extends Item {
         this.list = list;
     }
 
-    @Override
-    public void showMyOwnOnClick(GameUI UI) {
-        UI.showListDialogue(Tools.toList(list));
-    }
-}
