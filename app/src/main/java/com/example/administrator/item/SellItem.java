@@ -25,7 +25,7 @@ public class SellItem extends Item {
     public SellItem() {
     }
 
-    @Override
+      @Override
     public void createItemTable(String name){
         Sql.operatingSql(new String[]{
         "create table if not exits "+name+getClass().getName().substring(getClass().getName().lastIndexOf(".")+1)+"("+Info.NAME+" text,"+Info.sellPrice+" integer)",
@@ -37,6 +37,19 @@ public class SellItem extends Item {
     @Override
     public void getListDate(HashMap<String,Item> articles) {
         popular = ((SellItem)articles.get(getName())).getPopular();
+    }
+
+    @Override
+    public void getSQLDate(Cursor cursor) {
+        sellPrice = cursor.getInt(cursor.getColumnIndex(Info.sellPrice));
+    }
+
+    @Override
+    public void saveDate(String name) {
+        createItemTable(name);
+        Sql.operatingSql(new String[]{
+                "insert into "+name+getClass().getName().substring(getClass().getName().lastIndexOf(".")+1)+" ("+ Info.NAME+","+ Info.sellPrice+") values("+getName()+","+sellPrice+")"
+        });
     }
 
     @Override
@@ -53,23 +66,6 @@ public class SellItem extends Item {
         };
     }
 
-    @Override
-    public void getSQLDate(Cursor cursor) {
-        sellPrice = cursor.getInt(cursor.getColumnIndex(Info.sellPrice));
-    }
-
-    @Override
-    public Item[] getAllDate() {
-        return items;
-    }
-
-    @Override
-    public void saveDate(String name) {
-        createItemTable(name);
-        Sql.operatingSql(new String[]{
-        "insert into "+name+getClass().getName().substring(getClass().getName().lastIndexOf(".")+1)+" ("+ Info.NAME+","+ Info.sellPrice+") values("+getName()+","+sellPrice+")"
-        });
-    }
 
     public int getSellPrice() {
         return sellPrice;
