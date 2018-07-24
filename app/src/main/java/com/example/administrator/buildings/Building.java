@@ -1,7 +1,5 @@
 package com.example.administrator.buildings;
 
-
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -44,6 +42,18 @@ public class Building implements OwnName {
         iDate.close();
     }
 
+    private void createNewBuilding(SQLiteDatabase db){
+        Item.createTable(name);
+        db.execSQL
+                ("insert into "+Info.BUILDING+" ("+Info.NAME+","+Info.MASTER+","+Info.capacity+") values ('"+name+"','"+master+"',"+capacity+")");
+    }
+
+    public void saveDate() {
+        createNewBuilding(Sql.getDateBase());
+        for (Item item : getItems().values())
+            item.saveSuperDate(name);
+    }
+
     public String getMaster() {
         return master;
     }
@@ -51,7 +61,6 @@ public class Building implements OwnName {
     public static List<Building> getBuildings() {
         return buildings;
     }
-
 
     public String getName() {
         return name;
@@ -69,20 +78,8 @@ public class Building implements OwnName {
         return capacity;
     }
 
-    public void saveDate() {
-        createNewBuilding(Sql.getDateBase());
-        for (Item item : getItems().values())
-            item.saveSuperDate(name);
-    }
-
     public HashMap<String, Item> getItems() {
         return items;
-    }
-
-    private void createNewBuilding(SQLiteDatabase db){
-        Item.createTable(name);
-        db.execSQL
-        ("insert into "+Info.BUILDING+" ("+Info.NAME+","+Info.MASTER+","+Info.capacity+") values ('"+name+"','"+master+"',"+capacity+")");
     }
 
     public void setCapacity(int capacity) {
