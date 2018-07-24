@@ -13,17 +13,25 @@ public class Customer extends Character implements NPC{
         startActivity();
     }
 
-    @Override
+   @Override
     public void work() {
         for (Item item: Building.buildings.get(getX_coordinate()).getItems().values()) {
-            if (!(item instanceof SellItem)||((SellItem) item).getSellPrice()-((SellItem) item).getPopular()>item.getOriginalPrice()*1.5)
-            continue;
+            if (item instanceof SellItem){
+                if (isExpensive((SellItem)item))  continue;
+            }
             Random random = new Random();
-            if (random.nextBoolean())
+            if (random.nextBoolean()){
             Building.buildings.get(getX_coordinate()).work(item);
-            else
+            } else{
             //大传送术 XD
             setX_coordinate(random.nextInt(Building.getBuildings().size()));
+            }
         }
+    }
+
+    private boolean isExpensive(SellItem item) {
+        int popular = item.getPopular();
+        int value = item.getOriginalPrice();
+        return item.getSellPrice()- popular>=value;
     }
 }
