@@ -56,7 +56,6 @@ public class Player extends Character {
     public static Player getPlayerDate() {
         Character character = Tools.findMaster(playerName,characters);
         return (Player)character;
-
     }
 
     public static void createPlayerDate(GameUI gameUI) {
