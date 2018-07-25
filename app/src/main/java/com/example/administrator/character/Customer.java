@@ -23,7 +23,6 @@ public class Customer extends Character implements NPC{
             if (random.nextBoolean()){
             Building.buildings.get(getX_coordinate()).work(item);
             } else{
-            //大传送术 XD
             setX_coordinate(random.nextInt(Building.getBuildings().size()));
             }
         }

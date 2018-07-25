@@ -25,10 +25,13 @@ public class SellItem extends Item {
     public SellItem() {
     }
 
+    @Override
+    public Item[] getAllDate() { return items; }
+
       @Override
     public void createItemTable(String name){
         Sql.operatingSql(new String[]{
-        "create table if not exits "+name+getClass().getName().substring(getClass().getName().lastIndexOf(".")+1)+"("+Info.NAME+" text,"+Info.sellPrice+" integer)",
+        "create table if not exists "+name+getClass().getName().substring(getClass().getName().lastIndexOf(".")+1)+"("+Info.NAME+" text,"+Info.sellPrice+" integer)",
         "DELETE FROM " + name + "SellItem"
         });
     }
@@ -54,10 +57,9 @@ public class SellItem extends Item {
 
     @Override
     public void showNotMyOwnOnClick(GameUI UI) {
-        super.showNotMyOwnOnClick(UI);
-        while (getTotal()<=0);
         String[] price = new String[1];
         UI.reText("输入销售价格",price);
+        super.showNotMyOwnOnClick(UI);
         new Response<String>(price){
             @Override
             public void doThings() {
@@ -67,7 +69,7 @@ public class SellItem extends Item {
     }
 
 
-    public int getSellPrice() {
+    public synchronized int getSellPrice() {
         return sellPrice;
     }
 
@@ -75,7 +77,7 @@ public class SellItem extends Item {
         return popular;
     }
 
-    public void setSellPrice(int sellPrice) {
+    public synchronized void setSellPrice(int sellPrice) {
         this.sellPrice = sellPrice;
     }
 

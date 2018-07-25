@@ -178,9 +178,10 @@ public class Game extends AppCompatActivity implements GameUI{
         new Response<String>(choose){
             @Override
             public void doThings() {
-                if (getResult().equals("离开"))
-                saveDate();
-                finish();
+                if (getResult().equals("离开")) {
+                    saveDate();
+                    finish();
+                }
             }
         };
         return true;

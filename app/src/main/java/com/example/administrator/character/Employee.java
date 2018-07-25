@@ -9,18 +9,17 @@ import com.example.administrator.utils.Tools;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.administrator.utils.Tools.findMaster;
-
-public abstract class Employee extends Character {
+public abstract class Employee extends Character{
 
     public abstract boolean work(Item item);
 
     @Override
-    void initialization() {}
-    
+    void initialization() {
+    }
+
     @Override
     public void onClick(GameUI gameUI) {
-        if (isPlayerEmployee(this)){
+        if (Tools.isPlayerEmployee(this)){
             showMyOwnOnClick(gameUI);
         } else{
             showNotMyOwnOnClick(gameUI);
@@ -34,8 +33,8 @@ public abstract class Employee extends Character {
             @Override
             public void doThings() {
                 if (getResult().equals("雇佣")) {
-                    if (getWorkSpace().equals("PineTower")) {
-                        setWorkSpace(Player.getPlayerName());
+                    if (getMaster().equals("PineTower")) {
+                        setMaster(Player.getPlayerName());
                     }
                 }
             }
@@ -55,18 +54,11 @@ public abstract class Employee extends Character {
             @Override
             public void doThings() {
                 while (choose[0]!=null);
-                setWorkSpace(choose[0]);
+                setMaster(choose[0]);
                 interrupted();
             }
         };
 
     }
 
-    public static boolean isPlayerEmployee(Employee employee) {
-        String master = employee.getWorkSpace();
-        String playerName = Player.getPlayerName();
-        if (master.equals(playerName)) return true;
-        else  master =Building.findWorkSpace(master).getMaster();
-        return master.equals(playerName);
-    }
 }

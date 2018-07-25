@@ -89,7 +89,9 @@ public class Player extends Character {
     }
 
     private static void firstPlayGame() {
-        Character.createNewCharacter(Sql.getDateBase(),StoresEmployee.class.getName(),"蚴牙",1000,200,0,8000,"杂货铺");
+        Character.createNewCharacter(Mayor.class.getName(),"PineTower",100000,10000,0,0,"PineTower");
+        new Building("PineTower",500,"PineTower");
+        Character.createNewCharacter(StoresEmployee.class.getName(),"蚴牙",1000,200,0,8000,"杂货铺");
         Building building = new Building("杂货铺",0,"蚴牙");
         building.setItems(Item.getAllItems(Mall.class.getName()));
     }

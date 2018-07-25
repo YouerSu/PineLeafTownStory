@@ -4,10 +4,10 @@ import android.database.Cursor;
 
 import com.example.administrator.buildings.Building;
 import com.example.administrator.buildings.GameUI;
-import com.example.administrator.character.Character;
 import com.example.administrator.character.Player;
 import com.example.administrator.utils.Info;
 import com.example.administrator.buildings.ShowAdapter;
+import com.example.administrator.utils.OwnMaster;
 import com.example.administrator.utils.OwnName;
 import com.example.administrator.utils.Response;
 import com.example.administrator.utils.Sql;
@@ -16,12 +16,10 @@ import com.example.administrator.utils.Tools;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.administrator.utils.Tools.findMaster;
 
-
-public abstract class Item implements ShowAdapter,OwnName{
+public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
     private String name;
-    private String workSpace;
+    private String workSpace = "PineTower";
     private int volume;
     private int originalPrice;
     private int total;
@@ -59,7 +57,6 @@ public abstract class Item implements ShowAdapter,OwnName{
     public abstract Item[] getAllDate();
 
     public void saveSuperDate(String name){
-    //渣渣设计,速度极慢
       Sql.operatingSql(new String[]{
       "insert into "+name+Info.INDEX+" ("+Info.id+","+Info.NAME+","+Info.total+") values ('"+getClass().getName()+"','"+ this.name +"',"+total+")"
       });
@@ -74,7 +71,7 @@ public abstract class Item implements ShowAdapter,OwnName{
         while (iDate.moveToNext()){
             Item article = Tools.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
             HashMap<String,Item> articles = getAllItems(iDate.getString(iDate.getColumnIndex(Info.id)));
-            article.setWorkSpace(name);
+            article.setMaster(name);
             article.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
             article.setTotal(iDate.getInt(iDate.getColumnIndex(Info.total)));
             article.setVolume(articles.get(article.getName()).getVolume());
@@ -110,12 +107,12 @@ public abstract class Item implements ShowAdapter,OwnName{
             @Override
             public void doThings() {
                 if (choose[0].equals("背包")){
-                    setWorkSpace(Player.getPlayerName());
+                    setMaster(Player.getPlayerName());
                     Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems().remove(name);
                     addItem(copy,Player.getPlayerDate().getBag());
                 } else if (choose[0].equals(Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getName())&&
                                 workSpace.equals(Player.getPlayerName())){
-                    setWorkSpace(choose[0]);
+                    setMaster(choose[0]);
                     Player.getPlayerDate().getBag().remove(name);
                     addItem(copy,Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getItems());
                 } else if (choose[0].equals("垃圾桶")){
@@ -127,8 +124,7 @@ public abstract class Item implements ShowAdapter,OwnName{
 
     @Override
     public void onClick(GameUI gameUI) {
-        if (Tools.findMaster(Building.findWorkSpace(getWorkSpace()).getMaster(), Character.getCharacters())
-            .getName().equals(Player.getPlayerName())) {
+        if (Tools.isPlayerEmployee(this)) {
             showMyOwnOnClick(gameUI);
         } else {
             showNotMyOwnOnClick(gameUI);
@@ -137,13 +133,22 @@ public abstract class Item implements ShowAdapter,OwnName{
 
     public void showNotMyOwnOnClick(GameUI UI) {
         String[] amount = new String[1];
-        final Item item = this;
         UI.reText("Enter the number of buy",amount);
+        Item item = Tools.getType(getClass().getName());
         new Response<String>(amount){
             @Override
             public void doThings() {
-                item.setTotal(Integer.valueOf(amount[0]));
-                Item.addItem(item,Player.getPlayerDate().getBag());
+                int dig = Integer.valueOf(amount[0]);
+                if (dig > 0) {
+                    setTotal(getTotal() - dig);
+                    item.setTotal(dig);
+                    item.setOriginalPrice(originalPrice);
+                    item.setName(name);
+                    item.setVolume(volume);
+                    item.setMaster(Player.getPlayerName());
+                    item.getListDate(getAllItems(item.getClass().getName()));
+                    Item.addItem(item, Player.getPlayerDate().getBag());
+                }
             }
         };
     }
@@ -190,11 +195,15 @@ public abstract class Item implements ShowAdapter,OwnName{
         this.originalPrice = originalPrice;
     }
 
-    public String getWorkSpace() {
+    @Override
+    public String getMaster() {
         return workSpace;
     }
 
-    public void setWorkSpace(String workSpace) {
-        this.workSpace = workSpace;
+    @Override
+    public void setMaster(String master) {
+        this.workSpace = master;
     }
+
+
 }

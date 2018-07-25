@@ -10,36 +10,42 @@ import java.util.HashMap;
 
 public class Mall extends Item {
 
-   private Item[] list;
-    
+    private Item[] list;
+
     public static Item[] items = new Mall[]{
-    new Mall("SellItem",0,0,SellItem.items),
+            new Mall("SellItem", 0, 0, SellItem.items),
     };
-    
+
     public Mall(String name, int volume, int originalPrice, Item[] itemList) {
         super(name, volume, originalPrice);
+        setMaster("蚴牙");
         list = itemList;
     }
 
-    public Mall() {}
+    public Mall() {
+        super();
+    }
 
     @Override
-    public void createItemTable(String name) {}
+    public void createItemTable(String name) {
+    }
 
     @Override
-    public Item[] getAllDate(){
+    public Item[] getAllDate() {
         return items;
     }
 
     @Override
-    public void getSQLDate(Cursor cursor) {}
+    public void getSQLDate(Cursor cursor) {
+    }
 
     @Override
-    public void saveDate(String tableName) {}
+    public void saveDate(String tableName) {
+    }
 
     @Override
     public void getListDate(HashMap<String, Item> articles) {
-        setList(((Mall)articles.get(getName())).getList());
+        setList(((Mall) articles.get(getName())).getList());
     }
 
     @Override
@@ -55,3 +61,4 @@ public class Mall extends Item {
         this.list = list;
     }
 
+}

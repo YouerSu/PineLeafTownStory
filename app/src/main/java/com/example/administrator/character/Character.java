@@ -1,12 +1,12 @@
 package com.example.administrator.character;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 
 import com.example.administrator.buildings.Building;
 import com.example.administrator.item.Item;
 import com.example.administrator.buildings.GameUI;
 import com.example.administrator.utils.Info;
+import com.example.administrator.utils.OwnMaster;
 import com.example.administrator.utils.OwnName;
 import com.example.administrator.buildings.ShowAdapter;
 import com.example.administrator.utils.Sql;
@@ -15,7 +15,7 @@ import com.example.administrator.utils.Tools;
 import java.util.LinkedList;
 import java.util.Map;
 
-public abstract class Character implements OwnName,ShowAdapter{
+public abstract class Character implements OwnName,OwnMaster,ShowAdapter{
     public static LinkedList<Character> characters = new LinkedList<>();
     private String name;
     private int money;
@@ -48,7 +48,7 @@ public abstract class Character implements OwnName,ShowAdapter{
             character.setMoney(iDate.getInt(iDate.getColumnIndex(Info.MONEY)));
             character.setPrestige(iDate.getInt(iDate.getColumnIndex(Info.PRESTIGE)));
             character.setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
-            character.setWorkSpace(iDate.getString(iDate.getColumnIndex(Info.MASTER)));
+            character.setMaster(iDate.getString(iDate.getColumnIndex(Info.MASTER)));
             character.setSalary(iDate.getInt(iDate.getColumnIndex(Info.salary)));
             character.initialization();
             characters.add(character);
@@ -79,9 +79,9 @@ public abstract class Character implements OwnName,ShowAdapter{
         });
     }
 
-    public static void createNewCharacter(SQLiteDatabase db, String className, String name, int money, int prestige, int x_coordinate, int salary, String workSpace){
+    public static void createNewCharacter( String className, String name, int money, int prestige, int x_coordinate, int salary, String workSpace){
         if (!(Tools.getType(className) instanceof Character)) return;
-        db.execSQL
+        Sql.getDateBase().execSQL
         ("insert into "+Info.CHARACTER+" ("+Info.id+","+Info.NAME+","+Info.MONEY+","+Info.PRESTIGE+","+Info.coordinate+","+Info.salary+","+Info.MASTER+") values ('"+className+"','"+name+"',"+money+","+prestige+","+x_coordinate+","+salary+",'"+workSpace+"')");
         Character character = Tools.getType(className);
         character.setName(name);
@@ -89,7 +89,7 @@ public abstract class Character implements OwnName,ShowAdapter{
         character.setPrestige(prestige);
         character.setX_coordinate(x_coordinate);
         character.setSalary(salary);
-        character.setWorkSpace(workSpace);
+        character.setMaster(workSpace);
         getCharacters().add(character);
     }
 
@@ -102,7 +102,7 @@ public abstract class Character implements OwnName,ShowAdapter{
 
     public static void findWorker(String buildingName,Item item){
         for (Character character: characters) {
-            if (character.getWorkSpace().equals(buildingName) &&
+            if (character.getMaster().equals(buildingName) &&
                 character instanceof Employee &&
                 ((Employee) character).work(item));
         }
@@ -153,7 +153,8 @@ public abstract class Character implements OwnName,ShowAdapter{
         this.x_coordinate = x_coordinate;
     }
 
-    public void setWorkSpace(String workSpace) {
+    @Override
+    public void setMaster(String workSpace) {
         this.workSpace = workSpace;
     }
 
@@ -165,8 +166,8 @@ public abstract class Character implements OwnName,ShowAdapter{
         Character.characters = characters;
     }
 
-
-    public String getWorkSpace() {
+    @Override
+    public String getMaster() {
         return workSpace;
     }
 }

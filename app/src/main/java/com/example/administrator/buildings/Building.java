@@ -18,7 +18,7 @@ public class Building implements OwnName {
     public static List<Building> buildings = new ArrayList<>();
     private String name;
     private int capacity;
-    private String master = "YouerSu";
+    private String master = "PineTower";
     private HashMap<String,Item> items = new HashMap<>();
 
     public Building(String name, int capacity, String master) {

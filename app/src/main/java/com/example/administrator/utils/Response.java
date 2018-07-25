@@ -4,7 +4,7 @@ package com.example.administrator.utils;
  实现此类,定期检查条件
  */
 
-public class Response<T> extends Thread {
+public abstract class Response<T> extends Thread {
 
     private T[] list;
 
@@ -15,12 +15,12 @@ public class Response<T> extends Thread {
 
         @Override
     public void run() {
-        if (judgment()) return;
+       while (judgment());
         doThings();
         interrupted();
     }
 
-    public void doThings(){}
+    public abstract void doThings();
 
     public boolean judgment(){ return list[0]==null;}
 

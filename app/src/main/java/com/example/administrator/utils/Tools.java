@@ -1,5 +1,10 @@
 package com.example.administrator.utils;
 
+import com.example.administrator.buildings.Building;
+import com.example.administrator.character.Employee;
+import com.example.administrator.character.Player;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,19 +32,28 @@ public class Tools {
                 var = thing;
             }
         }
-        if (var!=null) {
-            return var;
-        }else {
-            throw new Error("Didn't find master!");
+        return var;
         }
-    }
+
 
     public static <T> List<T> toList(Collection<T> collection){
         return new ArrayList<>(collection);
     }
 
     public static <T> List<T> toList(T[] array){
-        return new ArrayList<>(Arrays.asList(array));
+        return Arrays.asList(array);
     }
 
+    public static<T extends OwnMaster> boolean isPlayerEmployee(T employee) {
+        String master = employee.getMaster();
+        String playerName = Player.getPlayerName();
+        if (master.equals(playerName)) return true;
+        else{
+            Building workSpace;
+            workSpace = Building.findWorkSpace(master);
+            if (workSpace!=null)
+                master = workSpace.getMaster();
+        }
+        return master.equals(playerName);
+    }
 }
