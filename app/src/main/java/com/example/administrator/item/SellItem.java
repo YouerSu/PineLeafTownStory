@@ -68,7 +68,6 @@ public class SellItem extends Item {
         };
     }
 
-
     public synchronized int getSellPrice() {
         return sellPrice;
     }
