@@ -85,7 +85,6 @@ public class Player extends Character {
                 createPlayerDate(gameUI);
             }
         };
-
     }
 
     private static void firstPlayGame() {
