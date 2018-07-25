@@ -143,8 +143,7 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter{
     public void setPrestige(int prestige) {
         this.prestige = prestige;
     }
-
-
+    
     public int getX_coordinate() {
         return x_coordinate;
     }
