@@ -1,6 +1,5 @@
 package com.example.administrator.item;
 
-
 import android.database.Cursor;
 
 import com.example.administrator.buildings.GameUI;
@@ -27,11 +26,11 @@ public class Mall extends Item {
     }
 
     @Override
-    public void createItemTable(String name) {
+    public void createTable(String name) {
     }
 
     @Override
-    public Item[] getAllDate() {
+    public Item[] getAllItems() {
         return items;
     }
 

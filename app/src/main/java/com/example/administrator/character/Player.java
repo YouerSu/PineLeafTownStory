@@ -19,8 +19,6 @@ public class Player extends Character {
     private static String playerName;
     private HashMap<String,Item> bag;
 
-
-
     @Override
     void initialization() {
         playerName = getName();
@@ -29,7 +27,7 @@ public class Player extends Character {
 
 
     private void getBagDate() {
-        bag = Item.getSuperDate(playerName);
+        bag = Item.getIndexDate(playerName);
     }
 
 
@@ -45,7 +43,7 @@ public class Player extends Character {
         super.saveDate();
         timeDate.saveDate();
         for (Item item:bag.values())
-            item.saveSuperDate(playerName);
+            item.saveIndexDate(playerName);
     }
 
 
@@ -74,7 +72,7 @@ public class Player extends Character {
             @Override
             public void doThings() {
                 finalCharacter.setName(name[0]);
-                Sql.operatingSql(new String[]{
+                Sql.operating(new String[]{
                         "insert into "+Info.CHARACTER+" ("+Info.id +","+Info.NAME +","+Info.MONEY +","+Info.PRESTIGE + ","+Info.coordinate+ ","+Info.salary+ ","+Info.MASTER+ ") values ('"+ Player.class.getName()+"','"+name[0]+"',0,0,0,3000,'"+ null+"')",
                         "create table if not exists "+name[0]+Info.INDEX+" (" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)"
                 });

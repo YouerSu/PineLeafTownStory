@@ -3,7 +3,6 @@ package com.example.administrator.character;
 import android.database.Cursor;
 
 import com.example.administrator.buildings.Building;
-import com.example.administrator.item.Item;
 import com.example.administrator.buildings.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.OwnMaster;
@@ -22,13 +21,13 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter{
     private int prestige;
     private int x_coordinate;
     private int salary;
-    private String workSpace = "PineTower";
+    private String workSpace;
 
      abstract void initialization();
 
     @Override
     public Map<String, String> UIPageAdapter() {
-        return GameUI.getAdapterMap(name,"薪水："+salary,"工作地点："+workSpace,"职业："+getClass().getName().substring(getClass().getName().lastIndexOf(".")+1));
+        return GameUI.getAdapterMap(name,"薪水："+salary,"工作地点："+workSpace,"职业："+Tools.getSuffix(getClass().getName()));
     }
 
     @Override
@@ -62,7 +61,7 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter{
     }
 
     public static void saveBuildingDate(){
-        Sql.operatingSql(new String[]{"DELETE FROM "+Info.BUILDING});
+        Sql.operating(new String[]{"DELETE FROM "+Info.BUILDING});
         for (Building building: Building.getBuildings())
             building.saveDate();
     }
@@ -74,7 +73,7 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter{
     }
 
     public void saveDate(){
-        Sql.operatingSql(new String[]{
+        Sql.operating(new String[]{
         "update "+Info.CHARACTER+" set "+Info.id+" = '"+getClass().getName()+"',"+Info.MONEY+" = "+money+","+Info.PRESTIGE+" = "+prestige+","+Info.coordinate+" = "+x_coordinate+","+Info.salary+" = "+salary+","+Info.MASTER+" = '"+ workSpace +"' where "+Info.NAME+" = '"+ name +"'"
         });
     }
@@ -99,18 +98,6 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter{
         master.setMoney(master.getMoney()-getSalary());
         setMoney(getMoney()+getSalary());
     }
-
-    public static void findWorker(String buildingName,Item item){
-        for (Character character: characters) {
-            if (character.getMaster().equals(buildingName) &&
-                character instanceof Employee &&
-                ((Employee) character).work(item));
-        }
-
-    }
-
-
-
 
     public String getName() {
         return name;
@@ -170,5 +157,3 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter{
         return workSpace;
     }
 }
-
-

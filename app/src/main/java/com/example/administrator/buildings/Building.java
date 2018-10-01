@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.administrator.character.Character;
+import com.example.administrator.character.Employee;
 import com.example.administrator.item.Item;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.OwnName;
@@ -18,8 +19,9 @@ public class Building implements OwnName {
     public static List<Building> buildings = new ArrayList<>();
     private String name;
     private int capacity;
-    private String master = "PineTower";
+    private String master;
     private HashMap<String,Item> items = new HashMap<>();
+    private ArrayList<Employee> employees = new ArrayList<>();
 
     public Building(String name, int capacity, String master) {
         this.name = name;
@@ -28,22 +30,27 @@ public class Building implements OwnName {
         buildings.add(this);
     }
 
+    public void addEmployee(Employee employee){
+        employee.setMaster(name);
+        employees.add(employee);
+    }
+
     public static Building findWorkSpace(String workSpace){
         return Tools.findMaster(workSpace,buildings);
     }
 
     public static void getBuildingDate() {
-        Cursor iDate = Sql.getCursorAllInformation(Info.BUILDING);
+        Cursor iDate = Sql.getAllInfo(Info.BUILDING);
         if (iDate==null) return;
         while (iDate.moveToNext()){
             Building building = new Building(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.capacity)),iDate.getString(iDate.getColumnIndex(Info.MASTER)));
-            building.items = Item.getSuperDate(building.getName());
+            building.items = Item.getIndexDate(building.getName());
         }
         iDate.close();
     }
 
     private void createNewBuilding(SQLiteDatabase db){
-        Item.createTable(name);
+        Item.createIndex(name);
         db.execSQL
                 ("insert into "+Info.BUILDING+" ("+Info.NAME+","+Info.MASTER+","+Info.capacity+") values ('"+name+"','"+master+"',"+capacity+")");
     }
@@ -51,7 +58,7 @@ public class Building implements OwnName {
     public void saveDate() {
         createNewBuilding(Sql.getDateBase());
         for (Item item : getItems().values())
-            item.saveSuperDate(name);
+            item.saveIndexDate(name);
     }
 
     public String getMaster() {
@@ -67,7 +74,7 @@ public class Building implements OwnName {
     }
 
     public void work(Item item){
-        Character.findWorker(name,item);
+        //Character.findWorker(name,item);
     }
 
     public void setName(String name) {
@@ -92,5 +99,9 @@ public class Building implements OwnName {
 
     public void setItems(HashMap<String, Item> items) {
         this.items = items;
+    }
+
+    public ArrayList<Employee> getEmployees() {
+        return employees;
     }
 }

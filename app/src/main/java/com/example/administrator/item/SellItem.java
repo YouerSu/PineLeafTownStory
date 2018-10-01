@@ -6,6 +6,7 @@ import com.example.administrator.buildings.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.Response;
 import com.example.administrator.utils.Sql;
+import com.example.administrator.utils.Tools;
 
 import java.util.HashMap;
 
@@ -26,16 +27,15 @@ public class SellItem extends Item {
     }
 
     @Override
-    public Item[] getAllDate() { return items; }
+    public Item[] getAllItems() { return items; }
 
       @Override
-    public void createItemTable(String name){
-        Sql.operatingSql(new String[]{
+    public void createTable(String name){
+        Sql.operating(new String[]{
         "create table if not exists "+name+getClass().getName().substring(getClass().getName().lastIndexOf(".")+1)+"("+Info.NAME+" text,"+Info.sellPrice+" integer)",
         "DELETE FROM " + name + "SellItem"
         });
     }
-
 
     @Override
     public void getListDate(HashMap<String,Item> articles) {
@@ -49,9 +49,9 @@ public class SellItem extends Item {
 
     @Override
     public void saveDate(String name) {
-        createItemTable(name);
-        Sql.operatingSql(new String[]{
-                "insert into "+name+getClass().getName().substring(getClass().getName().lastIndexOf(".")+1)+" ("+ Info.NAME+","+ Info.sellPrice+") values("+getName()+","+sellPrice+")"
+        createTable(name);
+        Sql.operating(new String[]{
+                "insert into "+name+Tools.getSuffix(getClass().getName()) +" ("+ Info.NAME+","+ Info.sellPrice+") values("+getName()+","+sellPrice+")"
         });
     }
 

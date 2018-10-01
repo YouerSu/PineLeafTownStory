@@ -25,13 +25,13 @@ public class GameTime extends TimerTask {
 
 
     public void saveDate(){
-        Sql.operatingSql(new String[]{
+        Sql.operating(new String[]{
         "update "+ Info.TIME+" set "+Info.MINUTE+" = "+getMinute()+","+Info.HOUR+" = "+getHour()+ ","+Info.DAY+" = "+getDay()+","+Info.MONTH+" = "+getMonth()+ ","+Info.YEAR+" = "+getYear()
         });
     }
 
     public void getTimeDate() {
-        Cursor iDate = Sql.getCursorAllInformation(Info.TIME);
+        Cursor iDate = Sql.getAllInfo(Info.TIME);
         if (iDate!=null)
         while (iDate.moveToNext()){
         //事实证明Cursor的指针是从第一条数据的前一个开始的

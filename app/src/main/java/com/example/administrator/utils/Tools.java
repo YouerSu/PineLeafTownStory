@@ -35,6 +35,9 @@ public class Tools {
         return var;
         }
 
+    public static String getSuffix(String str){
+        return str.substring(str.lastIndexOf(".")+1);
+    }
 
     public static <T> List<T> toList(Collection<T> collection){
         return new ArrayList<>(collection);

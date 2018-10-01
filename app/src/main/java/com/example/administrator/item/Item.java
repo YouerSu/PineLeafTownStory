@@ -19,7 +19,7 @@ import java.util.Map;
 
 public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
     private String name;
-    private String workSpace = "PineTower";
+    private String workSpace;
     private int volume;
     private int originalPrice;
     private int total;
@@ -45,29 +45,28 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
         else items.put(values.name,values);
     }
 
-     public abstract void createItemTable(String name);
+    public abstract void createTable(String name);
+    public abstract void saveDate(String workSpaceName);
 
     //从SQL中读取数据
     public abstract void getSQLDate(Cursor cursor);
-
-    public abstract void saveDate(String workSpaceName);
     //从数据集合中读取额外数据
     public abstract void getListDate(HashMap<String,Item> articles);
 
-    public abstract Item[] getAllDate();
+    public abstract Item[] getAllItems();
 
-    public void saveSuperDate(String name){
-      Sql.operatingSql(new String[]{
+    public void saveIndexDate(String name){
+      Sql.operating(new String[]{
       "insert into "+name+Info.INDEX+" ("+Info.id+","+Info.NAME+","+Info.total+") values ('"+getClass().getName()+"','"+ this.name +"',"+total+")"
       });
-      createItemTable(workSpace);
+      createTable(workSpace);
       saveDate(name);
     }
 
-    public static HashMap<String,Item> getSuperDate(String name) {
+    public static HashMap<String,Item> getIndexDate(String name) {
         //从XML与SQL中获取数据
         HashMap<String,Item> map = new HashMap<>();
-        Cursor iDate = Sql.getCursorAllInformation(name+Info.INDEX);
+        Cursor iDate = Sql.getAllInfo(name+Info.INDEX);
         while (iDate.moveToNext()){
             Item article = Tools.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
             HashMap<String,Item> articles = getAllItems(iDate.getString(iDate.getColumnIndex(Info.id)));
@@ -88,7 +87,7 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
 
     public static HashMap<String,Item> getAllItems(String name) {
         HashMap<String,Item> items = new HashMap<>();
-        for (Item item:((Item) Tools.getType(name)).getAllDate())
+        for (Item item:((Item) Tools.getType(name)).getAllItems())
             items.put(item.getName(),item);
         return items;
     }
@@ -153,8 +152,8 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
         };
     }
 
-    public static void createTable(String name) {
-        Sql.operatingSql(
+    public static void createIndex(String name) {
+        Sql.operating(
         new String[]{
         "create table if not exists " + name + Info.INDEX+" (" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)",
         "DELETE FROM " + name + Info.INDEX+""

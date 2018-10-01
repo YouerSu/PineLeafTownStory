@@ -1,5 +1,6 @@
 package com.example.administrator.storeboss;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,11 +44,12 @@ public class Game extends AppCompatActivity implements GameUI{
     private static List<String> titleList = new ArrayList<>();
     TextView timeView;
     TextView playerView;
-    class MyHandler extends Handler{
+    @SuppressLint("HandlerLeak")
+    Handler refresh = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             String season = null;
-            switch (Player.getPlayerDate().timeDate.getMonth()) {
+            switch (Player.timeDate.getMonth()) {
                 case 1:
                     season = "春季日";
                     break;
@@ -63,8 +65,17 @@ public class Game extends AppCompatActivity implements GameUI{
             timeView.setText(String.format("%s第%d天  %d:%02d",season,Player.getPlayerDate().timeDate.getDay(),Player.getPlayerDate().timeDate.getHour(), Player.getPlayerDate().timeDate.getMinute()));
             playerView.setText(String.format("云团:%d   声望:%d",Player.getPlayerDate().getMoney(),Player.getPlayerDate().getPrestige()));
         }
-    }
-    MyHandler handler = new MyHandler();
+    };
+    @SuppressLint("HandlerLeak")
+    Handler dialog = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+
+        }
+
+
+
+    };
 
 
     @Override
@@ -123,9 +134,9 @@ public class Game extends AppCompatActivity implements GameUI{
     public<T> void reText(String messages,T[] name) {
         //强行转换如同虚设XD
         AlertDialog alertDialog = getInputDialog(messages);
-        alertDialog.findViewById(R.id.ok).setOnClickListener((view)->{
+        alertDialog.findViewById(R.id.ok).setOnClickListener( view ->{
             try {
-                name[0] = (T)((EditText)(alertDialog.findViewById(R.id.text))).getText().toString();
+                name[0] = (T)(((EditText)(alertDialog.findViewById(R.id.text))).getText().toString());
                 alertDialog.dismiss();
             }catch (ClassCastException e){
                 Toast.makeText(this,"您输入的字符不符合格式",Toast.LENGTH_SHORT).show();
@@ -251,7 +262,7 @@ public class Game extends AppCompatActivity implements GameUI{
 
     @Override
     public void refreshUI() {
-        handler.sendEmptyMessage(0);
+        refresh.sendEmptyMessage(0);
     }
 }
 

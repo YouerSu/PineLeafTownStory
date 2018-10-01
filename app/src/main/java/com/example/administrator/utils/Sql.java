@@ -13,12 +13,12 @@ public class Sql extends SQLiteOpenHelper{
     }
 
     //用于执行Sql语句;
-    public static void operatingSql(String statements[]) {
+    public static void operating(String statements[]) {
         for (String sql:statements)
         getDateBase().execSQL(sql);
     }
 
-    public static Cursor getCursorAllInformation(String tableName) {
+    public static Cursor getAllInfo(String tableName) {
         return getDateBase().rawQuery("select * from "+tableName,null);
     }
 

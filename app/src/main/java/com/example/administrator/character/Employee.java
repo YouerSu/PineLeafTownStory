@@ -11,10 +11,15 @@ import java.util.List;
 
 public abstract class Employee extends Character{
 
-    public abstract boolean work(Item item);
+    public abstract void work(Item item,Character customer);
+    public abstract boolean receive(Item item);
 
     @Override
     void initialization() {
+        Building building = Building.findWorkSpace(getMaster());
+        if (getMaster() == null) return;
+        else if (building == null) setMaster(null);
+        else building.addEmployee(this);
     }
 
     @Override
@@ -33,7 +38,7 @@ public abstract class Employee extends Character{
             @Override
             public void doThings() {
                 if (getResult().equals("雇佣")) {
-                    if (getMaster().equals("PineTower")) {
+                    if (getMaster()==null) {
                         setMaster(Player.getPlayerName());
                     }
                 }
