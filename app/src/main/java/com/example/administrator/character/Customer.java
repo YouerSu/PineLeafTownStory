@@ -6,26 +6,11 @@ import com.example.administrator.item.SellItem;
 
 import java.util.Random;
 
-public class Customer extends Character implements NPC{
+public class Customer extends Character {
 
     @Override
-    void initialization() {
+    void init() {
         startActivity();
-    }
-
-   @Override
-    public void work() {
-        for (Item item: Building.buildings.get(getX_coordinate()).getItems().values()) {
-            if (item instanceof SellItem){
-                if (isExpensive((SellItem)item))  continue;
-            }
-            Random random = new Random();
-            if (random.nextBoolean()){
-            Building.buildings.get(getX_coordinate()).work(item);
-            } else{
-            setX_coordinate(random.nextInt(Building.getBuildings().size()));
-            }
-        }
     }
 
     private boolean isExpensive(SellItem item) {

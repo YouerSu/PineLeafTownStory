@@ -15,7 +15,7 @@ public abstract class Employee extends Character{
     public abstract boolean receive(Item item);
 
     @Override
-    void initialization() {
+    void init() {
         Building building = Building.findWorkSpace(getMaster());
         if (getMaster() == null) return;
         else if (building == null) setMaster(null);

@@ -32,7 +32,7 @@ public class SellItem extends Item {
       @Override
     public void createTable(String name){
         Sql.operating(new String[]{
-        "create table if not exists "+name+getClass().getName().substring(getClass().getName().lastIndexOf(".")+1)+"("+Info.NAME+" text,"+Info.sellPrice+" integer)",
+        "create table if not exists "+name+Tools.getSuffix(getClass().getName())+"("+Info.NAME+" text,"+Info.sellPrice+" integer)",
         "DELETE FROM " + name + "SellItem"
         });
     }

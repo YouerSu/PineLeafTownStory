@@ -2,14 +2,15 @@ package com.example.administrator.item
 
 import android.database.Cursor
 import com.example.administrator.buildings.Building
+import com.example.administrator.character.Character
 import com.example.administrator.character.Employee
 import java.util.*
 
-open
+open abstract
 class Tool(name: String?, volume: Int, originalPrice: Int) : Item(name, volume, originalPrice) {
 
     var items: Array<Item> = arrayOf(
-            Tool("售卖机", 10, 100)
+
     )
 
     fun findWorker(building: Building, item: Item): Employee?{
@@ -18,9 +19,13 @@ class Tool(name: String?, volume: Int, originalPrice: Int) : Item(name, volume, 
         return null
     }
 
+    abstract fun use(character: Character): Boolean
+    abstract fun recive(character: Character): Boolean
+
     override fun createTable(name: String) {}
     override fun getSQLDate(cursor: Cursor) {}
     override fun saveDate(workSpaceName: String) {}
     override fun getListDate(articles: HashMap<String, Item>) {}
     override fun getAllItems(): Array<Item> = items
+
 }

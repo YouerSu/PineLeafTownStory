@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import com.example.administrator.character.Character;
 import com.example.administrator.character.Employee;
 import com.example.administrator.item.Item;
+import com.example.administrator.item.Tool;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.OwnName;
 import com.example.administrator.utils.Sql;
@@ -49,6 +50,10 @@ public class Building implements OwnName {
         iDate.close();
     }
 
+    public static Building getWhere(int x){
+        return buildings.get(x);
+    }
+
     private void createNewBuilding(SQLiteDatabase db){
         Item.createIndex(name);
         db.execSQL
@@ -73,8 +78,12 @@ public class Building implements OwnName {
         return name;
     }
 
-    public void work(Item item){
-        //Character.findWorker(name,item);
+    public List<Tool> services(){
+        List<Tool> list = new ArrayList<>();
+        for (Item item:items.values())
+            if (item instanceof Tool)
+                list.add((Tool)item);
+        return list;
     }
 
     public void setName(String name) {

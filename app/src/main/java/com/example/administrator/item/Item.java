@@ -76,8 +76,10 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
             article.setVolume(articles.get(article.getName()).getVolume());
             article.setOriginalPrice(articles.get(article.getName()).getOriginalPrice());
             try {
-                article.getSQLDate(Sql.getCursor(name+article.getClass().getName().substring(article.getClass().getName().lastIndexOf(".")+1),Info.sellPrice,Info.NAME,new String[]{article.getName()}));
-            }catch (RuntimeException ignored){}
+                article.getSQLDate(Sql.getCursor(name+Tools.getSuffix(article.getClass().getName()),"*",Info.NAME,new String[]{article.getName()}));
+            }catch (RuntimeException ignored){
+                throw ignored;
+            }
             article.getListDate(articles);
             map.put(article.getName(),article);
         }
@@ -100,7 +102,7 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
     public void showMyOwnOnClick(GameUI UI) {
         String[] choose = new String[1];
         final Item copy = this;
-        UI.chooseDialogue("move "+name+" to ...",new String[]{"背包","垃圾桶",Building.getBuildings().get(Player.getPlayerDate().getX_coordinate()).getName()},choose);
+        UI.chooseDialogue("move "+name+" to ...",new String[]{"背包","垃圾桶",Building.getWhere(Player.getPlayerDate().getX_coordinate()).getName()},choose);
         new Response<String>(choose){
 
             @Override
@@ -203,6 +205,5 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
     public void setMaster(String master) {
         this.workSpace = master;
     }
-
 
 }

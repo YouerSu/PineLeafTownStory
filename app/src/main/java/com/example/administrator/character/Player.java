@@ -20,7 +20,7 @@ public class Player extends Character {
     private HashMap<String,Item> bag;
 
     @Override
-    void initialization() {
+    void init() {
         playerName = getName();
         getBagDate();
     }
@@ -76,7 +76,7 @@ public class Player extends Character {
                         "insert into "+Info.CHARACTER+" ("+Info.id +","+Info.NAME +","+Info.MONEY +","+Info.PRESTIGE + ","+Info.coordinate+ ","+Info.salary+ ","+Info.MASTER+ ") values ('"+ Player.class.getName()+"','"+name[0]+"',0,0,0,3000,'"+ null+"')",
                         "create table if not exists "+name[0]+Info.INDEX+" (" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)"
                 });
-                finalCharacter.initialization();
+                finalCharacter.init();
                 Character.characters.add(finalCharacter);
                 firstPlayGame();
                 createPlayerDate(gameUI);
@@ -85,8 +85,6 @@ public class Player extends Character {
     }
 
     private static void firstPlayGame() {
-        Character.createNewCharacter(Mayor.class.getName(),"PineTower",100000,10000,0,0,"PineTower");
-        new Building("PineTower",500,"PineTower");
         Character.createNewCharacter(StoresEmployee.class.getName(),"蚴牙",1000,200,0,8000,"杂货铺");
         Building building = new Building("杂货铺",0,"蚴牙");
         building.setItems(Item.getAllItems(Mall.class.getName()));

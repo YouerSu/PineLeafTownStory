@@ -4,6 +4,9 @@ import android.database.Cursor;
 
 import com.example.administrator.buildings.Building;
 import com.example.administrator.buildings.GameUI;
+import com.example.administrator.item.Item;
+import com.example.administrator.item.SellItem;
+import com.example.administrator.item.Tool;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.OwnMaster;
 import com.example.administrator.utils.OwnName;
@@ -13,8 +16,9 @@ import com.example.administrator.utils.Tools;
 
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Random;
 
-public abstract class Character implements OwnName,OwnMaster,ShowAdapter{
+public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
     public static LinkedList<Character> characters = new LinkedList<>();
     private String name;
     private int money;
@@ -23,7 +27,15 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter{
     private int salary;
     private String workSpace;
 
-     abstract void initialization();
+     abstract void init();
+
+    @Override
+    public void start() {
+        for (Tool tool: Building.buildings.get(getX_coordinate()).services())
+            if (tool.recive(this)&&tool.use(this)) break;
+        setX_coordinate(new Random().nextInt(Building.getBuildings().size()));
+    }
+
 
     @Override
     public Map<String, String> UIPageAdapter() {
@@ -49,7 +61,7 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter{
             character.setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
             character.setMaster(iDate.getString(iDate.getColumnIndex(Info.MASTER)));
             character.setSalary(iDate.getInt(iDate.getColumnIndex(Info.salary)));
-            character.initialization();
+            character.init();
             characters.add(character);
         }
         iDate.close();
