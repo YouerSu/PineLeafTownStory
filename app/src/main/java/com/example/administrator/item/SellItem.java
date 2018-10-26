@@ -43,6 +43,11 @@ public class SellItem extends Item {
     }
 
     @Override
+    public boolean haveTable() {
+        return true;
+    }
+
+    @Override
     public void getSQLDate(Cursor cursor) {
         sellPrice = cursor.getInt(cursor.getColumnIndex(Info.sellPrice));
     }

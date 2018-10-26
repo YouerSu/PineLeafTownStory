@@ -40,6 +40,12 @@ public class Building implements OwnName {
         return Tools.findMaster(workSpace,buildings);
     }
 
+    public Employee findWorker(Item item){
+        for (Employee employee:employees)
+            if (employee.receive(item)) return employee;
+        return null;
+    }
+
     public static void getBuildingDate() {
         Cursor iDate = Sql.getAllInfo(Info.BUILDING);
         if (iDate==null) return;

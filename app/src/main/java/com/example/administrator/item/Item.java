@@ -45,6 +45,7 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
         else items.put(values.name,values);
     }
 
+    public abstract boolean haveTable();
     public abstract void createTable(String name);
     public abstract void saveDate(String workSpaceName);
 
@@ -76,7 +77,8 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
             article.setVolume(articles.get(article.getName()).getVolume());
             article.setOriginalPrice(articles.get(article.getName()).getOriginalPrice());
             try {
-                article.getSQLDate(Sql.getCursor(name+Tools.getSuffix(article.getClass().getName()),"*",Info.NAME,new String[]{article.getName()}));
+                if (article.haveTable())
+                article.getSQLDate(Sql.getCursor(name+Tools.getSuffix(article.getClass().getName()),"*",Info.NAME,new String[]{"'"+article.getName()+"'"}));
             }catch (RuntimeException ignored){
                 throw ignored;
             }

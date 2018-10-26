@@ -26,6 +26,11 @@ public class Mall extends Item {
     }
 
     @Override
+    public boolean haveTable() {
+        return false;
+    }
+
+    @Override
     public void createTable(String name) {
     }
 

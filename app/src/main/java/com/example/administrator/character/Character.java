@@ -4,8 +4,6 @@ import android.database.Cursor;
 
 import com.example.administrator.buildings.Building;
 import com.example.administrator.buildings.GameUI;
-import com.example.administrator.item.Item;
-import com.example.administrator.item.SellItem;
 import com.example.administrator.item.Tool;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.OwnMaster;
@@ -31,8 +29,8 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
 
     @Override
     public void start() {
-        for (Tool tool: Building.buildings.get(getX_coordinate()).services())
-            if (tool.recive(this)&&tool.use(this)) break;
+        for (Tool tool: Building.getWhere(x_coordinate).services())
+            if (tool.receive(this)&&tool.use(this)) break;
         setX_coordinate(new Random().nextInt(Building.getBuildings().size()));
     }
 

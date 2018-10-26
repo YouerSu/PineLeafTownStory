@@ -97,5 +97,10 @@ public class Player extends Character {
     public void setBag(HashMap<String, Item> bag) {
         this.bag = bag;
     }
+
+    @Override
+    public boolean status() {
+        return false;
+    }
 }
 
