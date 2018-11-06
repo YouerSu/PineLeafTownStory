@@ -6,6 +6,7 @@ import com.example.administrator.item.SellItem
 
 class Buy :Behavior(){
     override fun use(character: Character): Boolean {
+
         val place = Building.getWhere(character.x_coordinate)
         for (item in place.items){
             if (item is SellItem && isCheap(item,character.money)){

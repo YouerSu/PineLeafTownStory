@@ -2,6 +2,7 @@ package com.example.administrator.character;
 
 import android.database.Cursor;
 
+import com.example.administrator.fun.Listener;
 import com.example.administrator.buildings.Building;
 import com.example.administrator.buildings.GameUI;
 import com.example.administrator.item.Tool;
@@ -14,7 +15,6 @@ import com.example.administrator.utils.Tools;
 
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.Random;
 
 public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
     public static LinkedList<Character> characters = new LinkedList<>();
@@ -24,14 +24,15 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
     private int x_coordinate;
     private int salary;
     private String workSpace;
+    public Listener listener;
 
      abstract void init();
 
     @Override
-    public void start() {
+    public void behavior() {
         for (Tool tool: Building.getWhere(x_coordinate).services())
             if (tool.receive(this)&&tool.use(this)) break;
-        setX_coordinate(new Random().nextInt(Building.getBuildings().size()));
+
     }
 
 
@@ -42,23 +43,23 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
 
     @Override
     public void onClick(GameUI gameUI) {
-        gameUI.dialogueBox(name+":你好,"+Player.getPlayerName());
+        listener.onClick(gameUI,this);
     }
 
     public static void getAllDate(){
         Building.getBuildingDate();
-        getDate(Sql.getDateBase().rawQuery("select * from "+Info.CHARACTER,null));
+        getDate(Sql.getDateBase().rawQuery("select * from "+ Info.INSTANCE.getCHARACTER(),null));
     }
 
     public static void getDate(Cursor iDate) {
         while (iDate.moveToNext()){
-            Character character = Tools.getType(iDate.getString(iDate.getColumnIndex(Info.id)));
-            character.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)));
-            character.setMoney(iDate.getInt(iDate.getColumnIndex(Info.MONEY)));
-            character.setPrestige(iDate.getInt(iDate.getColumnIndex(Info.PRESTIGE)));
-            character.setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.coordinate)));
-            character.setMaster(iDate.getString(iDate.getColumnIndex(Info.MASTER)));
-            character.setSalary(iDate.getInt(iDate.getColumnIndex(Info.salary)));
+            Character character = Tools.getType(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getId())));
+            character.setName(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getNAME())));
+            character.setMoney(iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getMONEY())));
+            character.setPrestige(iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getPRESTIGE())));
+            character.setX_coordinate(iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getCoordinate())));
+            character.setMaster(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getMASTER())));
+            character.setSalary(iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getSalary())));
             character.init();
             characters.add(character);
         }
@@ -71,7 +72,7 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
     }
 
     public static void saveBuildingDate(){
-        Sql.operating(new String[]{"DELETE FROM "+Info.BUILDING});
+        Sql.operating(new String[]{"DELETE FROM "+ Info.INSTANCE.getBUILDING()});
         for (Building building: Building.getBuildings())
             building.saveDate();
     }
@@ -84,14 +85,14 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
 
     public void saveDate(){
         Sql.operating(new String[]{
-        "update "+Info.CHARACTER+" set "+Info.id+" = '"+getClass().getName()+"',"+Info.MONEY+" = "+money+","+Info.PRESTIGE+" = "+prestige+","+Info.coordinate+" = "+x_coordinate+","+Info.salary+" = "+salary+","+Info.MASTER+" = '"+ workSpace +"' where "+Info.NAME+" = '"+ name +"'"
+        "update "+ Info.INSTANCE.getCHARACTER() +" set "+ Info.INSTANCE.getId() +" = '"+getClass().getName()+"',"+ Info.INSTANCE.getMONEY() +" = "+money+","+ Info.INSTANCE.getPRESTIGE() +" = "+prestige+","+ Info.INSTANCE.getCoordinate() +" = "+x_coordinate+","+ Info.INSTANCE.getSalary() +" = "+salary+","+ Info.INSTANCE.getMASTER() +" = '"+ workSpace +"' where "+ Info.INSTANCE.getNAME() +" = '"+ name +"'"
         });
     }
 
     public static void createNewCharacter( String className, String name, int money, int prestige, int x_coordinate, int salary, String workSpace){
         if (!(Tools.getType(className) instanceof Character)) return;
         Sql.getDateBase().execSQL
-        ("insert into "+Info.CHARACTER+" ("+Info.id+","+Info.NAME+","+Info.MONEY+","+Info.PRESTIGE+","+Info.coordinate+","+Info.salary+","+Info.MASTER+") values ('"+className+"','"+name+"',"+money+","+prestige+","+x_coordinate+","+salary+",'"+workSpace+"')");
+        ("insert into "+ Info.INSTANCE.getCHARACTER() +" ("+ Info.INSTANCE.getId() +","+ Info.INSTANCE.getNAME() +","+ Info.INSTANCE.getMONEY() +","+ Info.INSTANCE.getPRESTIGE() +","+ Info.INSTANCE.getCoordinate() +","+ Info.INSTANCE.getSalary() +","+ Info.INSTANCE.getMASTER() +") values ('"+className+"','"+name+"',"+money+","+prestige+","+x_coordinate+","+salary+",'"+workSpace+"')");
         Character character = Tools.getType(className);
         character.setName(name);
         character.setMoney(money);

@@ -35,7 +35,7 @@ public class Player extends Character {
         timeDate = new GameTime(gameUI);
         timeDate.getTimeDate();
         Timer timer = new Timer();
-        timer.schedule(timeDate, 800L, Info.SPEED);
+        timer.schedule(timeDate, 800L, Info.INSTANCE.getSPEED());
     }
 
     @Override
@@ -73,8 +73,8 @@ public class Player extends Character {
             public void doThings() {
                 finalCharacter.setName(name[0]);
                 Sql.operating(new String[]{
-                        "insert into "+Info.CHARACTER+" ("+Info.id +","+Info.NAME +","+Info.MONEY +","+Info.PRESTIGE + ","+Info.coordinate+ ","+Info.salary+ ","+Info.MASTER+ ") values ('"+ Player.class.getName()+"','"+name[0]+"',0,0,0,3000,'"+ null+"')",
-                        "create table if not exists "+name[0]+Info.INDEX+" (" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)"
+                        "insert into "+ Info.INSTANCE.getCHARACTER() +" ("+ Info.INSTANCE.getId() +","+ Info.INSTANCE.getNAME() +","+ Info.INSTANCE.getMONEY() +","+ Info.INSTANCE.getPRESTIGE() + ","+ Info.INSTANCE.getCoordinate() + ","+ Info.INSTANCE.getSalary() + ","+ Info.INSTANCE.getMASTER() + ") values ('"+ Player.class.getName()+"','"+name[0]+"',0,0,0,3000,'"+ null+"')",
+                        "create table if not exists "+name[0]+ Info.INSTANCE.getINDEX() +" (" + Info.INSTANCE.getId() + " text," + Info.INSTANCE.getNAME() + " text," + Info.INSTANCE.getTotal() + " integer)"
                 });
                 finalCharacter.init();
                 Character.characters.add(finalCharacter);
@@ -96,11 +96,6 @@ public class Player extends Character {
 
     public void setBag(HashMap<String, Item> bag) {
         this.bag = bag;
-    }
-
-    @Override
-    public boolean status() {
-        return false;
     }
 }
 

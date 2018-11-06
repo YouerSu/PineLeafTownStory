@@ -32,7 +32,7 @@ public class SellItem extends Item {
       @Override
     public void createTable(String name){
         Sql.operating(new String[]{
-        "create table if not exists "+name+Tools.getSuffix(getClass().getName())+"("+Info.NAME+" text,"+Info.sellPrice+" integer)",
+        "create table if not exists "+name+Tools.getSuffix(getClass().getName())+"("+ Info.INSTANCE.getNAME() +" text,"+ Info.INSTANCE.getSellPrice() +" integer)",
         "DELETE FROM " + name + "SellItem"
         });
     }
@@ -49,29 +49,29 @@ public class SellItem extends Item {
 
     @Override
     public void getSQLDate(Cursor cursor) {
-        sellPrice = cursor.getInt(cursor.getColumnIndex(Info.sellPrice));
+        sellPrice = cursor.getInt(cursor.getColumnIndex(Info.INSTANCE.getSellPrice()));
     }
 
     @Override
     public void saveDate(String name) {
         createTable(name);
         Sql.operating(new String[]{
-                "insert into "+name+Tools.getSuffix(getClass().getName()) +" ("+ Info.NAME+","+ Info.sellPrice+") values("+getName()+","+sellPrice+")"
+                "insert into "+name+Tools.getSuffix(getClass().getName()) +" ("+ Info.INSTANCE.getNAME() +","+ Info.INSTANCE.getSellPrice() +") values("+getName()+","+sellPrice+")"
         });
     }
 
-    @Override
-    public void showNotMyOwnOnClick(GameUI UI) {
-        String[] price = new String[1];
-        UI.reText("输入销售价格",price);
-        super.showNotMyOwnOnClick(UI);
-        new Response<String>(price){
-            @Override
-            public void doThings() {
-                setSellPrice(Integer.valueOf(price[0]));
-            }
-        };
-    }
+//    @Override
+//    public void showNotMyOwnOnClick(GameUI UI) {
+//        String[] price = new String[1];
+//        UI.reText("输入销售价格",price);
+//        super.showNotMyOwnOnClick(UI);
+//        new Response<String>(price){
+//            @Override
+//            public void doThings() {
+//                setSellPrice(Integer.valueOf(price[0]));
+//            }
+//        };
+//    }
 
     public synchronized int getSellPrice() {
         return sellPrice;

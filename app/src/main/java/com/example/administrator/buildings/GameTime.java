@@ -26,27 +26,27 @@ public class GameTime extends TimerTask {
 
     public void saveDate(){
         Sql.operating(new String[]{
-        "update "+ Info.TIME+" set "+Info.MINUTE+" = "+getMinute()+","+Info.HOUR+" = "+getHour()+ ","+Info.DAY+" = "+getDay()+","+Info.MONTH+" = "+getMonth()+ ","+Info.YEAR+" = "+getYear()
+        "update "+ Info.INSTANCE.getTIME() +" set "+ Info.INSTANCE.getMINUTE() +" = "+getMinute()+","+ Info.INSTANCE.getHOUR() +" = "+getHour()+ ","+ Info.INSTANCE.getDAY() +" = "+getDay()+","+ Info.INSTANCE.getMONTH() +" = "+getMonth()+ ","+ Info.INSTANCE.getYEAR() +" = "+getYear()
         });
     }
 
     public void getTimeDate() {
-        Cursor iDate = Sql.getAllInfo(Info.TIME);
+        Cursor iDate = Sql.getAllInfo(Info.INSTANCE.getTIME());
         if (iDate!=null)
         while (iDate.moveToNext()){
         //事实证明Cursor的指针是从第一条数据的前一个开始的
-        setMinute(iDate.getInt(iDate.getColumnIndex(Info.MINUTE)));
-        setHour(iDate.getInt(iDate.getColumnIndex(Info.HOUR)));
-        setDay(iDate.getInt(iDate.getColumnIndex(Info.DAY)));
-        setMonth(iDate.getInt(iDate.getColumnIndex(Info.MONTH)));
-        setYear(iDate.getInt(iDate.getColumnIndex(Info.YEAR)));
+        setMinute(iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getMINUTE())));
+        setHour(iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getHOUR())));
+        setDay(iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getDAY())));
+        setMonth(iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getMONTH())));
+        setYear(iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getYEAR())));
         }
     }
 
 
     @Override
     public void run() {
-        setMinute(getMinute()+(int) Info.SPEED/1000);
+        setMinute(getMinute()+(int) Info.INSTANCE.getSPEED() /1000);
         if (getMinute() >= 60) {
             setMinute(0);
             setHour(getHour()+1);

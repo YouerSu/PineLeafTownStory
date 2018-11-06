@@ -9,7 +9,7 @@ public class Sql extends SQLiteOpenHelper{
     private static SQLiteDatabase db;
 
     public Sql(Context context) {
-        super(context,Info.name,null,Info.VER);
+        super(context, Info.INSTANCE.getName(),null, Info.INSTANCE.getVER());
     }
 
     //用于执行Sql语句;
@@ -33,13 +33,13 @@ public class Sql extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
     db.execSQL
-    ("create table if not exists "+Info.CHARACTER+"(" +Info.id+" text," +Info.NAME+" text,"+Info.MONEY+" integer,"+Info.PRESTIGE+" integer," +Info.coordinate+" integer,"+Info.salary+" integer,"+Info.MASTER+" text)");
+    ("create table if not exists "+ Info.INSTANCE.getCHARACTER() +"(" + Info.INSTANCE.getId() +" text," + Info.INSTANCE.getNAME() +" text,"+ Info.INSTANCE.getMONEY() +" integer,"+ Info.INSTANCE.getPRESTIGE() +" integer," + Info.INSTANCE.getCoordinate() +" integer,"+ Info.INSTANCE.getSalary() +" integer,"+ Info.INSTANCE.getMASTER() +" text)");
     db.execSQL
-    ("create table if not exists "+Info.TIME+" ("+Info.MINUTE+ " integer,"+Info.HOUR+" integer,"+Info.DAY+" integer,"+Info.MONTH+" integer,"+Info.YEAR+ " integer)");
+    ("create table if not exists "+ Info.INSTANCE.getTIME() +" ("+ Info.INSTANCE.getMINUTE() + " integer,"+ Info.INSTANCE.getHOUR() +" integer,"+ Info.INSTANCE.getDAY() +" integer,"+ Info.INSTANCE.getMONTH() +" integer,"+ Info.INSTANCE.getYEAR() + " integer)");
     db.execSQL
-    ("insert into "+Info.TIME+" ("+Info.MINUTE+"," +Info.HOUR +","+Info.DAY +"," +Info.MONTH +","+Info.YEAR +") values (10,7,3,1,1)");
+    ("insert into "+ Info.INSTANCE.getTIME() +" ("+ Info.INSTANCE.getMINUTE() +"," + Info.INSTANCE.getHOUR() +","+ Info.INSTANCE.getDAY() +"," + Info.INSTANCE.getMONTH() +","+ Info.INSTANCE.getYEAR() +") values (10,7,3,1,1)");
     db.execSQL
-    ("create table if not exists "+Info.BUILDING+" (" +Info.NAME +" text," +Info.MASTER +" text,"+Info.capacity+" integer)");
+    ("create table if not exists "+ Info.INSTANCE.getBUILDING() +" (" + Info.INSTANCE.getNAME() +" text," + Info.INSTANCE.getMASTER() +" text,"+ Info.INSTANCE.getCapacity() +" integer)");
 
 
     }

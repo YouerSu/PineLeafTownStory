@@ -8,7 +8,7 @@ public interface NPC extends ShowAdapter {
     //开启线程
     default void startActivity() {
         new Thread(()->{
-            if (status()) start();
+            behavior();
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
@@ -18,8 +18,5 @@ public interface NPC extends ShowAdapter {
     }
 
     //NPC的行为
-    void start();
-    boolean status();
-
-
+    void behavior();
 }

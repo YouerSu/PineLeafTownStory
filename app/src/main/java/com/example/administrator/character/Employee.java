@@ -1,23 +1,11 @@
 package com.example.administrator.character;
 
 import com.example.administrator.buildings.Building;
-import com.example.administrator.buildings.GameUI;
 import com.example.administrator.item.Item;
-import com.example.administrator.utils.Response;
-import com.example.administrator.utils.Tools;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public abstract class Employee extends Character{
 
     public abstract void work(Item item,Character customer);
     public abstract boolean receive(Item item);
-
-    @Override
-    public boolean status() {
-        return getMaster()==null;
-    }
 
     @Override
     void init() {

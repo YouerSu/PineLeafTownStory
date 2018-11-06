@@ -66,17 +66,6 @@ public class Game extends AppCompatActivity implements GameUI{
             playerView.setText(String.format("云团:%d   声望:%d",Player.getPlayerDate().getMoney(),Player.getPlayerDate().getPrestige()));
         }
     };
-    @SuppressLint("HandlerLeak")
-    Handler dialog = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-
-        }
-
-
-
-    };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -103,7 +92,7 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
     public ListView getListView(List<Map<String, String>> listItem) {
-        SimpleAdapter sa = new SimpleAdapter(this,listItem, R.layout.item_list,new String[]{Info.NAME,Info.LT1,Info.LT2,Info.LT3},new int[]{R.id.name,R.id.lt1,R.id.lt2,R.id.lt3});
+        SimpleAdapter sa = new SimpleAdapter(this,listItem, R.layout.item_list,new String[]{Info.INSTANCE.getNAME(), Info.INSTANCE.getLT1(), Info.INSTANCE.getLT2(), Info.INSTANCE.getLT3()},new int[]{R.id.name,R.id.lt1,R.id.lt2,R.id.lt3});
         AlertDialog alertDialog = getDialog(R.layout.show_list);
         ListView list = alertDialog.getWindow().findViewById(R.id.list);
         list.setAdapter(sa);
@@ -169,11 +158,8 @@ public class Game extends AppCompatActivity implements GameUI{
             default:
                 ima.setImageResource(R.mipmap.player);
         }
-
-
         next.setText(message);
         next.setOnClickListener((View view)-> alertDialog.dismiss());
-
     }
 
 
@@ -199,9 +185,9 @@ public class Game extends AppCompatActivity implements GameUI{
     }
 
 
-    public void showBuilding(String s, int a){
-        titleList.add(s);
-        View view = View.inflate(this, a, null);
+    public void showBuilding(String name, int layout){
+        titleList.add(name);
+        View view = View.inflate(this, layout, null);
         pagerList.add(view);
     }
 
@@ -250,8 +236,8 @@ public class Game extends AppCompatActivity implements GameUI{
 
     private void createBuilding() {
 
-        if (Player.getPlayerDate().getMoney()>= Info.BUILDING_PRICE) {
-            Player.getPlayerDate().setMoney(Player.getPlayerDate().getMoney()-Info.BUILDING_PRICE);
+        if (Player.getPlayerDate().getMoney()>= Info.INSTANCE.getBUILDING_PRICE()) {
+            Player.getPlayerDate().setMoney(Player.getPlayerDate().getMoney()- Info.INSTANCE.getBUILDING_PRICE());
             new  Building("建筑",1, Player.getPlayerDate().getName());
             dialogueBox("ada:OK");
         } else

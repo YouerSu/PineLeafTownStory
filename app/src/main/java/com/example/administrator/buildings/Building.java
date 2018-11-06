@@ -3,7 +3,6 @@ package com.example.administrator.buildings;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.example.administrator.character.Character;
 import com.example.administrator.character.Employee;
 import com.example.administrator.item.Item;
 import com.example.administrator.item.Tool;
@@ -47,10 +46,10 @@ public class Building implements OwnName {
     }
 
     public static void getBuildingDate() {
-        Cursor iDate = Sql.getAllInfo(Info.BUILDING);
+        Cursor iDate = Sql.getAllInfo(Info.INSTANCE.getBUILDING());
         if (iDate==null) return;
         while (iDate.moveToNext()){
-            Building building = new Building(iDate.getString(iDate.getColumnIndex(Info.NAME)),iDate.getInt(iDate.getColumnIndex(Info.capacity)),iDate.getString(iDate.getColumnIndex(Info.MASTER)));
+            Building building = new Building(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getNAME())),iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getCapacity())),iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getMASTER())));
             building.items = Item.getIndexDate(building.getName());
         }
         iDate.close();
@@ -63,7 +62,7 @@ public class Building implements OwnName {
     private void createNewBuilding(SQLiteDatabase db){
         Item.createIndex(name);
         db.execSQL
-                ("insert into "+Info.BUILDING+" ("+Info.NAME+","+Info.MASTER+","+Info.capacity+") values ('"+name+"','"+master+"',"+capacity+")");
+                ("insert into "+ Info.INSTANCE.getBUILDING() +" ("+ Info.INSTANCE.getNAME() +","+ Info.INSTANCE.getMASTER() +","+ Info.INSTANCE.getCapacity() +") values ('"+name+"','"+master+"',"+capacity+")");
     }
 
     public void saveDate() {

@@ -52,10 +52,10 @@ public class Mall extends Item {
         setList(((Mall) articles.get(getName())).getList());
     }
 
-    @Override
-    public void showMyOwnOnClick(GameUI UI) {
-        UI.showListDialogue(Tools.toList(list));
-    }
+//    @Override
+//    public void showMyOwnOnClick(GameUI UI) {
+//        UI.showListDialogue(Tools.toList(list));
+//    }
 
     public Item[] getList() {
         return list;
