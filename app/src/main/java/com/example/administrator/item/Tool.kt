@@ -2,29 +2,43 @@ package com.example.administrator.item
 
 import android.database.Cursor
 import com.example.administrator.behavior.Behavior
+import com.example.administrator.buildings.GameUI
 import com.example.administrator.character.Character
+import com.example.administrator.character.Player
 import com.example.administrator.utils.Info
+import com.example.administrator.utils.Sql
 import com.example.administrator.utils.Tools
 import com.example.administrator.utils.Tools.getType
-import java.util.*
 
 open
-class Tool(private var behavior: Behavior, name: String, volume: Int, originalPrice: Int) : Item(name, volume, originalPrice) {
-    val items: Array<Item> = arrayOf(
+class Tool(var behavior: Behavior, name: String, volume: Int, originalPrice: Int) : Item(name, volume, originalPrice) {
+    val items: Array<Tool> = arrayOf(
 
     )
 
     fun use(character: Character): Boolean=behavior.use(character)
-    override fun haveTable()=true
+    fun use(player: Player,ui: GameUI) =  behavior.use(player)
+    override fun haveTable()=false
 
     fun receive(character: Character): Boolean = behavior.receive(character)
 
-    override fun createTable(name: String) {}
-    override fun getSQLDate(cursor: Cursor) {
+    override fun createTable(name: String) {
+        Sql.operating(arrayOf(
+            "create table if not exists " + name + Tools.getSuffix(javaClass.name) + "(" + Info.BEHAVIOR + " text)",
+            "DELETE FROM " + name + "Tool"
+                                                    )
+        )
+    }
+    override fun setSQLDate(cursor: Cursor) {
         behavior = getType(cursor.getString(cursor.getColumnIndex(Info.BEHAVIOR)))
     }
-    override fun saveDate(workSpaceName: String) {}
-    override fun getListDate(articles: HashMap<String, Item>) {}
-    override fun getAllItems(): Array<Item> = items
+    override fun saveDate(workSpaceName: String) {
+        Sql.operating(arrayOf(
+            "insert into " + workSpaceName + Tools.getSuffix(javaClass.name) + " (" + Info.BEHAVIOR + ") values(" + behavior.javaClass.name + ")"
+                                                    )
+        )
+    }
+
+    override fun <T : Item> getListItem(): T =  changeToMap(items)[name] as T
 
 }

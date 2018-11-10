@@ -2,7 +2,8 @@ package com.example.administrator.item;
 
 import android.database.Cursor;
 
-import com.example.administrator.fun.Listener;
+import com.example.administrator.buildings.Building;
+import com.example.administrator.listener.Listener;
 import com.example.administrator.buildings.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.buildings.ShowAdapter;
@@ -40,7 +41,7 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
 
     public static void addItem(Item values, HashMap<String,Item> items){
         if (items.get(values.name)!=null)
-            items.get(values.name).setTotal(items.get(values.name).getTotal()+values.getTotal());
+            items.get(values.name).total = items.get(values.name).getTotal()+values.getTotal();
         else items.put(values.name,values);
     }
 
@@ -49,11 +50,9 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
     public abstract void saveDate(String workSpaceName);
 
     //从SQL中读取数据
-    public abstract void getSQLDate(Cursor cursor);
-    //从数据集合中读取额外数据
-    public abstract void getListDate(HashMap<String,Item> articles);
+    public abstract void setSQLDate(Cursor cursor);
 
-    public abstract Item[] getAllItems();
+    public abstract<T extends Item> T getListItem();
 
     public void saveIndexDate(String name){
       Sql.operating(new String[]{
@@ -69,29 +68,25 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
         Cursor iDate = Sql.getAllInfo(name+ Info.INSTANCE.getINDEX());
         while (iDate.moveToNext()){
             Item article = Tools.getType(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getId())));
-            HashMap<String,Item> articles = getAllItems(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getId())));
-            article.setMaster(name);
             article.setName(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getNAME())));
-            article.setTotal(iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getTotal())));
-            article.setVolume(articles.get(article.getName()).getVolume());
-            article.setOriginalPrice(articles.get(article.getName()).getOriginalPrice());
+            article = article.getListItem();
+            article.total = (iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getTotal())));
+            article.setMaster(name);
             try {
                 if (article.haveTable())
-                article.getSQLDate(Sql.getCursor(name+Tools.getSuffix(article.getClass().getName()),"*", Info.INSTANCE.getNAME(),new String[]{"'"+article.getName()+"'"}));
+                article.setSQLDate(Sql.getCursor(name+Tools.getSuffix(article.getClass().getName()),"*", Info.INSTANCE.getNAME(),new String[]{"'"+article.getName()+"'"}));
             }catch (RuntimeException ignored){
                 throw ignored;
             }
-            article.getListDate(articles);
             map.put(article.getName(),article);
         }
         iDate.close();
         return map;
     }
 
-    public static HashMap<String,Item> getAllItems(String name) {
-        HashMap<String,Item> items = new HashMap<>();
-        for (Item item:((Item) Tools.getType(name)).getAllItems())
-            items.put(item.getName(),item);
+    public static<T extends Item> HashMap<String,T> changeToMap(T[] list) {
+        HashMap<String,T> items = new HashMap<>();
+        for (T item:list) items.put(item.getName(),item);
         return items;
     }
 
@@ -129,27 +124,6 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
         listener.onClick(gameUI,this);
     }
 
-//    public void showNotMyOwnOnClick(GameUI UI) {
-//        String[] amount = new String[1];
-//        UI.reText("Enter the number of buy",amount);
-//        Item item = Tools.getType(getClass().getName());
-//        new Response<String>(amount){
-//            @Override
-//            public void doThings() {
-//                int dig = Integer.valueOf(amount[0]);
-//                if (dig > 0) {
-//                    setTotal(getTotal() - dig);
-//                    item.setTotal(dig);
-//                    item.setOriginalPrice(originalPrice);
-//                    item.setName(name);
-//                    item.setVolume(volume);
-//                    item.setMaster(Player.getPlayerName());
-//                    item.getListDate(getAllItems(item.getClass().getName()));
-//                    Item.addItem(item, Player.getPlayerDate().getBag());
-//                }
-//            }
-//        };
-//    }
 
     public static void createIndex(String name) {
         Sql.operating(
@@ -187,6 +161,7 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
 
     public void setTotal(int total) {
         this.total = total;
+        if (total<0) Building.findWorkSpace(workSpace).getItems().remove(this.name);
     }
 
     public void setOriginalPrice(int originalPrice) {
@@ -202,5 +177,4 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
     public void setMaster(String master) {
         this.workSpace = master;
     }
-
 }

@@ -1,9 +1,6 @@
 package com.example.administrator.character;
 
-
-import com.example.administrator.buildings.ShowAdapter;
-
-public interface NPC extends ShowAdapter {
+public interface NPC{
 
     //开启线程
     default void startActivity() {

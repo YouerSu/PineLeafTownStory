@@ -16,18 +16,18 @@ import java.util.Timer;
 public class Player extends Character {
 
     public static GameTime timeDate;
-    private static String playerName;
-    private HashMap<String,Item> bag;
+    public static HashMap<String,Item> bag;
+    public static Player player;
 
     @Override
     void init() {
-        playerName = getName();
+        player = this;
         getBagDate();
     }
 
 
     private void getBagDate() {
-        bag = Item.getIndexDate(playerName);
+        bag = Item.getIndexDate(getName());
     }
 
 
@@ -43,59 +43,48 @@ public class Player extends Character {
         super.saveDate();
         timeDate.saveDate();
         for (Item item:bag.values())
-            item.saveIndexDate(playerName);
+            item.saveIndexDate(getName());
     }
 
 
     public static String getPlayerName() {
-        return playerName;
+        return player.getName();
     }
+    public static int getX(){ return player.getX_coordinate(); }
+    public static void setX(int x){ player.setX_coordinate(x);}
 
-    public static Player getPlayerDate() {
-        Character character = Tools.findMaster(playerName,characters);
-        return (Player)character;
-    }
+    public static Player getPlayerDate() { return player; }
 
     public static void createPlayerDate(GameUI gameUI) {
-        Character character = getPlayerDate();
-        if (character != null){
-            ((Player)character).setTimeDate(gameUI);
+        Player player = getPlayerDate();
+        if (player != null){
+            player.setTimeDate(gameUI);
             return;
         } else{
-            character = new Player();
+            player = new Player();
         }
-        String[]name =new String[1];
-        gameUI.reText("输入你的名字",name);
-        //判断是否重复
-        Character finalCharacter = character;
-        new Response<String>(name){
+        //TODO:判断是否重复
+        Character finalCharacter = player;
+
+        gameUI.reText("输入你的名字",new Response<String>(){
             @Override
-            public void doThings() {
-                finalCharacter.setName(name[0]);
+            public void doThings(String name) {
+                finalCharacter.setName(name);
                 Sql.operating(new String[]{
-                        "insert into "+ Info.INSTANCE.getCHARACTER() +" ("+ Info.INSTANCE.getId() +","+ Info.INSTANCE.getNAME() +","+ Info.INSTANCE.getMONEY() +","+ Info.INSTANCE.getPRESTIGE() + ","+ Info.INSTANCE.getCoordinate() + ","+ Info.INSTANCE.getSalary() + ","+ Info.INSTANCE.getMASTER() + ") values ('"+ Player.class.getName()+"','"+name[0]+"',0,0,0,3000,'"+ null+"')",
-                        "create table if not exists "+name[0]+ Info.INSTANCE.getINDEX() +" (" + Info.INSTANCE.getId() + " text," + Info.INSTANCE.getNAME() + " text," + Info.INSTANCE.getTotal() + " integer)"
+                        "insert into "+ Info.INSTANCE.getCHARACTER() +" ("+ Info.INSTANCE.getId() +","+ Info.INSTANCE.getNAME() +","+ Info.INSTANCE.getMONEY() +","+ Info.INSTANCE.getPRESTIGE() + ","+ Info.INSTANCE.getCoordinate() + ","+ Info.INSTANCE.getSalary() + ","+ Info.INSTANCE.getMASTER() + ") values ('"+ Player.class.getName()+"','"+name+"',0,0,0,3000,'"+ null+"')",
+                        "create table if not exists "+name+ Info.INSTANCE.getINDEX() +" (" + Info.INSTANCE.getId() + " text," + Info.INSTANCE.getNAME() + " text," + Info.INSTANCE.getTotal() + " integer)"
                 });
                 finalCharacter.init();
                 Character.characters.add(finalCharacter);
                 firstPlayGame();
                 createPlayerDate(gameUI);
             }
-        };
+        });
     }
 
     private static void firstPlayGame() {
         Character.createNewCharacter(StoresEmployee.class.getName(),"蚴牙",1000,200,0,8000,"杂货铺");
         Building building = new Building("杂货铺",0,"蚴牙");
-        building.setItems(Item.getAllItems(Mall.class.getName()));
-    }
-
-    public HashMap<String, Item> getBag() {
-        return bag;
-    }
-
-    public void setBag(HashMap<String, Item> bag) {
-        this.bag = bag;
+        building.setItems(Item.changeToMap(Mall.items));
     }
 }
-

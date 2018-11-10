@@ -2,32 +2,15 @@ package com.example.administrator.item;
 
 import android.database.Cursor;
 
-import com.example.administrator.buildings.GameUI;
 import com.example.administrator.utils.Info;
-import com.example.administrator.utils.Response;
 import com.example.administrator.utils.Sql;
 import com.example.administrator.utils.Tools;
 
-import java.util.HashMap;
-
 public class SellItem extends Item {
-
+//TODO:将SellItem变为委托类
     private int sellPrice;
-    private int popular;
-    public static Item[] items = new SellItem[]{
-    new SellItem("杨梅",2,6,10),
-    };
 
-    public SellItem(String name, int volume, int originalPrice, int popular) {
-        super(name, volume, originalPrice);
-        this.popular = popular;
-    }
-
-    public SellItem() {
-    }
-
-    @Override
-    public Item[] getAllItems() { return items; }
+    public SellItem() {}
 
       @Override
     public void createTable(String name){
@@ -38,8 +21,8 @@ public class SellItem extends Item {
     }
 
     @Override
-    public void getListDate(HashMap<String,Item> articles) {
-        popular = ((SellItem)articles.get(getName())).getPopular();
+    public SellItem getListItem() {
+        return this;
     }
 
     @Override
@@ -48,7 +31,7 @@ public class SellItem extends Item {
     }
 
     @Override
-    public void getSQLDate(Cursor cursor) {
+    public void setSQLDate(Cursor cursor) {
         sellPrice = cursor.getInt(cursor.getColumnIndex(Info.INSTANCE.getSellPrice()));
     }
 
@@ -77,15 +60,4 @@ public class SellItem extends Item {
         return sellPrice;
     }
 
-    public int getPopular() {
-        return popular;
-    }
-
-    public synchronized void setSellPrice(int sellPrice) {
-        this.sellPrice = sellPrice;
-    }
-
-    public void setPopular(int popular) {
-        this.popular = popular;
-    }
 }

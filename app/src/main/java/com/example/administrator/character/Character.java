@@ -2,7 +2,7 @@ package com.example.administrator.character;
 
 import android.database.Cursor;
 
-import com.example.administrator.fun.Listener;
+import com.example.administrator.listener.Listener;
 import com.example.administrator.buildings.Building;
 import com.example.administrator.buildings.GameUI;
 import com.example.administrator.item.Tool;

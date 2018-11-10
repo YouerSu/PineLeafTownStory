@@ -1,6 +1,7 @@
 package com.example.administrator.buildings;
 
 import com.example.administrator.utils.Info;
+import com.example.administrator.utils.Response;
 
 import java.util.HashMap;
 import java.util.List;
@@ -19,11 +20,11 @@ public interface GameUI{
 
     void refreshUI();
 
-    <T> void reText(String message,T[] list);
+    <T> void reText(String message,Response<T> text);
 
     void dialogueBox(String message);
 
-    <T> void chooseDialogue(String message,T[] messages, T[] choose);
+    <T> void chooseDialogue(String message,T[] messages, Response<T> choose);
 
     <T extends ShowAdapter> void showListDialogue(List<T> items);
 

@@ -2,17 +2,12 @@ package com.example.administrator.item;
 
 import android.database.Cursor;
 
-import com.example.administrator.buildings.GameUI;
-import com.example.administrator.utils.Tools;
-
-import java.util.HashMap;
-
 public class Mall extends Item {
 
     private Item[] list;
 
-    public static Item[] items = new Mall[]{
-            new Mall("SellItem", 0, 0, SellItem.items),
+    public static Mall[] items = new Mall[]{
+
     };
 
     public Mall(String name, int volume, int originalPrice, Item[] itemList) {
@@ -35,12 +30,7 @@ public class Mall extends Item {
     }
 
     @Override
-    public Item[] getAllItems() {
-        return items;
-    }
-
-    @Override
-    public void getSQLDate(Cursor cursor) {
+    public void setSQLDate(Cursor cursor) {
     }
 
     @Override
@@ -48,13 +38,12 @@ public class Mall extends Item {
     }
 
     @Override
-    public void getListDate(HashMap<String, Item> articles) {
-        setList(((Mall) articles.get(getName())).getList());
+    public Mall getListItem() {
+        return changeToMap(items).get(getName());
     }
-
 //    @Override
 //    public void showMyOwnOnClick(GameUI UI) {
-//        UI.showListDialogue(Tools.toList(list));
+//
 //    }
 
     public Item[] getList() {
