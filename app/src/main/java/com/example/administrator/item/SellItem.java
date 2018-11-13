@@ -2,6 +2,7 @@ package com.example.administrator.item;
 
 import android.database.Cursor;
 
+import com.example.administrator.buildings.Building;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.Sql;
 import com.example.administrator.utils.Tools;
@@ -21,8 +22,13 @@ public class SellItem extends Item {
     }
 
     @Override
-    public SellItem getListItem() {
+    public SellItem getListItem(String name) {
+        if (name!=null) setName(name);
         return this;
+    }
+
+    public Item getItem(){
+        return Building.findWorkSpace(getMaster()).getItems().get(getName());
     }
 
     @Override

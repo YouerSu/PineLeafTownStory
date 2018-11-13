@@ -26,25 +26,18 @@ public class Mall extends Item {
     }
 
     @Override
-    public void createTable(String name) {
-    }
+    public void createTable(String name) { }
 
     @Override
-    public void setSQLDate(Cursor cursor) {
-    }
+    public void setSQLDate(Cursor cursor) { }
 
     @Override
-    public void saveDate(String tableName) {
-    }
+    public void saveDate(String tableName) { }
 
     @Override
-    public Mall getListItem() {
-        return changeToMap(items).get(getName());
+    public Mall getListItem(String name) {
+        return changeToMap(items).get(name);
     }
-//    @Override
-//    public void showMyOwnOnClick(GameUI UI) {
-//
-//    }
 
     public Item[] getList() {
         return list;

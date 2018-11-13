@@ -52,7 +52,7 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
     //从SQL中读取数据
     public abstract void setSQLDate(Cursor cursor);
 
-    public abstract<T extends Item> T getListItem();
+    public abstract<T extends Item> T getListItem(String name);
 
     public void saveIndexDate(String name){
       Sql.operating(new String[]{
@@ -68,8 +68,7 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
         Cursor iDate = Sql.getAllInfo(name+ Info.INSTANCE.getINDEX());
         while (iDate.moveToNext()){
             Item article = Tools.getType(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getId())));
-            article.setName(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getNAME())));
-            article = article.getListItem();
+            article = article.getListItem(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getNAME())));
             article.total = (iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getTotal())));
             article.setMaster(name);
             try {

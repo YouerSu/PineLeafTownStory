@@ -14,7 +14,10 @@ class Buy: Search<SellItem>() {
                 if (amount > 0&&amount<=adapter.total&&Player.player.money>amount*adapter.originalPrice) {
                     adapter.total = adapter.total - amount
                     Player.player.money -= adapter.total*adapter.originalPrice
-                    val item = adapter.listItem
+                    val product = adapter.item
+                    val item = product.getListItem<Item>(product.name)
+                    adapter.total -= amount
+                    product.total -= amount
                     item.total = amount
                     item.master = Player.getPlayerName()
                     Item.addItem(item, Player.bag)
