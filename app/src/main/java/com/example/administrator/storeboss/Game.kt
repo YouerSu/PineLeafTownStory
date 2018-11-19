@@ -1,10 +1,7 @@
 package com.example.administrator.storeboss
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
-import android.os.Handler
-import android.os.Message
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AppCompatActivity
 import android.text.SpannableString
@@ -38,22 +35,8 @@ import java.util.ArrayList
 class Game : AppCompatActivity(), GameUI {
 
     private var pager: ViewPager? = null
-    internal var timeView: TextView? = null
-    internal var playerView: TextView? = null
-    @SuppressLint("HandlerLeak")
-    internal var refresh: Handler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            var season: String? = null
-            when (Player.timeDate.month) {
-                1 -> season = "春季日"
-                2 -> season = "夏季日"
-                3 -> season = "秋季日"
-                4 -> season = "冬季日"
-            }
-            timeView?.text = String.format("%s第%d天  %d:%02d", season, Player.timeDate.day, Player.timeDate.hour, Player.timeDate.minute)
-            playerView?.text = String.format("云团:%d   声望:%d", Player.getPlayerDate().money, Player.getPlayerDate().prestige)
-        }
-    }
+    private var timeView: TextView? = null
+    private var playerView: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,7 +53,7 @@ class Game : AppCompatActivity(), GameUI {
         setText()
     }
 
-    fun <T : ShowAdapter>  changeList(items: List<T>): ListView {
+    private fun <T : ShowAdapter>  changeList(items: List<T>): ListView {
         //接收参数，转化参数，展示参数
         val listItem = ArrayList<Map<String, String>>()
         for (item in items)
@@ -97,6 +80,10 @@ class Game : AppCompatActivity(), GameUI {
                 .setTitle(message)
                 .setItems(messages.clone() as Array<String>) { dialog, which -> response.doThings(messages[which]) }
         builder.create().show()
+    }
+
+    override fun dayChange() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     fun setBuilding() {
@@ -208,16 +195,26 @@ class Game : AppCompatActivity(), GameUI {
 
 
     override fun refreshUI() {
-        refresh.sendEmptyMessage(0)
+        var season: String? = null
+        when (Player.timeDate.month) {
+            1 -> season = "春季日"
+            2 -> season = "夏季日"
+            3 -> season = "秋季日"
+            4 -> season = "冬季日"
+        }
+        timeView?.text = String.format("%s第%d天  %d:%02d", season, Player.timeDate.day, Player.timeDate.hour, Player.timeDate.minute)
+        playerView?.text = String.format("云团:%d   声望:%d", Player.getPlayerDate().money, Player.getPlayerDate().prestige)
     }
 
     companion object {
         private val pagerList = ArrayList<View>()
         private val titleList = ArrayList<String>()
 
-
         private fun saveDate() {
             Character.saveAllDate()
         }
     }
+
+    override fun run(runnable: Runnable?) = runOnUiThread(runnable)
+
 }

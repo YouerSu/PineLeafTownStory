@@ -2,9 +2,15 @@ package com.example.administrator.listener
 
 import com.example.administrator.buildings.GameUI
 import com.example.administrator.buildings.ShowAdapter
+import com.example.administrator.character.Player
 
-class Listener<T:ShowAdapter>(var listener:(GameUI,T) -> Unit) {
-    fun onClick(gameUI: GameUI,item :T) {
-        listener(gameUI,item)
-    }
+//查找物 监听
+abstract class Listener<T:ShowAdapter>(val search: Search<T>){
+    //TODO:为查找到的物品添加监听
+    abstract fun listener(ui: GameUI,adapter: T)
+    abstract fun use(player: Player,ui: GameUI)
+//    override fun use(character: Character): Boolean {
+//        return true
+//    }
+
 }

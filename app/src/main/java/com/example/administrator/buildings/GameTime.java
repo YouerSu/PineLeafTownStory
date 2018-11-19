@@ -53,6 +53,7 @@ public class GameTime extends TimerTask {
             if (getHour() >= 24) {
                 setHour(7);
                 setDay(getDay()+1);
+                gameUI.dayChange();
                 if (getDay() > 25) {
                     setDay(1);
                     setMonth(getMonth()+1);

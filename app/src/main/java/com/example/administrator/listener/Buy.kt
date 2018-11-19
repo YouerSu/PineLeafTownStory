@@ -1,13 +1,12 @@
 package com.example.administrator.listener
 
-import com.example.administrator.buildings.Building
 import com.example.administrator.buildings.GameUI
 import com.example.administrator.character.Player
 import com.example.administrator.item.Item
 import com.example.administrator.item.SellItem
 import com.example.administrator.utils.Response
 
-class Buy: Search<SellItem>() {
+class Buy(search: Search<SellItem>): Listener<SellItem>(search) {
     override fun listener(ui: GameUI, adapter: SellItem) {
         val response = object : Response<Int>(){
             override fun doThings(amount: Int) {
@@ -28,6 +27,6 @@ class Buy: Search<SellItem>() {
     }
 
     override fun use(player: Player,ui: GameUI) {
-        Building.getWhere(player.x_coordinate).items.values.filter { it is SellItem }.map { it.listener.listener=this::listener }
+        search.search(player).map { it.click.listener=this::listener }
     }
 }

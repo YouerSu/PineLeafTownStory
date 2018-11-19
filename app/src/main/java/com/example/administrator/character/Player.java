@@ -12,6 +12,7 @@ import com.example.administrator.utils.Tools;
 
 import java.util.HashMap;
 import java.util.Timer;
+import java.util.TimerTask;
 
 public class Player extends Character {
 
@@ -35,7 +36,12 @@ public class Player extends Character {
         timeDate = new GameTime(gameUI);
         timeDate.getTimeDate();
         Timer timer = new Timer();
-        timer.schedule(timeDate, 800L, Info.INSTANCE.getSPEED());
+        timer.schedule(new TimerTask(){
+            @Override
+            public void run() {
+                gameUI.run(timeDate);
+            }
+        }, 800L, Info.INSTANCE.getSPEED());
     }
 
     @Override

@@ -1,19 +1,14 @@
 package com.example.administrator.behavior
 
 import com.example.administrator.buildings.Building
-import com.example.administrator.buildings.GameUI
 import com.example.administrator.character.Character
-import com.example.administrator.character.Player
-import com.example.administrator.item.Item
 import com.example.administrator.item.SellItem
-import com.example.administrator.listener.Search
-import com.example.administrator.utils.Response
 
 class Buy : Behavior() {
     override fun use(character: Character): Boolean {
 
         val place = Building.getWhere(character.x_coordinate)
-        for (item in place.items){
+        for (item in place.items.values){
             if (item is SellItem && isCheap(item,character.money)){
                 val worker = place.findWorker(item)
                 worker?.work(item,character)

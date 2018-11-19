@@ -2,7 +2,7 @@ package com.example.administrator.character;
 
 import android.database.Cursor;
 
-import com.example.administrator.listener.Listener;
+import com.example.administrator.listener.Click;
 import com.example.administrator.buildings.Building;
 import com.example.administrator.buildings.GameUI;
 import com.example.administrator.item.Tool;
@@ -24,7 +24,7 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
     private int x_coordinate;
     private int salary;
     private String workSpace;
-    public Listener listener;
+    public Click click;
 
      abstract void init();
 
@@ -43,7 +43,7 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
 
     @Override
     public void onClick(GameUI gameUI) {
-        listener.onClick(gameUI,this);
+        click.onClick(gameUI,this);
     }
 
     public static void getAllDate(){

@@ -28,6 +28,7 @@ public interface GameUI{
 
     <T extends ShowAdapter> void showListDialogue(List<T> items);
 
+    void dayChange();
 
-
+    void run(Runnable runnable);
 }

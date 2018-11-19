@@ -3,7 +3,7 @@ package com.example.administrator.item;
 import android.database.Cursor;
 
 import com.example.administrator.buildings.Building;
-import com.example.administrator.listener.Listener;
+import com.example.administrator.listener.Click;
 import com.example.administrator.buildings.GameUI;
 import com.example.administrator.utils.Info;
 import com.example.administrator.buildings.ShowAdapter;
@@ -22,7 +22,7 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
     private int volume;
     private int originalPrice;
     private int total;
-    public Listener listener;
+    public Click click;
 
     public Item(String name, int volume, int originalPrice, int total) {
         this.name = name;
@@ -120,7 +120,7 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
 //
     @Override
     public void onClick(GameUI gameUI) {
-        listener.onClick(gameUI,this);
+        click.onClick(gameUI,this);
     }
 
 
