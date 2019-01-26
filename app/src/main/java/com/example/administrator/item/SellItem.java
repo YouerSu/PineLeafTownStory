@@ -14,10 +14,10 @@ public class SellItem extends Item {
     public SellItem() {}
 
       @Override
-    public void createTable(String name){
+    public void createTable(String workSpace){
         Sql.operating(new String[]{
-        "create table if not exists "+name+Tools.getSuffix(getClass().getName())+"("+ Info.INSTANCE.getNAME() +" text,"+ Info.INSTANCE.getSellPrice() +" integer)",
-        "DELETE FROM " + name + "SellItem"
+        "create table if not exists "+workSpace+Tools.getSuffix(getClass().getName())+"("+ Info.INSTANCE.getNAME() +" text,"+ Info.INSTANCE.getSellPrice() +" integer)",
+        "DELETE FROM " + workSpace + "SellItem"
         });
     }
 
@@ -28,7 +28,7 @@ public class SellItem extends Item {
     }
 
     public Item getItem(){
-        return Building.findWorkSpace(getMaster()).getItems().get(getName());
+        return Building.findWorkSpace(getMaster()).getItems().get(super.getName());
     }
 
     @Override
@@ -61,6 +61,12 @@ public class SellItem extends Item {
 //            }
 //        };
 //    }
+
+
+    @Override
+    public String getName() {
+        return super.getName()+"(Sell)";
+    }
 
     public synchronized int getSellPrice() {
         return sellPrice;

@@ -6,10 +6,12 @@ import com.example.administrator.character.Character;
 import com.example.administrator.utils.Info;
 import com.example.administrator.utils.Sql;
 
+import java.util.Timer;
 import java.util.TimerTask;
 
 public class GameTime extends TimerTask {
 
+    public static GameTime timeDate;
     //各类时间事件
     private int minute;
     private int hour;
@@ -21,6 +23,18 @@ public class GameTime extends TimerTask {
 
     public GameTime(GameUI gameUI) {
         this.gameUI = gameUI;
+    }
+
+    public static void setTimeDate(GameUI gameUI) {
+        timeDate = new GameTime(gameUI);
+        timeDate.getTimeDate();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask(){
+            @Override
+            public void run() {
+                gameUI.run(timeDate);
+            }
+        }, 800L, Info.INSTANCE.getSPEED());
     }
 
 
@@ -108,10 +122,5 @@ public class GameTime extends TimerTask {
     public void setYear(int year) {
         this.year = year;
     }
-
-
-
-
-
 
 }

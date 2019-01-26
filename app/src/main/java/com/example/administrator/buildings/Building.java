@@ -2,6 +2,7 @@ package com.example.administrator.buildings;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.example.administrator.character.Employee;
 import com.example.administrator.item.Item;
@@ -14,6 +15,8 @@ import com.example.administrator.utils.Tools;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 public class Building implements OwnName {
     public static List<Building> buildings = new ArrayList<>();
@@ -28,6 +31,19 @@ public class Building implements OwnName {
         this.capacity = capacity;
         this.master = master;
         buildings.add(this);
+    }
+
+    public static void saveDate(){
+        Sql.operating(new String[]{"DELETE FROM "+ Info.INSTANCE.getBUILDING()});
+        for (Building building: getBuildings())
+            building.saveBuildingDate();
+    }
+
+    private void saveBuildingDate() {
+        Log.i(TAG, "saveBuildingDate: count");
+        createNewBuilding(Sql.getDateBase());
+        for (Item item : getItems().values())
+            item.saveIndexDate(name);
     }
 
     public void addEmployee(Employee employee){
@@ -45,10 +61,11 @@ public class Building implements OwnName {
         return null;
     }
 
-    public static void getBuildingDate() {
+    public static void getDate() {
         Cursor iDate = Sql.getAllInfo(Info.INSTANCE.getBUILDING());
         if (iDate==null) return;
         while (iDate.moveToNext()){
+            Log.i(TAG, "getBuildingDate: count");
             Building building = new Building(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getNAME())),iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getCapacity())),iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getMASTER())));
             building.items = Item.getIndexDate(building.getName());
         }
@@ -63,12 +80,6 @@ public class Building implements OwnName {
         Item.createIndex(name);
         db.execSQL
                 ("insert into "+ Info.INSTANCE.getBUILDING() +" ("+ Info.INSTANCE.getNAME() +","+ Info.INSTANCE.getMASTER() +","+ Info.INSTANCE.getCapacity() +") values ('"+name+"','"+master+"',"+capacity+")");
-    }
-
-    public void saveDate() {
-        createNewBuilding(Sql.getDateBase());
-        for (Item item : getItems().values())
-            item.saveIndexDate(name);
     }
 
     public String getMaster() {

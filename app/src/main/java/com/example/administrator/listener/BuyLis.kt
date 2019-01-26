@@ -6,7 +6,7 @@ import com.example.administrator.item.Item
 import com.example.administrator.item.SellItem
 import com.example.administrator.utils.Response
 
-class Buy(search: Search<SellItem>): Listener<SellItem>(search) {
+class BuyLis(search: Search<SellItem>): Listener<SellItem>(search) {
     override fun listener(ui: GameUI, adapter: SellItem) {
         val response = object : Response<Int>(){
             override fun doThings(amount: Int) {
@@ -27,6 +27,6 @@ class Buy(search: Search<SellItem>): Listener<SellItem>(search) {
     }
 
     override fun use(player: Player,ui: GameUI) {
-        search.search(player).map { it.click.listener=this::listener }
+        search.search(player).forEach { it.click.listener=this::listener }
     }
 }

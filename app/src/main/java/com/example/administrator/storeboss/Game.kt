@@ -17,8 +17,10 @@ import android.widget.ListView
 import android.widget.SimpleAdapter
 import android.widget.TextView
 import android.widget.Toast
+import com.example.administrator.Init
 
 import com.example.administrator.buildings.Building
+import com.example.administrator.buildings.GameTime
 import com.example.administrator.buildings.GameUI
 import com.example.administrator.buildings.ShowAdapter
 import com.example.administrator.character.Character
@@ -42,8 +44,7 @@ class Game : AppCompatActivity(), GameUI {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
         Sql.setInfo(Sql(this))
-        Character.getAllDate()
-        Player.createPlayerDate(this)
+        Init.init(this)
         timeView = findViewById(R.id.clock)
         playerView = findViewById(R.id.playerDate)
         findViewById<View>(R.id.showCharacter).setOnClickListener { view -> showListDialogue(Character.getCharacters().filter { it.x_coordinate == Player.getX() }) }
@@ -128,8 +129,9 @@ class Game : AppCompatActivity(), GameUI {
         val action = object : Response<String>() {
             override fun doThings(result:String) {
                 if (result == "离开") {
-                    saveDate()
-                    finish()
+                    Init.saveAllDate()
+                    finishAndRemoveTask()
+                    onDestroy()
                 }
             }
         }
@@ -196,23 +198,19 @@ class Game : AppCompatActivity(), GameUI {
 
     override fun refreshUI() {
         var season: String? = null
-        when (Player.timeDate.month) {
+        when (GameTime.timeDate.month) {
             1 -> season = "春季日"
             2 -> season = "夏季日"
             3 -> season = "秋季日"
             4 -> season = "冬季日"
         }
-        timeView?.text = String.format("%s第%d天  %d:%02d", season, Player.timeDate.day, Player.timeDate.hour, Player.timeDate.minute)
+        timeView?.text = String.format("%s第%d天  %d:%02d", season, GameTime.timeDate.day, GameTime.timeDate.hour, GameTime.timeDate.minute)
         playerView?.text = String.format("云团:%d   声望:%d", Player.getPlayerDate().money, Player.getPlayerDate().prestige)
     }
 
     companion object {
         private val pagerList = ArrayList<View>()
         private val titleList = ArrayList<String>()
-
-        private fun saveDate() {
-            Character.saveAllDate()
-        }
     }
 
     override fun run(runnable: Runnable?) = runOnUiThread(runnable)

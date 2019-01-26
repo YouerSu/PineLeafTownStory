@@ -8,6 +8,8 @@ import com.example.administrator.utils.Tools
 
 class StoresEmployee : Employee() {
 
+
+
     override fun work(item: Item,customer: Character){
         if (item !is SellItem) return
         item.setTotal(item.getTotal() - 1)

@@ -1,6 +1,7 @@
 package com.example.administrator.character;
 
 import android.database.Cursor;
+import android.util.Log;
 
 import com.example.administrator.listener.Click;
 import com.example.administrator.buildings.Building;
@@ -16,15 +17,17 @@ import com.example.administrator.utils.Tools;
 import java.util.LinkedList;
 import java.util.Map;
 
+import static android.content.ContentValues.TAG;
+
 public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
-    public static LinkedList<Character> characters = new LinkedList<>();
+    private static LinkedList<Character> characters = new LinkedList<>();
     private String name;
     private int money;
     private int prestige;
     private int x_coordinate;
     private int salary;
     private String workSpace;
-    public Click click;
+    private Click click;
 
      abstract void init();
 
@@ -32,7 +35,6 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
     public void behavior() {
         for (Tool tool: Building.getWhere(x_coordinate).services())
             if (tool.receive(this)&&tool.use(this)) break;
-
     }
 
 
@@ -46,13 +48,10 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
         click.onClick(gameUI,this);
     }
 
-    public static void getAllDate(){
-        Building.getBuildingDate();
-        getDate(Sql.getDateBase().rawQuery("select * from "+ Info.INSTANCE.getCHARACTER(),null));
-    }
-
-    public static void getDate(Cursor iDate) {
+    public static void getDate() {
+        Cursor iDate = Sql.getDateBase().rawQuery("select * from "+ Info.INSTANCE.getCHARACTER(),null);
         while (iDate.moveToNext()){
+            Log.i(TAG, "getCharacterDate: count");
             Character character = Tools.getType(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getId())));
             character.setName(iDate.getString(iDate.getColumnIndex(Info.INSTANCE.getNAME())));
             character.setMoney(iDate.getInt(iDate.getColumnIndex(Info.INSTANCE.getMONEY())));
@@ -66,24 +65,14 @@ public abstract class Character implements OwnName,OwnMaster,ShowAdapter,NPC{
         iDate.close();
     }
 
-    public static void saveAllDate() {
-        saveBuildingDate();
-        saveCharacterDate();
-    }
 
-    public static void saveBuildingDate(){
-        Sql.operating(new String[]{"DELETE FROM "+ Info.INSTANCE.getBUILDING()});
-        for (Building building: Building.getBuildings())
-            building.saveDate();
-    }
-
-
-    public static void saveCharacterDate(){
+    public static void saveDate(){
         for (Character character:characters)
-            character.saveDate();
+            character.saveCharacterDate();
     }
 
-    public void saveDate(){
+    protected void saveCharacterDate(){
+        Log.i(TAG, "saveCharacterDate: count");
         Sql.operating(new String[]{
         "update "+ Info.INSTANCE.getCHARACTER() +" set "+ Info.INSTANCE.getId() +" = '"+getClass().getName()+"',"+ Info.INSTANCE.getMONEY() +" = "+money+","+ Info.INSTANCE.getPRESTIGE() +" = "+prestige+","+ Info.INSTANCE.getCoordinate() +" = "+x_coordinate+","+ Info.INSTANCE.getSalary() +" = "+salary+","+ Info.INSTANCE.getMASTER() +" = '"+ workSpace +"' where "+ Info.INSTANCE.getNAME() +" = '"+ name +"'"
         });

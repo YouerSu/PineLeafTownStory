@@ -54,16 +54,16 @@ public abstract class Item implements ShowAdapter,OwnName,OwnMaster{
 
     public abstract<T extends Item> T getListItem(String name);
 
-    public void saveIndexDate(String name){
+    public void saveIndexDate(String workSpace){
       Sql.operating(new String[]{
-      "insert into "+name+ Info.INSTANCE.getINDEX() +" ("+ Info.INSTANCE.getId() +","+ Info.INSTANCE.getNAME() +","+ Info.INSTANCE.getTotal() +") values ('"+getClass().getName()+"','"+ this.name +"',"+total+")"
+      "insert into "+workSpace+ Info.INSTANCE.getINDEX() +" ("+ Info.INSTANCE.getId() +","+ Info.INSTANCE.getNAME() +","+ Info.INSTANCE.getTotal() +") values ('"+getClass().getName()+"','"+ name +"',"+total+")"
       });
-      createTable(workSpace);
-      saveDate(name);
+      createTable(this.workSpace);
+      saveDate(workSpace);
     }
 
     public static HashMap<String,Item> getIndexDate(String name) {
-        //从XML与SQL中获取数据
+        //从List与SQL中获取数据
         HashMap<String,Item> map = new HashMap<>();
         Cursor iDate = Sql.getAllInfo(name+ Info.INSTANCE.getINDEX());
         while (iDate.moveToNext()){

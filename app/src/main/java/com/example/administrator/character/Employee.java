@@ -4,7 +4,7 @@ import com.example.administrator.buildings.Building;
 import com.example.administrator.item.Item;
 public abstract class Employee extends Character{
 
-    public abstract void work(Item item,Character customer);
+    public abstract void work(Item item, Character customer);
     public abstract boolean receive(Item item);
 
     @Override

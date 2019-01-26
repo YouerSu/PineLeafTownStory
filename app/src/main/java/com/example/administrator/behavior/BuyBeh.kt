@@ -4,7 +4,7 @@ import com.example.administrator.buildings.Building
 import com.example.administrator.character.Character
 import com.example.administrator.item.SellItem
 
-class Buy : Behavior() {
+class BuyBeh : Behavior() {
     override fun use(character: Character): Boolean {
 
         val place = Building.getWhere(character.x_coordinate)
