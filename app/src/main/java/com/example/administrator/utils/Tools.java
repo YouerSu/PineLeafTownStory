@@ -49,11 +49,11 @@ public class Tools {
 
     public static<T extends OwnMaster> boolean isPlayerEmployee(T employee) {
         String master = employee.getMaster();
-        String playerName = Player.getPlayerName();
+        String playerName = Player.Companion.getPlayerName();
         if (master.equals(playerName)) return true;
         else{
             Building workSpace;
-            workSpace = Building.findWorkSpace(master);
+            workSpace = Building.Companion.findWorkSpace(master);
             if (workSpace!=null)
                 master = workSpace.getMaster();
         }

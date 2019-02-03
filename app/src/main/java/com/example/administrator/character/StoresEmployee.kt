@@ -12,10 +12,10 @@ class StoresEmployee : Employee() {
 
     override fun work(item: Item,customer: Character){
         if (item !is SellItem) return
-        item.setTotal(item.getTotal() - 1)
+        item.total = item.total - 1
         val workSpace = Building.findWorkSpace(master)
-        val master = Tools.findMaster(workSpace.master, Character.getCharacters())
-        master?.money = master.money + item.sellPrice
+        val master =  Character.characters[workSpace.master]
+        master?.let { it.money += item.sellPrice }
         customer.money-=item.sellPrice
     }
 

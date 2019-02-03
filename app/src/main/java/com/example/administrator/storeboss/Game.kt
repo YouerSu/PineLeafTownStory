@@ -47,7 +47,7 @@ class Game : AppCompatActivity(), GameUI {
         Init.init(this)
         timeView = findViewById(R.id.clock)
         playerView = findViewById(R.id.playerDate)
-        findViewById<View>(R.id.showCharacter).setOnClickListener { view -> showListDialogue(Character.getCharacters().filter { it.x_coordinate == Player.getX() }) }
+        findViewById<View>(R.id.showCharacter).setOnClickListener { view -> showListDialogue(Character.characters.values.filter { it.x_coordinate == Player.x }) }
         findViewById<View>(R.id.showBag).setOnClickListener { view -> showListDialogue<Item>(Tools.toList<Item>(Player.bag.values)) }
         findViewById<View>(R.id.showItem).setOnClickListener { view -> showListDialogue<Item>(Tools.toList<Item>(Building.getBuildings()[pager!!.currentItem].items.values)) }
         setBuilding()
@@ -168,7 +168,7 @@ class Game : AppCompatActivity(), GameUI {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
             override fun onPageSelected(position: Int) {
-                Player.getPlayerDate().x_coordinate = position
+                Player.playerDate.x_coordinate = position
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -187,9 +187,9 @@ class Game : AppCompatActivity(), GameUI {
 
     private fun createBuilding() {
 
-        if (Player.getPlayerDate().money >= Info.BUILDING_PRICE) {
-            Player.getPlayerDate().money = Player.getPlayerDate().money - Info.BUILDING_PRICE
-            Building("建筑", 1, Player.getPlayerDate().name)
+        if (Player.playerDate.money >= Info.BUILDING_PRICE) {
+            Player.playerDate.money = Player.playerDate.money - Info.BUILDING_PRICE
+            Building("建筑", 1, Player.playerDate.name)
             dialogueBox("ada:OK")
         } else
             Toast.makeText(this, "你没有足够的金钱", Toast.LENGTH_SHORT).show()
@@ -205,7 +205,7 @@ class Game : AppCompatActivity(), GameUI {
             4 -> season = "冬季日"
         }
         timeView?.text = String.format("%s第%d天  %d:%02d", season, GameTime.timeDate.day, GameTime.timeDate.hour, GameTime.timeDate.minute)
-        playerView?.text = String.format("云团:%d   声望:%d", Player.getPlayerDate().money, Player.getPlayerDate().prestige)
+        playerView?.text = String.format("云团:%d   声望:%d", Player.playerDate.money, Player.playerDate.prestige)
     }
 
     companion object {
@@ -213,6 +213,6 @@ class Game : AppCompatActivity(), GameUI {
         private val titleList = ArrayList<String>()
     }
 
-    override fun run(runnable: Runnable?) = runOnUiThread(runnable)
+    override fun run(runnable: Runnable) = runOnUiThread(runnable)
 
 }
