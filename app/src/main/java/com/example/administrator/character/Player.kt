@@ -17,14 +17,14 @@ class Player : Character() {
 
 
     private fun getBagDate() {
-        bag = Item.getIndexDate(name!!)
+        bag = Item.getIndexDate(name)
     }
 
 
     public override fun saveCharacterDate() {
         super.saveCharacterDate()
         for (item in bag.values)
-            item.saveIndexDate(name!!)
+            item.saveIndexDate(name)
     }
 
     companion object {
@@ -38,7 +38,7 @@ class Player : Character() {
             gameUI.reText("输入你的名字", object : Response<String>() {
                 //TODO:判断是否重复
                 override fun doThings(name: String) {
-                    finalCharacter.setName(name)
+                    finalCharacter.name = name
                     Sql.operating(arrayOf("insert into " + Info.CHARACTER + " (" + Info.id + "," + Info.NAME + "," + Info.MONEY + "," + Info.PRESTIGE + "," + Info.coordinate + "," + Info.salary + "," + Info.MASTER + ") values ('" + Player::class.java.name + "','" + name + "',0,0,0,3000,'" + null + "')", "create table if not exists " + name + Info.INDEX + " (" + Info.id + " text," + Info.NAME + " text," + Info.total + " integer)"))
                     finalCharacter.init()
                     characters[name] = finalCharacter

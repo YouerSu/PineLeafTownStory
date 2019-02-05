@@ -4,16 +4,14 @@ import android.util.Log
 import com.example.administrator.buildings.Building
 import com.example.administrator.buildings.GameUI
 import com.example.administrator.utils.Info
-import com.example.administrator.utils.OwnMaster
-import com.example.administrator.utils.OwnName
 import com.example.administrator.buildings.ShowAdapter
 import com.example.administrator.utils.Sql
 import com.example.administrator.utils.Tools
 
 import android.content.ContentValues.TAG
 
-abstract class Character : OwnName, OwnMaster, ShowAdapter, NPC {
-    private lateinit var name: String
+abstract class Character : ShowAdapter, NPC {
+    lateinit var name: String
     var money: Int = 0
     var prestige: Int = 0
     var x_coordinate: Int = 0
@@ -49,22 +47,6 @@ abstract class Character : OwnName, OwnMaster, ShowAdapter, NPC {
         money += salary
     }
 
-    override fun getName(): String {
-        return name
-    }
-
-    override fun setName(name: String) {
-        this.name = name
-    }
-
-    override fun setMaster(workSpace: String) {
-        this.workSpace = workSpace
-    }
-
-    override fun getMaster(): String {
-        return workSpace
-    }
-
     companion object {
         var characters = HashMap<String,Character>()
 
@@ -72,11 +54,11 @@ abstract class Character : OwnName, OwnMaster, ShowAdapter, NPC {
             val iDate = Sql.getDateBase().rawQuery("select * from " + Info.CHARACTER, null)
             while (iDate.moveToNext()) {
                 val character = Tools.getType<Character>(iDate.getString(iDate.getColumnIndex(Info.id)))
-                character.setName(iDate.getString(iDate.getColumnIndex(Info.NAME)))
+                character.name = iDate.getString(iDate.getColumnIndex(Info.NAME))
                 character.money = iDate.getInt(iDate.getColumnIndex(Info.MONEY))
                 character.prestige = iDate.getInt(iDate.getColumnIndex(Info.PRESTIGE))
                 character.x_coordinate = iDate.getInt(iDate.getColumnIndex(Info.coordinate))
-                character.setMaster(iDate.getString(iDate.getColumnIndex(Info.MASTER)))
+                character.workSpace = iDate.getString(iDate.getColumnIndex(Info.MASTER))
                 character.salary = iDate.getInt(iDate.getColumnIndex(Info.salary))
                 character.init()
                 characters[character.name] = character
@@ -94,12 +76,12 @@ abstract class Character : OwnName, OwnMaster, ShowAdapter, NPC {
             if (Tools.getType<Any>(className) !is Character) return
             Sql.getDateBase().execSQL("insert into " + Info.CHARACTER + " (" + Info.id + "," + Info.NAME + "," + Info.MONEY + "," + Info.PRESTIGE + "," + Info.coordinate + "," + Info.salary + "," + Info.MASTER + ") values ('" + className + "','" + name + "'," + money + "," + prestige + "," + x_coordinate + "," + salary + ",'" + workSpace + "')")
             val character = Tools.getType<Character>(className)
-            character.setName(name)
+            character.name = name
             character.money = money
             character.prestige = prestige
             character.x_coordinate = x_coordinate
             character.salary = salary
-            character.setMaster(workSpace)
+            character.workSpace = workSpace
             characters[character.name] = character
         }
     }

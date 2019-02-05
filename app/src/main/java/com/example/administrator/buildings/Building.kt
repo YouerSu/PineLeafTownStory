@@ -29,7 +29,7 @@ class Building(var name: String, var capacity: Int, var master: String?){
     }
 
     fun addEmployee(employee: Employee) {
-        employee.setMaster(name)
+        employee.workSpace = name
         employees.add(employee)
     }
 

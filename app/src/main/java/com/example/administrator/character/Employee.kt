@@ -10,7 +10,7 @@ abstract class Employee : Character() {
 
     override fun init() {
         startActivity()
-        val building = Building.findWorkSpace(master)
+        val building = Building.findWorkSpace(workSpace)
         building.addEmployee(this)
     }
 

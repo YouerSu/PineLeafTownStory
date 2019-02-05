@@ -13,7 +13,7 @@ class StoresEmployee : Employee() {
     override fun work(item: Item,customer: Character){
         if (item !is SellItem) return
         item.total = item.total - 1
-        val workSpace = Building.findWorkSpace(master)
+        val workSpace = Building.findWorkSpace(workSpace)
         val master =  Character.characters[workSpace.master]
         master?.let { it.money += item.sellPrice }
         customer.money-=item.sellPrice

@@ -24,17 +24,6 @@ public class Tools {
         return article;
     }
 
-
-    public static<T extends OwnName> T findMaster(String master, List<T> list) {
-        T var = null;
-        for (T thing:list){
-            if (master.equals(thing.getName())) {
-                var = thing;
-            }
-        }
-        return var;
-        }
-
     public static String getSuffix(String str){
         return str.substring(str.lastIndexOf(".")+1);
     }
@@ -47,16 +36,4 @@ public class Tools {
         return Arrays.asList(array);
     }
 
-    public static<T extends OwnMaster> boolean isPlayerEmployee(T employee) {
-        String master = employee.getMaster();
-        String playerName = Player.Companion.getPlayerName();
-        if (master.equals(playerName)) return true;
-        else{
-            Building workSpace;
-            workSpace = Building.Companion.findWorkSpace(master);
-            if (workSpace!=null)
-                master = workSpace.getMaster();
-        }
-        return master.equals(playerName);
-    }
 }
