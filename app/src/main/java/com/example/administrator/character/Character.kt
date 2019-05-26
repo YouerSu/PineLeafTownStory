@@ -9,6 +9,8 @@ import com.example.administrator.utils.Sql
 import com.example.administrator.utils.Tools
 
 import android.content.ContentValues.TAG
+import com.example.administrator.item.Tool
+import com.example.administrator.listener.Search.ItemSear
 
 abstract class Character : ShowAdapter, NPC {
     lateinit var name: String
@@ -22,13 +24,16 @@ abstract class Character : ShowAdapter, NPC {
     abstract fun init()
 
     override fun behavior() {
-        for (tool in Building.getWhere(x_coordinate).services())
+        for (tool in ItemSear.toolSear.search(this))
             if (tool.receive(this) && tool.use(this)) break
     }
 
 
     override fun UIPageAdapter(): Map<String, String> {
-        return GameUI.getAdapterMap(name, "薪水：$salary", "工作地点：$workSpace", "职业：${Tools.getSuffix(javaClass.name)}")
+        return GameUI.getAdapterMap(name,
+                """薪水：$salary
+                工作地点：$workSpace
+                职业：${Tools.getSuffix(javaClass.name)}""".trim())
     }
 
     override fun onClick(gameUI: GameUI) {
@@ -83,6 +88,7 @@ abstract class Character : ShowAdapter, NPC {
             character.salary = salary
             character.workSpace = workSpace
             characters[character.name] = character
+            character.startActivity()
         }
     }
 }

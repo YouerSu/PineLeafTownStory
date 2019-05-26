@@ -1,14 +1,13 @@
-package com.example.administrator.listener
+package com.example.administrator.listener.action
 
 import com.example.administrator.buildings.GameUI
-import com.example.administrator.buildings.ShowAdapter
 import com.example.administrator.character.Player
 import com.example.administrator.item.Item
-import com.example.administrator.item.Mall
 import com.example.administrator.item.SellItem
+import com.example.administrator.listener.action.Action
 import com.example.administrator.utils.Response
 
-class BuyLis(search: Search<SellItem>): Listener<SellItem>(search) {
+class Abuy: Action<SellItem>() {
     override fun listener(ui: GameUI, adapter: SellItem) {
         val response = object : Response<Int>(){
             override fun doThings(amount: Int) {
@@ -28,8 +27,4 @@ class BuyLis(search: Search<SellItem>): Listener<SellItem>(search) {
         ui.reText<Int>("Enter the number of buy", response)
     }
 
-}
-
-fun main(args: Array<String>) {
-    Mall().click = BuyLis(Sbuy())::listener as (GameUI, ShowAdapter) -> Unit
 }

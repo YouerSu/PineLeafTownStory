@@ -30,7 +30,7 @@ object Init {
     private fun createPlayerDate(gameUI: GameUI) {
         if (Character.characters.size==0) {
             Player.createDate(gameUI)
-            Init.firstPlayGame()
+            firstPlayGame()
             //Init.createPlayerDate(gameUI);
         }
     }

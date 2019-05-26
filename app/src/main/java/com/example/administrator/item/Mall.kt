@@ -18,7 +18,7 @@ class Mall : Item {
 
     override fun createTable(name: String) {}
 
-    override fun setSQLDate(cursor: Cursor) {}
+    override fun getSQLDate(cursor: Cursor) {}
 
     override fun saveDate(workSpaceName: String) {}
     override fun<T: Item> getListItem(name: String): T {

@@ -63,7 +63,7 @@ class Game : AppCompatActivity(), GameUI {
     }
 
     fun getListView(listItem: List<Map<String, String>>): ListView {
-        val sa = SimpleAdapter(this, listItem, R.layout.item_list, arrayOf(Info.NAME, Info.LT1, Info.LT2, Info.LT3), intArrayOf(R.id.name, R.id.lt1, R.id.lt2, R.id.lt3))
+        val sa = SimpleAdapter(this, listItem, R.layout.item_list, arrayOf(Info.NAME, Info.LT1), intArrayOf(R.id.name, R.id.info))
         val alertDialog = getDialog(R.layout.show_list)
         val list = alertDialog.window!!.findViewById<ListView>(R.id.list)
         list.adapter = sa

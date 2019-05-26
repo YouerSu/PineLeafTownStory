@@ -7,6 +7,7 @@ import com.example.administrator.utils.Sql
 import java.util.Timer
 import java.util.TimerTask
 
+val SPEED: Long = 10000//时间流逝速度
 
 class GameTime(private val gameUI: GameUI) : TimerTask() {
     //各类时间事件
@@ -36,7 +37,7 @@ class GameTime(private val gameUI: GameUI) : TimerTask() {
 
 
     override fun run() {
-        minute += Info.SPEED.toInt() / 1000
+        minute += SPEED.toInt() / 1000
         if (minute >= 60) {
             minute = 0
             hour += 1
@@ -71,7 +72,7 @@ class GameTime(private val gameUI: GameUI) : TimerTask() {
                 override fun run() {
                     gameUI.run(timeDate)
                 }
-            }, 800L, Info.SPEED)
+            }, 800L,SPEED)
         }
     }
 

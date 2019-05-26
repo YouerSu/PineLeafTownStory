@@ -5,11 +5,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+
 public class Sql extends SQLiteOpenHelper{
+    private static final int VER = 1;
     private static SQLiteDatabase db;
 
     public Sql(Context context) {
-        super(context, Info.INSTANCE.getName(),null, Info.INSTANCE.getVER());
+        super(context, Info.INSTANCE.getName(),null, VER);
     }
 
     //用于执行Sql语句;

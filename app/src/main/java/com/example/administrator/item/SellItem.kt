@@ -29,7 +29,7 @@ class SellItem : Item() {
         return true
     }
 
-    override fun setSQLDate(cursor: Cursor) {
+    override fun getSQLDate(cursor: Cursor) {
         sellPrice = cursor.getInt(cursor.getColumnIndex(Info.sellPrice))
     }
 

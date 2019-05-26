@@ -23,12 +23,10 @@ interface GameUI {
 
     companion object {
 
-        fun getAdapterMap(name: String, l1: String, l2: String, l3: String): Map<String, String> {
+        fun getAdapterMap(name: String, info: String): Map<String, String> {
             val item = HashMap<String, String>()
             item[Info.NAME] = name
-            item[Info.LT1] = l1
-            item[Info.LT2] = l2
-            item[Info.LT3] = l3
+            item[Info.LT1] = info
             return item
         }
     }

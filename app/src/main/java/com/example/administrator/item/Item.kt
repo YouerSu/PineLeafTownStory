@@ -44,7 +44,7 @@ abstract class Item : ShowAdapter{
     abstract fun saveDate(workSpaceName: String)
 
     //从SQL中读取数据
-    abstract fun setSQLDate(cursor: Cursor)
+    abstract fun getSQLDate(cursor: Cursor)
 
     abstract fun <T : Item> getListItem(name: String): T
 
@@ -55,7 +55,10 @@ abstract class Item : ShowAdapter{
     }
 
     override fun UIPageAdapter(): Map<String, String> {
-        return GameUI.getAdapterMap(name, "体积:$volume", "价格$originalPrice", "总量:$total" )
+        return GameUI.getAdapterMap(name,
+                """体积:$volume
+                价格$originalPrice
+                总量:$total""".trim())
     }
 
     //
@@ -107,7 +110,7 @@ abstract class Item : ShowAdapter{
                 article.workSpace = name
                 try {
                     if (article.haveTable())
-                        article.setSQLDate(Sql.getCursor(name + Tools.getSuffix(article.javaClass.name), "*", Info.NAME, arrayOf("'" + article.name + "'")))
+                        article.getSQLDate(Sql.getCursor(name + Tools.getSuffix(article.javaClass.name), "*", Info.NAME, arrayOf("'" + article.name + "'")))
                 } catch (ignored: RuntimeException) {
                     throw ignored
                 }

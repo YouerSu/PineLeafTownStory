@@ -44,14 +44,6 @@ class Building(var name: String, var capacity: Int, var master: String?){
         db.execSQL("insert into " + Info.BUILDING + " (" + Info.NAME + "," + Info.MASTER + "," + Info.capacity + ") values ('" + name + "','" + master + "'," + capacity + ")")
     }
 
-    fun services(): List<Tool> {
-        val list = ArrayList<Tool>()
-        for (item in items.values)
-            if (item is Tool)
-                list.add(item)
-        return list
-    }
-
     companion object {
         var buildings = LinkedList<Building>()
 
