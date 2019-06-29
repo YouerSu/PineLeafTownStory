@@ -11,5 +11,10 @@ abstract class Action<T: ShowAdapter>{
 //    override fun use(character: Character): Boolean {
 //        return true
 //    }
+}
 
+class NonAction: Action<ShowAdapter>() {
+    override fun listener(ui: GameUI, adapter: ShowAdapter) {
+        //Do nothing
+    }
 }

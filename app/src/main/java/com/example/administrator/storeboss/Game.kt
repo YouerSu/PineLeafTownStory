@@ -26,6 +26,8 @@ import com.example.administrator.buildings.ShowAdapter
 import com.example.administrator.character.Character
 import com.example.administrator.character.Player
 import com.example.administrator.item.Item
+import com.example.administrator.listener.Search.BagSear
+import com.example.administrator.listener.Search.CharacterSear
 import com.example.administrator.utils.Info
 import com.example.administrator.utils.MyPagerAdapter
 import com.example.administrator.utils.Response
@@ -47,8 +49,8 @@ class Game : AppCompatActivity(), GameUI {
         Init.init(this)
         timeView = findViewById(R.id.clock)
         playerView = findViewById(R.id.playerDate)
-        findViewById<View>(R.id.showCharacter).setOnClickListener { view -> showListDialogue(Character.characters.values.filter { it.x_coordinate == Player.x }) }
-        findViewById<View>(R.id.showBag).setOnClickListener { view -> showListDialogue<Item>(Tools.toList<Item>(Player.bag.values)) }
+        findViewById<View>(R.id.showCharacter).setOnClickListener { view -> showListDialogue(CharacterSear.NPCSear.search(Player.playerDate)) }
+        findViewById<View>(R.id.showBag).setOnClickListener { view -> showListDialogue<Item>(BagSear().search(Player.playerDate)) }
         findViewById<View>(R.id.showItem).setOnClickListener { view -> showListDialogue<Item>(Tools.toList<Item>(Building.getBuildings()[pager!!.currentItem].items.values)) }
         setBuilding()
         setText()

@@ -52,6 +52,7 @@ class Tool: Item {
     companion object {
         val items: Array<Tool> = arrayOf(
                 Tool(BuyBeh(), Listener.BuyLis as Listener<ShowAdapter>, "售货台", 20, 100)
+
         )
     }
 
